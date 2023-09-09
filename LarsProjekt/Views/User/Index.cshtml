@@ -1,10 +1,18 @@
-﻿@{
-}
+﻿@model List<UserModel>
 
-@model List<UserModel>
+<h3>User List</h3>
+<hr />
+
+<div class="mb-3">
+    <a asp-action="Create" asp-controller="User" class="btn btn-success">create new user</a>
+</div>
+<div class="mb-3">
+    <a asp-action="Edit" asp-controller="User" class="btn btn-success">edit user</a>
+</div>
 
 @foreach(var user in Model)
 {
-    <p>@user.Name</p>
-    <p><a asp-action="Details" asp-controller="User" asp-route-id="@user.Id">Details</a></p>
+    <div><p>@user.Name</p></div>    
+
+    <p><a asp-action="Details" asp-controller="User" asp-route-id="@user.Id" class="btn btn-dark">Details</a></p>
 }

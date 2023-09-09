@@ -1,6 +1,8 @@
-﻿@{
-}
+﻿@model UserModel
 
-@model UserModel
+<h3>User Details</h3>
+<hr />
 
-<p>@Model.Name</p>
+<div><p>@Model.Name</p></div>
+<div><p>@Model.Description</p></div>
+<a asp-action="ChangePassword" asp-controller="User" asp-route-id="@Model.Id" class="btn btn-dark">Change Password</a>

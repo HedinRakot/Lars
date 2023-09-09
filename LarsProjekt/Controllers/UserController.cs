@@ -1,6 +1,7 @@
 ﻿using LarsProjekt.Application;
 using LarsProjekt.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace LarsProjekt.Controllers;
 
@@ -15,12 +16,13 @@ public class UserController : Controller
     public IActionResult Index()
     {
         var list = new List<UserModel>();
-        foreach(var user in _userRepository.Users)
+        foreach (var user in _userRepository.Users)
         {
             list.Add(new UserModel
             {
                 Id = user.Id,
                 Name = user.Name,
+                Description = user.Description,
                 Password = user.Password,
             });
         }
@@ -40,9 +42,62 @@ public class UserController : Controller
         {
             Id = user.Id,
             Name = user.Name,
+            Description = user.Description,
             Password = user.Password
         };
 
         return View(model);
     }
+
+    [HttpGet]
+    public IActionResult ChangePassword(long id)
+    {
+        var model = new ChangePasswordModel
+        {
+            Id = id
+        };
+        return View(model);
+    }
+
+    [HttpPost]
+    public IActionResult ChangePassword(ChangePasswordModel model)
+    {
+        var user = _userRepository.Users.FirstOrDefault(o => o.Id == model.Id);
+        user.Password = model.Password;
+
+        return RedirectToAction(nameof(Details), new { Id = model.Id });
+    }
+
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Create(UserModel model)
+    {
+        _userRepository.Users.Add(new Domain.User());
+        //_userRepository.Users.Add(model);
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public IActionResult Edit()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Edit(UserModel model)
+    {
+        var user = _userRepository.Users.FirstOrDefault(o => o.Id == model.Id);
+        user.Name = model.Name;
+        user.Description = model.Description;
+
+        return RedirectToAction(nameof(Index), new { Id = model.Id });
+
+    }
 }
+
+
