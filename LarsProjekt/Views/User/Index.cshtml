@@ -1,18 +1,60 @@
 ﻿@model List<UserModel>
 
-<h3>User List</h3>
+@* <h3>User List</h3>
 <hr />
-
 <div class="mb-3">
     <a asp-action="Create" asp-controller="User" class="btn btn-success">create new user</a>
 </div>
-<div class="mb-3">
-    <a asp-action="Edit" asp-controller="User" class="btn btn-success">edit user</a>
-</div>
-
 @foreach(var user in Model)
 {
-    <div><p>@user.Name</p></div>    
+    <div><p>@user.Name</p></div>
 
     <p><a asp-action="Details" asp-controller="User" asp-route-id="@user.Id" class="btn btn-dark">Details</a></p>
+    <div class="mb-3">
+        <a asp-action="Edit" asp-controller="User" asp-route-id="@user.Id" class="btn btn-success">edit user</a>
+    </div>
 }
+ *@
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-primary py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Users</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row pt-4">
+            <div class="col text-end">
+                <h5>New here? <i class="bi bi-arrow-right"></i></h5>
+            </div>
+            <div class="col-6">
+                <a asp-controller="User" asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Register
+                </a>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.Name</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a asp-controller="User" asp-action="Details" asp-route-id="@user.Id" class="btn btn-primary mx-2">
+                                    <i class="bi bi-question-lg"></i> Details
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

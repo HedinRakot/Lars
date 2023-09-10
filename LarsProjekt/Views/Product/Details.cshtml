@@ -1,16 +1,10 @@
-﻿@model UserModel
-@*
-<h3>User Details</h3>
-<hr />
-<div><p>@Model.Name</p></div>
-<div><p>@Model.Description</p></div>
-<a asp-action="ChangePassword" asp-controller="User" asp-route-id="@Model.Id" class="btn btn-dark">Change Password</a>
- *@
+﻿@model ProductModel
+
 <div class="card shadow border-0 my-4">
-    <div class="card-header bg-primary py-3">
+    <div class="card-header bg-danger py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">User Details</h2>
+                <h2 class="text-white py-2">Product Details</h2>
             </div>
         </div>
     </div>
@@ -19,27 +13,28 @@
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Category</th>
                     <th>Description</th>
+                    <th>Price($)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>@Model.Name</td>
+                    <td>@Model.Category</td>
                     <td>@Model.Description</td>
+                    <td>@Model.Price</td>
                 </tr>
             </tbody>
         </table>
         <div class="row pt-2">
             <div class="col-4 col-md-3">
-                <a asp-controller="User" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-danger mx-2">
+                <a asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-danger mx-2">
                     <i class="bi bi-pencil-square"></i> Edit
                 </a>
             </div>
             <div class="col-4 col-md-3">
-                <a asp-action="ChangePassword" asp-controller="User" asp-route-id="@Model.Id" class="btn btn-dark">Change Password</a>
-            </div>
-            <div class="col-4 col-md-3">
-                <a asp-controller="User" asp-action="Index" class="btn btn-outline-primary border form-control">Back to List</a>
+                <a asp-controller="Product" asp-action="Index" class="btn btn-outline-dark border form-control">Back to List</a>
             </div>
         </div>
     </div>

@@ -1,7 +1,7 @@
 ﻿using LarsProjekt.Application;
+using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
 
 namespace LarsProjekt.Controllers;
 
@@ -23,10 +23,8 @@ public class UserController : Controller
                 Id = user.Id,
                 Name = user.Name,
                 Description = user.Description,
-                Password = user.Password,
             });
         }
-
         return View(list);
     }
 
@@ -43,9 +41,7 @@ public class UserController : Controller
             Id = user.Id,
             Name = user.Name,
             Description = user.Description,
-            Password = user.Password
         };
-
         return View(model);
     }
 
@@ -62,30 +58,61 @@ public class UserController : Controller
     [HttpPost]
     public IActionResult ChangePassword(ChangePasswordModel model)
     {
-        var user = _userRepository.Users.FirstOrDefault(o => o.Id == model.Id);
-        user.Password = model.Password;
+        if (ModelState.IsValid)
+        {
+            var user = _userRepository.Users.FirstOrDefault(o => o.Id == model.Id);
+            if (model.Password == model.PasswordRepeat)
+            {
+                user.Password = model.Password;
+                return RedirectToAction(nameof(Index), new { Id = model.Id });
+            }
+            else
+            {
+                ModelState.AddModelError(nameof(ChangePasswordModel.PasswordRepeat), "Passwords do not match");
+            }
+        }
 
-        return RedirectToAction(nameof(Details), new { Id = model.Id });
+        return View(model);
     }
 
     [HttpGet]
     public IActionResult Create()
     {
-        return View();
+        return View(new UserModel());
     }
 
     [HttpPost]
     public IActionResult Create(UserModel model)
     {
-        _userRepository.Users.Add(new Domain.User());
-        //_userRepository.Users.Add(model);
-        return RedirectToAction(nameof(Index));
+        if (ModelState.IsValid)
+        {
+            var user = new User();
+            user.Name = model.Name;
+            user.Description = model.Description;
+            var maxId = _userRepository.Users.Max(o => o.Id);
+            user.Id = maxId + 1;
+
+            _userRepository.Users.Add(user);
+
+            return RedirectToAction(nameof(Index));
+        }
+        else
+        {
+            return View();
+        }
     }
 
     [HttpGet]
-    public IActionResult Edit()
+    public IActionResult Edit(long id)
     {
-        return View();
+        var user = _userRepository.Users.FirstOrDefault(o => o.Id == id);
+        var model = new UserModel
+        {
+            Id = id,
+            Name = user.Name,
+            Description = user.Description,
+        };
+        return View(model);
     }
 
     [HttpPost]
@@ -95,7 +122,7 @@ public class UserController : Controller
         user.Name = model.Name;
         user.Description = model.Description;
 
-        return RedirectToAction(nameof(Index), new { Id = model.Id });
+        return RedirectToAction(nameof(Index));
 
     }
 }

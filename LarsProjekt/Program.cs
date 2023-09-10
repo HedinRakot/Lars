@@ -9,6 +9,7 @@ builder.Services.AddSingleton<Singleton>();
 builder.Services.AddScoped<Scoped>();
 builder.Services.AddScoped<ScopedDependent>();
 builder.Services.AddSingleton<UserRepository>();
+builder.Services.AddSingleton<ProductRepository>();
 
 var app = builder.Build();
 
