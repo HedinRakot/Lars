@@ -15,7 +15,21 @@
         </div>
     </div>
     <div class="card-body p-4">
-        <table class="table">
+        <div class="card border-primary mb-3" style="max-width: 40rem;">
+            <div class="card-header">@Model.Name</div>
+            <div class="card-body">                
+                <p class="card-text">@Model.Description</p>
+            </div>
+        </div>        
+        <div class="row pt-2">          
+            <div class="col-4 col-md-3">
+                <a asp-controller="User" asp-action="Index" class="btn btn-outline-dark border form-control">Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* <table class="table">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -28,19 +42,4 @@
                     <td>@Model.Description</td>
                 </tr>
             </tbody>
-        </table>
-        <div class="row pt-2">
-            <div class="col-4 col-md-3">
-                <a asp-controller="User" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-danger mx-2">
-                    <i class="bi bi-pencil-square"></i> Edit
-                </a>
-            </div>
-            <div class="col-4 col-md-3">
-                <a asp-action="ChangePassword" asp-controller="User" asp-route-id="@Model.Id" class="btn btn-dark">Change Password</a>
-            </div>
-            <div class="col-4 col-md-3">
-                <a asp-controller="User" asp-action="Index" class="btn btn-outline-primary border form-control">Back to List</a>
-            </div>
-        </div>
-    </div>
-</div>
+        </table> *@

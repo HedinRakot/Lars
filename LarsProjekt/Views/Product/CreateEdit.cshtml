@@ -1,7 +1,7 @@
 ﻿@model ProductModel
 
 <div class="card shadow border-0 mt-4">
-    <div class="card-header bg-danger py-3">
+    <div class="card-header bg-primary py-3">
         <div class="row">
             <div class="col-12 text-center">
                 <h2 class="text-white py-2">@(Model.Id != 0 ? "Edit" : "Create") Product</h2>
@@ -38,11 +38,11 @@
                     <div class="col-6 col-md-3">
                         @if (Model.Id != 0)
                         {
-                            <button type="submit" class="btn btn-danger form-control">Update</button>
+                            <button type="submit" class="btn btn-light form-control">Update</button>
                         }
                         else
                         {
-                            <button type="submit" class="btn btn-danger form-control">Create</button>
+                            <button type="submit" class="btn btn-light form-control">Create</button>
                         }
                     </div>
                     <div class="col-6 col-md-3">

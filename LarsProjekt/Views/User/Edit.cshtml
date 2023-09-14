@@ -35,12 +35,15 @@
                     <label asp-for="Description" class="ms-2"></label>
                     @* <span asp-validation-for="Description" class="text-danger"></span> *@
                 </div>
-                <div class="row">
-                    <div class="col-6 col-md-3">
-                        <button type="submit" class="btn btn-primary form-control">Update</button>
+                <div class="row pt-2">
+                    <div class="col-4 col-md-3">
+                        <button type="submit" class="btn btn-light form-control">Update</button>
                     </div>
-                    <div class="col-6 col-md-3">
-                        <a asp-controller="User" asp-action="Index" class="btn btn-outline-primary border form-control">Back to List</a>
+                    <div class="col-4 col-md-3">
+                        <a asp-action="ChangePassword" asp-controller="User" asp-route-id="@Model.Id" class="btn btn-light form-control">Change Password</a>
+                    </div>
+                    <div class="col-4 col-md-3">
+                        <a asp-controller="User" asp-action="Index" class="btn btn-outline-dark border form-control">Back to List</a>
                     </div>
                 </div>
             </div>

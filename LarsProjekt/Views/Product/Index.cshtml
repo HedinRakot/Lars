@@ -1,7 +1,7 @@
 ﻿@model List<ProductModel>
 
 <div class="card shadow border-0 my-4">
-    <div class="card-header bg-danger py-3">
+    <div class="card-header bg-primary py-3">
         <div class="row">
             <div class="col-12 text-center">
                 <h2 class="text-white py-2">Products</h2>
@@ -11,7 +11,7 @@
     <div class="card-body p-4">
         <div class="row">
             <div class="col-12 text-end">
-                <a asp-controller="Product" asp-action="Create" class="btn btn-danger">
+                <a asp-controller="Product" asp-action="CreateEdit" class="btn btn-light">
                     <i class="bi bi-plus-circle"></i> Create new Product
                 </a>
             </div>
@@ -32,13 +32,18 @@
                         <td>@product.Category</td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-danger mx-2">
+                                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-light mx-2">
                                     <i class="bi bi-question-lg"></i> Details
                                 </a>
                             </div>
                             <div class="btn-group" role="group">
-                                <a asp-controller="Product" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger mx-2">
-                                    <i class="bi bi-question-lg"></i> Delete
+                                <a asp-controller="Product" asp-action="CreateEdit" asp-route-id="@product.Id" class="btn btn-light mx-2">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <a asp-controller="Product" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-light mx-2">
+                                    <i class="bi bi-trash"></i> Delete
                                 </a>
                             </div>
                         </td>
@@ -48,3 +53,32 @@
         </table>
     </div>
 </div>
+
+
+@* <div class="btn-group" role="group" data-toggle="modal" data-target="#deleteModal">
+    <button class="btn btn-light mx-2">
+        <i class="bi bi-trash"></i> Delete
+    </button>
+</div>
+<div class="modal" id="deleteModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Are you sure?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>You won't be able to revert this!</p>
+            </div>
+            <div class="modal-footer">
+                <button asp-controller="Product" asp-action="DeletePost" asp-route-id="@product.Id." type="button" class="btn btn-primary">Yes, delete it!</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#deleteModal').modal();
+</script> *@

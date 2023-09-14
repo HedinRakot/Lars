@@ -53,112 +53,125 @@ public class ProductController : Controller
     }
 
 
-    [HttpGet]
-    public IActionResult Create()
-    {
-        return View(new ProductModel());
-    }
-
-
-    [HttpPost]
-    public IActionResult Create(ProductModel productModel)
-    {
-        if (ModelState.IsValid)
-        {
-            var product = new Product();
-            product.Id = productModel.Id;
-            product.Name = productModel.Name;
-            product.Category = productModel.Category;
-            product.Description = productModel.Description;
-            product.Price = productModel.Price;
-            var maxId = _productRepository.Products.Max(p => p.Id);
-            product.Id = maxId + 1;
-            _productRepository.Products.Add(product);
-            return RedirectToAction(nameof(Index));
-        }
-        else
-        {
-            return View();
-        }
-    }
-
-
-    [HttpGet]
-    public IActionResult Edit(long id)
-    {
-        var product = _productRepository.Products.FirstOrDefault(p => p.Id == id);
-        var model = new ProductModel
-        {
-            Id = id,
-            Name = product.Name,
-            Category = product.Category,
-            Description = product.Description,
-            Price = product.Price,
-        };
-        return View(model);
-    }
-
-    [HttpPost]
-    public IActionResult Edit(ProductModel productModel)
-    {
-        if (ModelState.IsValid)
-        {
-            var product = _productRepository.Products.FirstOrDefault(p => p.Id == productModel.Id);
-            product.Name = productModel.Name;
-            product.Category = productModel.Category;
-            product.Description = productModel.Description;
-            product.Price = productModel.Price;
-
-            return RedirectToAction(nameof(Index));
-        }
-        else
-        {
-            return View();
-        }
-    }
-
     //[HttpGet]
-    //public IActionResult CreateEdit(long id)
+    //public IActionResult Create()
     //{
-    //    if(id == 0)
-    //    {
-    //        return View(new ProductModel());
-    //    } else
-    //    {
-    //        var product = _productRepository.Products.FirstOrDefault(product => product.Id == id);
-    //        var model = new ProductModel
-    //        {
-    //            Id = id,
-    //            Name = product.Name,
-    //            Category = product.Category,
-    //            Description = product.Description,
-    //            Price = product.Price,
-    //        };
-    //        return View(model);
-    //    }
-
+    //    return View(new ProductModel());
     //}
 
+
     //[HttpPost]
-    //public IActionResult CreateEdit(ProductModel model)
+    //public IActionResult Create(ProductModel productModel)
     //{
     //    if (ModelState.IsValid)
     //    {
     //        var product = new Product();
-    //        product.Name = model.Name;
-    //        product.Category = model.Category;
-    //        product.Description = model.Description;
-    //        product.Price = model.Price;
-    //        var maxId = _productRepository.Products.Max(product => product.Id);
+    //        product.Id = productModel.Id;
+    //        product.Name = productModel.Name;
+    //        product.Category = productModel.Category;
+    //        product.Description = productModel.Description;
+    //        product.Price = productModel.Price;
+    //        var maxId = _productRepository.Products.Max(p => p.Id);
     //        product.Id = maxId + 1;
     //        _productRepository.Products.Add(product);
     //        return RedirectToAction(nameof(Index));
     //    }
     //    else
     //    {
-    //        return View(model);
+    //        return View();
     //    }
     //}
+
+
+    //[HttpGet]
+    //public IActionResult Edit(long id)
+    //{
+    //    var product = _productRepository.Products.FirstOrDefault(p => p.Id == id);
+    //    var model = new ProductModel
+    //    {
+    //        Id = id,
+    //        Name = product.Name,
+    //        Category = product.Category,
+    //        Description = product.Description,
+    //        Price = product.Price,
+    //    };
+    //    return View(model);
+    //}
+
+    //[HttpPost]
+    //public IActionResult Edit(ProductModel productModel)
+    //{
+    //    if (ModelState.IsValid)
+    //    {
+    //        var product = _productRepository.Products.FirstOrDefault(p => p.Id == productModel.Id);
+    //        product.Name = productModel.Name;
+    //        product.Category = productModel.Category;
+    //        product.Description = productModel.Description;
+    //        product.Price = productModel.Price;
+
+    //        return RedirectToAction(nameof(Details), new {Id = productModel.Id});
+    //    }
+    //    else
+    //    {
+    //        return View();
+    //    }
+    //}
+
+    [HttpGet]
+    public IActionResult CreateEdit(long id)
+    {
+        if (id == 0)
+        {
+            return View(new ProductModel());
+        }
+        else
+        {
+            var product = _productRepository.Products.FirstOrDefault(p => p.Id == id);
+            var model = new ProductModel
+            {
+                Id = id,
+                Name = product.Name,
+                Category = product.Category,
+                Description = product.Description,
+                Price = product.Price,
+            };
+            return View(model);           
+        }
+    }
+
+    [HttpPost]
+    public IActionResult CreateEdit(ProductModel model)
+    {
+        if (model.Id == 0)
+        { // create
+            if (ModelState.IsValid)
+            {
+                var product = new Product();
+                product.Id = model.Id;
+                product.Name = model.Name;
+                product.Category = model.Category;
+                product.Description = model.Description;
+                product.Price = model.Price;
+                var maxId = _productRepository.Products.Max(product => product.Id);
+                product.Id = maxId + 1;
+                _productRepository.Products.Add(product);
+                return RedirectToAction(nameof(Index));
+            } else { return View(); }
+        }
+        else
+        { // edit
+            if (ModelState.IsValid)
+            {
+                var product = _productRepository.Products.FirstOrDefault(product => product.Id == model.Id);
+                product.Name = model.Name;
+                product.Category = model.Category;
+                product.Description = model.Description;
+                product.Price = model.Price;
+                return RedirectToAction(nameof(Details), new { Id = model.Id });
+            }
+            else return View();           
+        }
+    }
 
     [HttpGet]
     public IActionResult Delete(long id)
