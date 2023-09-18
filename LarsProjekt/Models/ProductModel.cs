@@ -5,9 +5,20 @@ namespace LarsProjekt.Models;
 public class ProductModel
 {
     [Required] public long Id { get; set; } = 0;
-    [Required] public string Name { get; set; }
+
+    [Required]
+    [Display(Name = "Product Name")]
+    [MaxLength(30)]
+    public string Name { get; set; }
+
+    [Required]
+    [MinLength(20, ErrorMessage = "Please enter a detailed description")]
+    [MaxLength(4000)]
     public string? Description { get; set; }
     public string? Category { get; set; }
-    [Required] public int Price { get; set; }
+
+    [Required]
+    [Range(1, 99999)]
+    public int Price { get; set; }
 
 }

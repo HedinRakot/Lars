@@ -173,26 +173,31 @@ public class ProductController : Controller
         }
     }
 
-    [HttpGet]
+    //[HttpGet]
+    //public IActionResult Delete(long id)
+    //{
+    //    var product = _productRepository.Products.FirstOrDefault(product => product.Id == id);
+    //    var model = new ProductModel
+    //    {
+    //        Id = id,
+    //        Name = product.Name,
+    //        Category = product.Category,
+    //        Description = product.Description,
+    //        Price = product.Price,
+    //    };
+    //    return View(model);
+    //}
+
+    [HttpDelete]
     public IActionResult Delete(long id)
     {
-        var product = _productRepository.Products.FirstOrDefault(product => product.Id == id);
-        var model = new ProductModel
+        if (id == 0)
         {
-            Id = id,
-            Name = product.Name,
-            Category = product.Category,
-            Description = product.Description,
-            Price = product.Price,
-        };
-        return View(model);
-    }
+            return BadRequest();
+        }
 
-    [HttpPost]
-    public IActionResult DeletePost(long id)
-    {
         var model = _productRepository.Products.FirstOrDefault(p => p.Id == id);
         _productRepository.Products.Remove(model);
-        return RedirectToAction(nameof(Index));
+        return Ok(new { success = "true" });
     }
 }

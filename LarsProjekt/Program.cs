@@ -10,6 +10,8 @@ builder.Services.AddScoped<Scoped>();
 builder.Services.AddScoped<ScopedDependent>();
 builder.Services.AddSingleton<UserRepository>();
 builder.Services.AddSingleton<ProductRepository>();
+builder.Services.AddSingleton<ShoppingCartItemRepository>();
+builder.Services.AddSingleton<ShoppingCartRepository>();
 
 var app = builder.Build();
 
