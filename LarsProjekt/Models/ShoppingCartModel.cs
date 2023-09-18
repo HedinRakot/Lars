@@ -5,9 +5,9 @@ namespace LarsProjekt.Models;
 
 public partial class ShoppingCartModel
 {
+    public int ShoppingCartItemModelId { get; set; }
     public string ShoppingCartId { get; set; }
-    public List<ShoppingCartItem> ShoppingCartItems { get; set; }
-
+    public List<ShoppingCartItemModel> Items { get; set; }
     
 }
 

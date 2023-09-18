@@ -11,15 +11,11 @@ namespace LarsProjekt.Application;
 
 public class ShoppingCartRepository
 {
+    public List<ShoppingCartItem> ShoppingCartItems { get; set; }
     public List<ShoppingCart> ShoppingCarts { get; set; }
     public ShoppingCartRepository()
     {
-        ShoppingCarts = new List<ShoppingCart>
-        {
-            new ShoppingCart
-            {
-                
-            }
-        };
+        ShoppingCarts = new List<ShoppingCart>();
+        ShoppingCartItems = new List<ShoppingCartItem>();
     }
 }
