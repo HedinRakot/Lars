@@ -42,7 +42,7 @@
                 <a asp-controller="Product" asp-action="Index" class="btn btn-outline-dark border form-control">Back</a>
             </div>
             <div class="col-4 col-md-3">
-                <a asp-controller="Product" asp-action="" class="btn btn-outline-dark border form-control">Clear Cart</a>
+                <a asp-controller="ShoppingCart" asp-action="EmptyCart" asp-route-id="@Model.ShoppingCartId" class="btn btn-outline-dark border form-control">Clear Cart</a>
             </div>
         </div>
     </div>
