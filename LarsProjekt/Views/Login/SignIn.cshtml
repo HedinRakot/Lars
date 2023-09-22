@@ -1,0 +1,34 @@
+﻿@model LoginModel
+
+<form asp-action="SignIn" asp-controller="Login" class="form-signin" id="account" method="post">
+    @Html.AntiForgeryToken()
+    <div class="card">
+        <div class="card-header text-center">
+            <h4>Log in</h4>
+        </div>
+        <div class="card-body">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class="form-floating mb-3">
+                <input asp-for="UserName" class="form-control"  aria-required="true" />
+                <label asp-for="UserName" class="form-label">Username</label>
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Password" class="form-control"  aria-required="true" />
+                <label asp-for ="Password" class="form-label">Password</label>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="btn-group form-control" role="group">
+                    <button id="login-submit" type="submit" value="Login" class="btn btn-primary">Log in</button>
+                </div>
+                <div class="btn-group form-control" role="group">
+                    <a asp-controller="User" asp-action="CreateEdit" class="btn btn-light">
+                        <i class="bi bi-plus-circle"></i> Register as a new user
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+</form>

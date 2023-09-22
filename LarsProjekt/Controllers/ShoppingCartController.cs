@@ -26,8 +26,7 @@ namespace LarsProjekt.Controllers
                 {
                     Product = item.Product,
                     ShoppingCartId = id,
-                    Amount = 1,
-
+                    Amount = item.Amount
                 });
             }
             var cart = new ShoppingCartModel
@@ -43,15 +42,29 @@ namespace LarsProjekt.Controllers
         public IActionResult AddToCart(int id)
         {
             var product = _productRepository.Products.FirstOrDefault(p => p.Id == id);
-            var cartItem = new ShoppingCartItem
+            //var isFound = false;
+            //foreach(var item in _shoppingCartRepository.ShoppingCartItems)
+            //{
+            //    if (id == item.Product.Id)
+            //    {
+            //        item.Amount++;
+            //        isFound = true;
+            //    }
+            //}
+            var shoppingCartItem = _shoppingCartRepository.ShoppingCartItems.FirstOrDefault(x => x.Product.Id == id);
+            if (shoppingCartItem == null)
+            //if (!isFound) 
             {
-                ShoppingCartItemModelId = id,
-                Product = product,
-            };
-
-            // amount++ // doesn't work
-
-            _shoppingCartRepository.ShoppingCartItems.Add(cartItem);
+                var cartItem = new ShoppingCartItem
+                {
+                    ShoppingCartItemModelId = id,
+                    Product = product                    
+                };
+                _shoppingCartRepository.ShoppingCartItems.Add(cartItem);
+            } else
+            {
+                shoppingCartItem.Amount++;
+            }
 
             return RedirectToAction(nameof(Index));
 
@@ -75,15 +88,15 @@ namespace LarsProjekt.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult EmptyCart(string id) // doesn't work
-        {
-            var items = _shoppingCartRepository.ShoppingCartItems.Where(c => c.ShoppingCartId == id);
-            foreach (var item in items)
-            {
-                _shoppingCartRepository.ShoppingCartItems.Remove(item);
-            }
-            return RedirectToAction(nameof(Index));
-        }
+        //public IActionResult EmptyCart(string id) // doesn't work
+        //{
+        //    var items = _shoppingCartRepository.ShoppingCartItems.Where(c => c.ShoppingCartId == id);
+        //    foreach (var item in items)
+        //    {
+        //        _shoppingCartRepository.ShoppingCarts.Remove(item);
+        //    }
+        //    return RedirectToAction(nameof(Index));
+        //}
     }
 }
 

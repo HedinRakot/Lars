@@ -68,32 +68,11 @@
     </div>
 </div>
 
-
-<div class="modal" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Are you sure?</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"></span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <input id="modalId" hidden />
-                <p>You won't be able to revert this!</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="deleteProduct()">Yes, delete it!</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="/Views/Shared/_DeleteModal.cshtml" />
 
 @section Scripts
-{
+    {
     <script type="text/javascript">
-        debugger;
         $(document).ready(function () {
             var deleteModal = document.getElementById('deleteModal');
             deleteModal.addEventListener('show.bs.modal', function (event) {
@@ -107,9 +86,8 @@
             });
         });
 
-        function deleteProduct(){
+        function deleteObj() {
             var id = $('#modalId').val();
-    debugger;
             $.ajax({
                 url: '@Url.Action("Delete")/' + id,
                 type: 'DELETE',

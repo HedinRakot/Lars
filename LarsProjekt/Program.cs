@@ -1,4 +1,6 @@
 using LarsProjekt.Application;
+using LarsProjekt.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,31 @@ builder.Services.AddScoped<ScopedDependent>();
 builder.Services.AddSingleton<UserRepository>();
 builder.Services.AddSingleton<ProductRepository>();
 builder.Services.AddSingleton<ShoppingCartRepository>();
+builder.Services.AddSingleton<OrderRepository>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.HttpOnly = true;
+        //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.Name = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.LoginPath = "/Login/SignIn/";
+        options.AccessDeniedPath = "/Login/Forbidden/";
+    });
+
+builder.Services.AddAuthorization(o =>
+{
+    o.AddPolicy(AuthorizeControllerModelConvention.PolicyName, policy =>
+    {
+        policy.RequireAuthenticatedUser();
+    });
+});
+
+builder.Services.AddMvc(options =>
+{
+    options.Conventions.Add(new AuthorizeControllerModelConvention());
+});
 
 var app = builder.Build();
 
@@ -28,6 +55,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllerRoute(
     name: "default",

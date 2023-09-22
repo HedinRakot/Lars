@@ -11,19 +11,20 @@ public class UserRepository
             new User()
             {
                 Id = 1,
-                Name = "Admin",  
-                Description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
+                Name = "Lars",
+                LastName = "Ludwig",
+                Email = "email@test.de",
+                Description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr."                
+
             },
-            //new User()
-            //{
-            //    Id = 2,
-            //    Name = "Yury"
-            //},
-            //new User()
-            //{
-            //    Id = 3,
-            //    Name = "Lars"
-            //}
+            new User()
+            {
+                Id = 2,
+                Name = "Peter",
+                LastName ="Lustig",
+                Email = "peter@test.de",
+                Description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
+            }
         };
     }
 
