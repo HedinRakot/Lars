@@ -1,29 +1,39 @@
 ﻿using LarsProjekt.Application;
 using LarsProjekt.Models;
+using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LarsProjekt.Controllers
+namespace LarsProjekt.Controllers;
+
+public class OrderController : Controller
 {
-    public class OrderController : Controller
+    private OrderRepository _orderRepository;
+    public OrderController(OrderRepository orderRepository)
     {
-        private OrderRepository _orderRepository;
-        public OrderController(OrderRepository orderRepository)
+        _orderRepository = orderRepository;
+    }
+    public IActionResult Index()
+    {
+        var list = new List<OrderModel>();
+        foreach (var order in _orderRepository.Orders)
         {
-            _orderRepository = orderRepository;
+            list.Add(order.ToModel());
         }
-        public IActionResult Index()
+        return View(list);
+    }
+
+    public IActionResult Checkout()
+    {
+        var list = new List<OrderModel>();
+        foreach(var order in _orderRepository.Orders)
         {
-            var list = new List<OrderModel>();
-            foreach (var order in _orderRepository.Orders)
-            {
-                list.Add(new OrderModel
-                {
-                    OrderId = order.OrderId,
-                    Username = order.Username,
-                    OrderDate = order.OrderDate
-                });
-            }
-            return View(list);
+            list.Add(order.ToModel());
         }
+        return View();
+    }
+
+    public IActionResult Payment()
+    {
+        return View();  
     }
 }

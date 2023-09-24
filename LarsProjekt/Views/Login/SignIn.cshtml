@@ -2,6 +2,7 @@
 
 <form asp-action="SignIn" asp-controller="Login" class="form-signin" id="account" method="post">
     @Html.AntiForgeryToken()
+    @Html.ValidationSummary("", new { @class = "text-danger"})
     <div class="card">
         <div class="card-header text-center">
             <h4>Log in</h4>

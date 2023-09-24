@@ -21,7 +21,6 @@ public class Order
     public string Email { get; set; }
     public decimal Total { get; set; }
     public System.DateTime OrderDate { get; set; }
-
-    //public List<OrderDetailModel> OrderDetails { get; set; }
+    public List<OrderDetail> OrderDetails { get; set; }
 
 }

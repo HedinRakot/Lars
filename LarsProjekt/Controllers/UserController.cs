@@ -1,6 +1,7 @@
 ﻿using LarsProjekt.Application;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
+using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Controllers;
@@ -18,15 +19,7 @@ public class UserController : Controller
         var list = new List<UserModel>();
         foreach (var user in _userRepository.Users)
         {
-            list.Add(new UserModel
-            {
-                Id = user.Id,
-                Name = user.Name,
-                LastName = user.LastName,
-                Description = user.Description,
-                Email = user.Email,
-
-            });
+            list.Add(user.ToModel());
         }
         return View(list);
     }
@@ -39,14 +32,8 @@ public class UserController : Controller
         //    throw new Exception("User not found");
         //}
 
-        var model = new UserModel
-        {
-            Id = user.Id,
-            Name = user.Name,
-            LastName = user.LastName,
-            Description = user.Description,
-            Email = user.Email,
-        };
+        var model = user.ToModel();
+
         return View(model);
     }
 
@@ -90,14 +77,7 @@ public class UserController : Controller
         else
         {
             var user = _userRepository.Users.FirstOrDefault(u => u.Id == id);
-            var model = new UserModel
-            {
-                Id = id,
-                Name = user.Name,
-                Email = user.Email,
-                LastName = user.LastName,
-                Description = user.Description,
-            };
+            var model = user.ToModel();
             return View(model);
         }
 
@@ -111,12 +91,7 @@ public class UserController : Controller
         {
             if (ModelState.IsValid)
             {
-                var user = new User();
-                user.Id = model.Id;
-                user.Name = model.Name;
-                user.LastName = model.LastName;
-                user.Description = model.Description;
-                user.Email = model.Email;
+                var user = model.ToDomain();
                 var maxId = _userRepository.Users.Max(u => u.Id);
                 user.Id = maxId + 1;
                 _userRepository.Users.Add(user);

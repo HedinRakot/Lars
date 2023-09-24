@@ -1,5 +1,6 @@
 using LarsProjekt.Application;
 using LarsProjekt.Authentication;
+using LarsProjekt.ErrorHandling;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,9 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSingleton<Singleton>();
-builder.Services.AddScoped<Scoped>();
-builder.Services.AddScoped<ScopedDependent>();
 builder.Services.AddSingleton<UserRepository>();
 builder.Services.AddSingleton<ProductRepository>();
 builder.Services.AddSingleton<ShoppingCartRepository>();
@@ -60,5 +58,7 @@ app.UseAuthentication();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.Run();

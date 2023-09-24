@@ -11,8 +11,4 @@
     <ProjectReference Include="..\LarsProjekt.Domain\LarsProjekt.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Mapping\" />
-  </ItemGroup>
-
 </Project>

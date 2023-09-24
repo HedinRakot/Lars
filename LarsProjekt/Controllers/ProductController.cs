@@ -1,6 +1,7 @@
 ﻿using LarsProjekt.Application;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
+using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Controllers;
@@ -17,14 +18,15 @@ public class ProductController : Controller
         var list = new List<ProductModel>();
         foreach (var product in _productRepository.Products)
         {
-            list.Add(new ProductModel
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Category = product.Category,
-                Description = product.Description,
-                Price = product.Price,
-            });
+            list.Add(product.ToModel());
+            //list.Add(new ProductModel
+            //{
+            //    Id = product.Id,
+            //    Name = product.Name,
+            //    Category = product.Category,
+            //    Description = product.Description,
+            //    Price = product.Price,
+            //});
         }
 
         return View(list);
@@ -33,89 +35,34 @@ public class ProductController : Controller
     public IActionResult Details(long id)
     {
         var product = _productRepository.Products.FirstOrDefault(p => p.Id == id);
-        if (product != null)
-        {
-            var model = new ProductModel
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Category = product.Category,
-                Description = product.Description,
-                Price = product.Price
-            };
+        //if (product != null)
+        //{
+        //    var model = product.ToModel();
+        //    //var model = new ProductModel
+        //    //{
+        //    //    Id = product.Id,
+        //    //    Name = product.Name,
+        //    //    Category = product.Category,
+        //    //    Description = product.Description,
+        //    //    Price = product.Price
+        //    //};
 
+        //    return View(model);
+        //}
+        //else
+        //{
+        //    throw new Exception("Product not found");
+        //}
+        try
+        {
+            var model = product.ToModel();
             return View(model);
         }
-        else
+        catch
         {
             throw new Exception("Product not found");
         }
     }
-
-
-    //[HttpGet]
-    //public IActionResult Create()
-    //{
-    //    return View(new ProductModel());
-    //}
-
-
-    //[HttpPost]
-    //public IActionResult Create(ProductModel productModel)
-    //{
-    //    if (ModelState.IsValid)
-    //    {
-    //        var product = new Product();
-    //        product.Id = productModel.Id;
-    //        product.Name = productModel.Name;
-    //        product.Category = productModel.Category;
-    //        product.Description = productModel.Description;
-    //        product.Price = productModel.Price;
-    //        var maxId = _productRepository.Products.Max(p => p.Id);
-    //        product.Id = maxId + 1;
-    //        _productRepository.Products.Add(product);
-    //        return RedirectToAction(nameof(Index));
-    //    }
-    //    else
-    //    {
-    //        return View();
-    //    }
-    //}
-
-
-    //[HttpGet]
-    //public IActionResult Edit(long id)
-    //{
-    //    var product = _productRepository.Products.FirstOrDefault(p => p.Id == id);
-    //    var model = new ProductModel
-    //    {
-    //        Id = id,
-    //        Name = product.Name,
-    //        Category = product.Category,
-    //        Description = product.Description,
-    //        Price = product.Price,
-    //    };
-    //    return View(model);
-    //}
-
-    //[HttpPost]
-    //public IActionResult Edit(ProductModel productModel)
-    //{
-    //    if (ModelState.IsValid)
-    //    {
-    //        var product = _productRepository.Products.FirstOrDefault(p => p.Id == productModel.Id);
-    //        product.Name = productModel.Name;
-    //        product.Category = productModel.Category;
-    //        product.Description = productModel.Description;
-    //        product.Price = productModel.Price;
-
-    //        return RedirectToAction(nameof(Details), new {Id = productModel.Id});
-    //    }
-    //    else
-    //    {
-    //        return View();
-    //    }
-    //}
 
     [HttpGet]
     public IActionResult CreateEdit(long id)
@@ -127,14 +74,15 @@ public class ProductController : Controller
         else
         {
             var product = _productRepository.Products.FirstOrDefault(p => p.Id == id);
-            var model = new ProductModel
-            {
-                Id = id,
-                Name = product.Name,
-                Category = product.Category,
-                Description = product.Description,
-                Price = product.Price,
-            };
+            var model = product.ToModel();
+            //var model = new ProductModel
+            //{
+            //    Id = id,
+            //    Name = product.Name,
+            //    Category = product.Category,
+            //    Description = product.Description,
+            //    Price = product.Price,
+            //};
             return View(model);           
         }
     }
@@ -146,12 +94,13 @@ public class ProductController : Controller
         { // create
             if (ModelState.IsValid)
             {
-                var product = new Product();
-                product.Id = model.Id;
-                product.Name = model.Name;
-                product.Category = model.Category;
-                product.Description = model.Description;
-                product.Price = model.Price;
+                var product = model.ToDomain();
+                //var product = new Product();
+                //product.Id = model.Id;
+                //product.Name = model.Name;
+                //product.Category = model.Category;
+                //product.Description = model.Description;
+                //product.Price = model.Price;
                 var maxId = _productRepository.Products.Max(product => product.Id);
                 product.Id = maxId + 1;
                 _productRepository.Products.Add(product);
@@ -173,31 +122,85 @@ public class ProductController : Controller
         }
     }
 
-    //[HttpGet]
-    //public IActionResult Delete(long id)
-    //{
-    //    var product = _productRepository.Products.FirstOrDefault(product => product.Id == id);
-    //    var model = new ProductModel
-    //    {
-    //        Id = id,
-    //        Name = product.Name,
-    //        Category = product.Category,
-    //        Description = product.Description,
-    //        Price = product.Price,
-    //    };
-    //    return View(model);
-    //}
-
     [HttpDelete]
     public IActionResult Delete(long id)
     {
-        if (id == 0)
+        try
         {
-            return BadRequest();
+            var model = _productRepository.Products.FirstOrDefault(p => p.Id == id);
+            _productRepository.Products.Remove(model);
+            return Ok(new { success = "true" });
+        } 
+        catch 
+        { 
+            throw new BadHttpRequestException("Oops, please try again!", 400);
         }
-
-        var model = _productRepository.Products.FirstOrDefault(p => p.Id == id);
-        _productRepository.Products.Remove(model);
-        return Ok(new { success = "true" });
     }
 }
+
+
+
+
+//[HttpGet]
+//public IActionResult Create()
+//{
+//    return View(new ProductModel());
+//}
+
+
+//[HttpPost]
+//public IActionResult Create(ProductModel productModel)
+//{
+//    if (ModelState.IsValid)
+//    {
+//        var product = new Product();
+//        product.Id = productModel.Id;
+//        product.Name = productModel.Name;
+//        product.Category = productModel.Category;
+//        product.Description = productModel.Description;
+//        product.Price = productModel.Price;
+//        var maxId = _productRepository.Products.Max(p => p.Id);
+//        product.Id = maxId + 1;
+//        _productRepository.Products.Add(product);
+//        return RedirectToAction(nameof(Index));
+//    }
+//    else
+//    {
+//        return View();
+//    }
+//}
+
+
+//[HttpGet]
+//public IActionResult Edit(long id)
+//{
+//    var product = _productRepository.Products.FirstOrDefault(p => p.Id == id);
+//    var model = new ProductModel
+//    {
+//        Id = id,
+//        Name = product.Name,
+//        Category = product.Category,
+//        Description = product.Description,
+//        Price = product.Price,
+//    };
+//    return View(model);
+//}
+
+//[HttpPost]
+//public IActionResult Edit(ProductModel productModel)
+//{
+//    if (ModelState.IsValid)
+//    {
+//        var product = _productRepository.Products.FirstOrDefault(p => p.Id == productModel.Id);
+//        product.Name = productModel.Name;
+//        product.Category = productModel.Category;
+//        product.Description = productModel.Description;
+//        product.Price = productModel.Price;
+
+//        return RedirectToAction(nameof(Details), new {Id = productModel.Id});
+//    }
+//    else
+//    {
+//        return View();
+//    }
+//}

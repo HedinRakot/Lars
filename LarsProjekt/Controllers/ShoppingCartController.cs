@@ -77,7 +77,7 @@ namespace LarsProjekt.Controllers
             {
                 if (product.Amount > 1)
                 {
-                    product.Amount--; // doesn't work
+                    product.Amount--;
 
                 }
                 else
@@ -90,12 +90,22 @@ namespace LarsProjekt.Controllers
 
         //public IActionResult EmptyCart(string id) // doesn't work
         //{
-        //    var items = _shoppingCartRepository.ShoppingCartItems.Where(c => c.ShoppingCartId == id);
+        //    var items = _shoppingCartRepository.ShoppingCarts.Where(c => c.ShoppingCartId == id);
         //    foreach (var item in items)
         //    {
         //        _shoppingCartRepository.ShoppingCarts.Remove(item);
         //    }
         //    return RedirectToAction(nameof(Index));
+        //}
+
+        //public decimal GetTotal()
+        //{
+        //    decimal? total = (from ShoppingCartItems in _itemRepository.ShoppingCartItems
+        //                      where ShoppingCartId == ShoppingCartId
+        //                      select (int?)ShoppingCartItems.Amount *
+        //                      ShoppingCartItems.Product.Price).Sum();
+
+        //    return total ?? decimal.Zero;
         //}
     }
 }
