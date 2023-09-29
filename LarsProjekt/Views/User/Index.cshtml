@@ -8,15 +8,17 @@
             </div>
         </div>
     </div>
+    
     <div class="card-body p-4">
         <div class="row pt-4">
 
             @foreach (var user in Model)
             {
+                <input asp-for="@user.Id" hidden />
                 <div class="col-sm-3">
                     <div class="card border-primary mb-3" style="max-width: 10rem;">
                         <div class="card-body">
-                            <h4 class="card-title text-center">@user.Name</h4>
+                            <h4 class="card-title text-center">@user.Username</h4>
                             <div class="btn-group-sm" role="group">
                                 <a asp-controller="User" asp-action="Details" asp-route-id="@user.Id" class="btn btn-light mx-2">
                                     <i class="bi bi-question-lg"></i> Details

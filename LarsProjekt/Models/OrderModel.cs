@@ -2,7 +2,7 @@
 
 public partial class OrderModel
 {
-    public int OrderId { get; set; } = 0;
+    public int OrderId { get; set; }
     public string Username { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -16,5 +16,4 @@ public partial class OrderModel
     public decimal Total { get; set; }
     public DateTime OrderDate { get; set; }
     public List<OrderDetailModel> OrderDetails { get; set; }
-    public List<ShoppingCartItemModel> Items { get; set; }
 }

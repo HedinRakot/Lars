@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-
-namespace LarsProjekt.Domain;
+﻿namespace LarsProjekt.Domain;
 
 public class Product
 {
@@ -8,6 +6,6 @@ public class Product
     public string Name { get; set; }
     public string? Description { get; set; }
     public string? Category { get; set; } 
-    public int Price { get; set; }
+    public decimal Price { get; set; }
 
 }

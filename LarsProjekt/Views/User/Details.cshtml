@@ -8,13 +8,14 @@
             </div>
         </div>
     </div>
+    <input asp-for="Id" hidden />
     <div class="card-body p-4">
         <div class="card border-primary mb-3" style="max-width: 100%;">
-            <div class="card-header">@Model.Name @Model.LastName</div>
+            <div class="card-header">@Model.Username</div>
             <div class="card-body">
                 <p class="card-text">@Model.Email
                 <hr />
-                @Model.Description</p>
+                
             </div>
         </div>        
         <div class="row pt-2">          

@@ -9,11 +9,9 @@ public static class UserModelMappingExtension
         return new UserModel
         {
             Id = user.Id,
-            Name = user.Name,
-            LastName = user.LastName,
-            Description = user.Description,
+            Username = user.Username,
             Email = user.Email,
-            Number = user.Number
+            Password = user.Password
         };
     }
 
@@ -22,11 +20,9 @@ public static class UserModelMappingExtension
         return new User
         {
             Id = model.Id,
-            Name = model.Name,
-            LastName = model.LastName,
-            Description = model.Description,
+            Username = model.Username,
             Email = model.Email,
-            Number = model.Number
+            Password = model.Password
         };
     }
 }

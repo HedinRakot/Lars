@@ -1,5 +1,5 @@
-using LarsProjekt.Application;
 using LarsProjekt.Authentication;
+using LarsProjekt.Database;
 using LarsProjekt.ErrorHandling;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -8,10 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSingleton<UserRepository>();
-builder.Services.AddSingleton<ProductRepository>();
-builder.Services.AddSingleton<ShoppingCartRepository>();
-builder.Services.AddSingleton<OrderRepository>();
+builder.Services.AddDatabase(builder.Configuration);
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

@@ -1,4 +1,5 @@
 ﻿using LarsProjekt.Application;
+using LarsProjekt.Database.Repositories;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
@@ -8,25 +9,17 @@ namespace LarsProjekt.Controllers;
 
 public class ProductController : Controller
 {
-    private ProductRepository _productRepository;
-    public ProductController(ProductRepository productRepository)
+    private IProductRepository _productRepository;
+    public ProductController(IProductRepository productRepository)
     {
         _productRepository = productRepository;
     }
     public IActionResult Index()
     {
         var list = new List<ProductModel>();
-        foreach (var product in _productRepository.Products)
+        foreach (var product in _productRepository.GetAll())
         {
             list.Add(product.ToModel());
-            //list.Add(new ProductModel
-            //{
-            //    Id = product.Id,
-            //    Name = product.Name,
-            //    Category = product.Category,
-            //    Description = product.Description,
-            //    Price = product.Price,
-            //});
         }
 
         return View(list);
@@ -34,25 +27,8 @@ public class ProductController : Controller
 
     public IActionResult Details(long id)
     {
-        var product = _productRepository.Products.FirstOrDefault(p => p.Id == id);
-        //if (product != null)
-        //{
-        //    var model = product.ToModel();
-        //    //var model = new ProductModel
-        //    //{
-        //    //    Id = product.Id,
-        //    //    Name = product.Name,
-        //    //    Category = product.Category,
-        //    //    Description = product.Description,
-        //    //    Price = product.Price
-        //    //};
-
-        //    return View(model);
-        //}
-        //else
-        //{
-        //    throw new Exception("Product not found");
-        //}
+        var product = _productRepository.Get(id);
+       
         try
         {
             var model = product.ToModel();
@@ -73,16 +49,8 @@ public class ProductController : Controller
         }
         else
         {
-            var product = _productRepository.Products.FirstOrDefault(p => p.Id == id);
+            var product = _productRepository.Get(id);
             var model = product.ToModel();
-            //var model = new ProductModel
-            //{
-            //    Id = id,
-            //    Name = product.Name,
-            //    Category = product.Category,
-            //    Description = product.Description,
-            //    Price = product.Price,
-            //};
             return View(model);           
         }
     }
@@ -94,16 +62,8 @@ public class ProductController : Controller
         { // create
             if (ModelState.IsValid)
             {
-                var product = model.ToDomain();
-                //var product = new Product();
-                //product.Id = model.Id;
-                //product.Name = model.Name;
-                //product.Category = model.Category;
-                //product.Description = model.Description;
-                //product.Price = model.Price;
-                var maxId = _productRepository.Products.Max(product => product.Id);
-                product.Id = maxId + 1;
-                _productRepository.Products.Add(product);
+                var product = model.ToDomain();               
+                _productRepository.Add(product);
                 return RedirectToAction(nameof(Index));
             } else { return View(); }
         }
@@ -111,12 +71,9 @@ public class ProductController : Controller
         { // edit
             if (ModelState.IsValid)
             {
-                var product = _productRepository.Products.FirstOrDefault(product => product.Id == model.Id);
-                product.Name = model.Name;
-                product.Category = model.Category;
-                product.Description = model.Description;
-                product.Price = model.Price;
-                return RedirectToAction(nameof(Details), new { Id = model.Id });
+                var product = model.ToDomain();
+                _productRepository.Update(product);
+                return RedirectToAction(nameof(Details), new { Id = product.Id});
             }
             else return View();           
         }
@@ -127,8 +84,8 @@ public class ProductController : Controller
     {
         try
         {
-            var model = _productRepository.Products.FirstOrDefault(p => p.Id == id);
-            _productRepository.Products.Remove(model);
+            var model = _productRepository.Get(id);
+            _productRepository.Delete(model);
             return Ok(new { success = "true" });
         } 
         catch 
@@ -137,70 +94,3 @@ public class ProductController : Controller
         }
     }
 }
-
-
-
-
-//[HttpGet]
-//public IActionResult Create()
-//{
-//    return View(new ProductModel());
-//}
-
-
-//[HttpPost]
-//public IActionResult Create(ProductModel productModel)
-//{
-//    if (ModelState.IsValid)
-//    {
-//        var product = new Product();
-//        product.Id = productModel.Id;
-//        product.Name = productModel.Name;
-//        product.Category = productModel.Category;
-//        product.Description = productModel.Description;
-//        product.Price = productModel.Price;
-//        var maxId = _productRepository.Products.Max(p => p.Id);
-//        product.Id = maxId + 1;
-//        _productRepository.Products.Add(product);
-//        return RedirectToAction(nameof(Index));
-//    }
-//    else
-//    {
-//        return View();
-//    }
-//}
-
-
-//[HttpGet]
-//public IActionResult Edit(long id)
-//{
-//    var product = _productRepository.Products.FirstOrDefault(p => p.Id == id);
-//    var model = new ProductModel
-//    {
-//        Id = id,
-//        Name = product.Name,
-//        Category = product.Category,
-//        Description = product.Description,
-//        Price = product.Price,
-//    };
-//    return View(model);
-//}
-
-//[HttpPost]
-//public IActionResult Edit(ProductModel productModel)
-//{
-//    if (ModelState.IsValid)
-//    {
-//        var product = _productRepository.Products.FirstOrDefault(p => p.Id == productModel.Id);
-//        product.Name = productModel.Name;
-//        product.Category = productModel.Category;
-//        product.Description = productModel.Description;
-//        product.Price = productModel.Price;
-
-//        return RedirectToAction(nameof(Details), new {Id = productModel.Id});
-//    }
-//    else
-//    {
-//        return View();
-//    }
-//}

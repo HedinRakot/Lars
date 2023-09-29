@@ -5,14 +5,14 @@ using LarsProjekt.Application;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using System.Security.Claims;
-using LarsProjekt.Controllers;
+using LarsProjekt.Database.Repositories;
 
 namespace LarsProjekt.Controllers;
 
 public class LoginController : Controller
 {
-    private UserRepository _userRepository;
-    public LoginController(UserRepository userRepository)
+    private IUserRepository _userRepository;
+    public LoginController(IUserRepository userRepository)
     {
         _userRepository = userRepository;
     }
@@ -31,7 +31,7 @@ public class LoginController : Controller
         {
             try
             {
-                var customer = _userRepository.Users.FirstOrDefault(x => x.Name == model.UserName);
+                var customer = _userRepository.GetAll().FirstOrDefault(x => x.Username == model.UserName);
 
                 //throw new ArgumentException();
 
@@ -57,7 +57,7 @@ public class LoginController : Controller
     protected async Task SignIn(User user)
     {
         var claims = new[] {
-            new Claim(ClaimTypes.Name, user.Name),
+            new Claim(ClaimTypes.Name, user.Username),
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

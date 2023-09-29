@@ -1,4 +1,6 @@
 ﻿using LarsProjekt.Application;
+using LarsProjekt.Database;
+using LarsProjekt.Database.Repositories;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
@@ -8,8 +10,9 @@ namespace LarsProjekt.Controllers;
 
 public class UserController : Controller
 {
-    private UserRepository _userRepository;
-    public UserController(UserRepository userRepository)
+
+    private readonly IUserRepository _userRepository;
+    public UserController(IUserRepository userRepository)
     {
         _userRepository = userRepository;
     }
@@ -17,7 +20,7 @@ public class UserController : Controller
     public IActionResult Index()
     {
         var list = new List<UserModel>();
-        foreach (var user in _userRepository.Users)
+        foreach (var user in _userRepository.GetAll())
         {
             list.Add(user.ToModel());
         }
@@ -26,12 +29,7 @@ public class UserController : Controller
 
     public IActionResult Details(long id)
     {
-        var user = _userRepository.Users.FirstOrDefault(o => o.Id == id);
-        //TODO if (user == null)
-        //{
-        //    throw new Exception("User not found");
-        //}
-
+        var user = _userRepository.Get(id);
         var model = user.ToModel();
 
         return View(model);
@@ -52,7 +50,7 @@ public class UserController : Controller
     {
         if (ModelState.IsValid)
         {
-            var user = _userRepository.Users.FirstOrDefault(o => o.Id == model.Id);
+            var user = _userRepository.Get(model.Id);
             if (model.Password == model.PasswordRepeat)
             {
                 user.Password = model.Password;
@@ -76,7 +74,7 @@ public class UserController : Controller
         }
         else
         {
-            var user = _userRepository.Users.FirstOrDefault(u => u.Id == id);
+            var user = _userRepository.Get(id);
             var model = user.ToModel();
             return View(model);
         }
@@ -87,14 +85,12 @@ public class UserController : Controller
     [HttpPost]
     public IActionResult CreateEdit(UserModel model)
     {
-        if (model == null)
+        if (model.Id == 0)
         {
             if (ModelState.IsValid)
             {
-                var user = model.ToDomain();
-                var maxId = _userRepository.Users.Max(u => u.Id);
-                user.Id = maxId + 1;
-                _userRepository.Users.Add(user);
+                var user = model.ToDomain();                
+                _userRepository.Add(user);
                 return RedirectToAction(nameof(Index));
             }
             else { return View(); }
@@ -103,12 +99,14 @@ public class UserController : Controller
         {
             if (ModelState.IsValid)
             {
-                var user = _userRepository.Users.FirstOrDefault(u => u.Id == model.Id);
-                user.Name = model.Name;
-                user.LastName = model.LastName;
-                user.Description = model.Description;
-                user.Email = model.Email;
-                return RedirectToAction(nameof(Details), new { Id = model.Id });
+                var user = model.ToDomain();
+                _userRepository.Update(user);
+                //var user = _userRepository.Get(model.Id);
+                //user.Name = model.Name;
+                //user.LastName = model.LastName;
+                //user.Description = model.Description;
+                //user.Email = model.Email;
+                return RedirectToAction(nameof(Index));
             }
             else return View();
         }
@@ -123,8 +121,8 @@ public class UserController : Controller
             return BadRequest();
         }
 
-        var model = _userRepository.Users.FirstOrDefault(p => p.Id == id);
-        _userRepository.Users.Remove(model);
+        var model = _userRepository.Get(id);
+        _userRepository.Delete(model);
         return Ok(new { success = "true" });
     }
 }

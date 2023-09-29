@@ -19,6 +19,6 @@ public class ProductModel
 
     [Required]
     [Range(1, 99999)]
-    public int Price { get; set; }
+    public decimal Price { get; set; }
 
 }

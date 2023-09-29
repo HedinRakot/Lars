@@ -29,13 +29,13 @@ namespace LarsProjekt.Controllers
                     Amount = item.Amount
                 });
             }
-            var cart = new ShoppingCartModel
-            {
-                Items = list,
-                ShoppingCartId = id,
-            };
+            //var cart = new ShoppingCartModel
+            //{
+            //    Items = list,
+            //    ShoppingCartId = id,
+            //};
 
-            return View(cart);
+            return View();
 
         }
 
