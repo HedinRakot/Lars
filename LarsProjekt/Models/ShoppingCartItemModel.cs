@@ -1,4 +1,5 @@
 ﻿using LarsProjekt.Domain;
+using System.ComponentModel.DataAnnotations;
 
 namespace LarsProjekt.Models;
 

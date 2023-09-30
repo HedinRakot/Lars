@@ -19,14 +19,14 @@ namespace LarsProjekt.Controllers
         }
         public IActionResult Index()
         {
-            var id = Guid.NewGuid().ToString();
-            var list = new List<ShoppingCartModel>();
+            //var id = Guid.NewGuid().ToString();
+            //var list = new List<ShoppingCartModel>();
 
-            foreach (var item in _shoppingCartRepository.GetAll())
-            {
-                list.Add(item.ToModel());
+            //foreach (var item in _shoppingCartRepository.GetAll())
+            //{
+            //    list.Add(item.ToModel());
                 
-            }
+            //}
             //var cart = new ShoppingCartModel
             //{
             //    Items = list,

@@ -8,8 +8,7 @@ public static class ShoppingCartModelMappingExtension
     {
         return new ShoppingCartModel
         {
-            ItemId = cart.ItemId,
-            Id = cart.Id,
+            
             ShoppingCartId = cart.ShoppingCartId            
         };
     }
@@ -17,8 +16,7 @@ public static class ShoppingCartModelMappingExtension
     {
         return new ShoppingCart
         {
-            ItemId = model.ItemId,
-            Id = model.Id,
+            
             ShoppingCartId = model.ShoppingCartId
         };
     }
