@@ -8,16 +8,18 @@ public static class ShoppingCartModelMappingExtension
     {
         return new ShoppingCartModel
         {
-            //ShoppingCartItemModelId = cart.ShoppingCartItemModelId,
-            //Id = cart.Id,
+            ItemId = cart.ItemId,
+            Id = cart.Id,
+            ShoppingCartId = cart.ShoppingCartId            
         };
     }
     public static ShoppingCart ToDomain(this ShoppingCartModel model)
     {
         return new ShoppingCart
         {
-            //ShoppingCartItemModelId = model.ShoppingCartItemModelId,
-            //ShoppingCartId = model.ShoppingCartId,
+            ItemId = model.ItemId,
+            Id = model.Id,
+            ShoppingCartId = model.ShoppingCartId
         };
     }
 }

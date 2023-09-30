@@ -9,7 +9,7 @@ public static class ShoppingCartItemModelExtension
     {
         return new ShoppingCartItemModel
         {
-            ShoppingCartItemModelId = item.ShoppingCartItemModelId,
+            ItemId = item.ItemId,
             ShoppingCartId = item.ShoppingCartId,
             Amount = item.Amount,
         };
@@ -18,7 +18,7 @@ public static class ShoppingCartItemModelExtension
     {
         return new ShoppingCartItem
         {
-            ShoppingCartItemModelId = model.ShoppingCartItemModelId,
+            ItemId = model.ItemId,
             ShoppingCartId = model.ShoppingCartId,
             Amount = model.Amount,
         };

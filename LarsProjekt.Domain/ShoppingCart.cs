@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace LarsProjekt.Domain;
 public class ShoppingCart
 {
-    public int ShoppingCartItemModelId { get; set; }
     public string ShoppingCartId { get; set; }
-    public List<ShoppingCartItem> ShoppingCartItems { get; set; }
+    public List<ShoppingCartItem> Items { get; set; }
+
 }

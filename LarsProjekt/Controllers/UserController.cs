@@ -4,6 +4,7 @@ using LarsProjekt.Database.Repositories;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Controllers;
@@ -64,7 +65,7 @@ public class UserController : Controller
 
         return View(model);
     }
-
+    [AllowAnonymous]
     [HttpGet]
     public IActionResult CreateEdit(int id)
     {
@@ -81,7 +82,7 @@ public class UserController : Controller
 
     }
 
-
+    [AllowAnonymous]
     [HttpPost]
     public IActionResult CreateEdit(UserModel model)
     {
@@ -101,11 +102,6 @@ public class UserController : Controller
             {
                 var user = model.ToDomain();
                 _userRepository.Update(user);
-                //var user = _userRepository.Get(model.Id);
-                //user.Name = model.Name;
-                //user.LastName = model.LastName;
-                //user.Description = model.Description;
-                //user.Email = model.Email;
                 return RedirectToAction(nameof(Index));
             }
             else return View();
@@ -126,64 +122,4 @@ public class UserController : Controller
         return Ok(new { success = "true" });
     }
 }
-
-
-//    [HttpGet]
-//    public IActionResult Create()
-//    {
-//        return View(new UserModel());
-//    }
-
-//    [HttpPost]
-//    public IActionResult Create(UserModel model)
-//    {
-//        if (ModelState.IsValid)
-//        {
-//            var user = new User();
-//            user.Name = model.Name;
-//            user.Description = model.Description;
-//            user.LastName = model.LastName;
-//            user.Email = model.Email;
-//            var maxId = _userRepository.Users.Max(o => o.Id);
-//            user.Id = maxId + 1;
-
-//            _userRepository.Users.Add(user);
-
-//            return RedirectToAction(nameof(Index));
-//        }
-//        else
-//        {
-//            return View();
-//        }
-//    }
-
-//    [HttpGet]
-//    public IActionResult Edit(long id)
-//    {
-//        var user = _userRepository.Users.FirstOrDefault(o => o.Id == id);
-//        var model = new UserModel
-//        {
-//            Id = id,
-//            Name = user.Name,
-//            Description = user.Description,
-//            LastName = user.LastName,
-//            Email = user.Email,
-//        };
-//        return View(model);
-//    }
-
-//    [HttpPost]
-//    public IActionResult Edit(UserModel model)
-//    {
-//        var user = _userRepository.Users.FirstOrDefault(o => o.Id == model.Id);
-//        user.Name = model.Name;
-//        user.Description = model.Description;
-//        user.LastName = model.LastName;
-//        user.Email = model.Email;
-
-//        return RedirectToAction(nameof(Index));
-
-//    }
-//}
-
 
