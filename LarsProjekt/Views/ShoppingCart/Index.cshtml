@@ -1,4 +1,4 @@
-﻿@model ShoppingCartItemModel
+﻿@model List<ShoppingCartItemModel>
 
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-primary py-3">
@@ -19,20 +19,21 @@
                 </tr>
             </thead>
             <tbody>
-                
+                @foreach( var item in Model)
+                {
                     <tr>
-                        <td>@Model.Product.Name</td>
-                        <td>@Model.Product.Price</td>
-                        <td>@Model.Amount</td>
+                        <td>@item.Product.Name</td>
+                        <td>@item.Product.Price</td>
+                        <td>@item.Amount</td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@Model.Product.Id" class="btn btn-light mx-2">
+                                <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@item.Product.Id" class="btn btn-light mx-2">
                                     <i class="bi bi-trash"></i> Delete
                                 </a>
                             </div>
                         </td>
                     </tr>
-                
+                }            
                 
             </tbody>
         </table>
@@ -44,7 +45,7 @@
                 <a asp-controller="Product" asp-action="Index" class="btn btn-outline-dark border form-control">Back</a>
             </div>
             <div class="col-4 col-md-3">
-                <a asp-controller="ShoppingCart" asp-action="EmptyCart" asp-route-id="@Model.ShoppingCartId" class="btn btn-outline-dark border form-control">Clear Cart (coming soon...)</a>
+                <a asp-controller="ShoppingCart" asp-action="EmptyCart" asp-route-id="" class="btn btn-outline-dark border form-control">Clear Cart (coming soon...)</a>
             </div>
         </div>
     </div>
