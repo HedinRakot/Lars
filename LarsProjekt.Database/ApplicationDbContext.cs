@@ -17,10 +17,17 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Order>()
-            .HasKey(o => o.Id);
+        modelBuilder.Entity<Order>()            
+            .HasKey(o => o.Id);        
 
         modelBuilder.Entity<OrderDetail>()
             .HasKey(o => o.Id);
+
+        modelBuilder.Entity<User>()
+            .HasMany(o => o.Orders)
+            .WithOne(o => o.User)
+            .HasForeignKey(o => o.UserId)
+            .HasPrincipalKey(o => o.Id);
+            
     }
 }

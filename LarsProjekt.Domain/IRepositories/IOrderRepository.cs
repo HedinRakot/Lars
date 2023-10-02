@@ -9,4 +9,5 @@ public interface IOrderRepository
     Order Get(long id);
     List<Order> GetAll();
     void Update(Order order);
+    List<Order> GetOrderWithUser();
 }

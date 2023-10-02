@@ -3,12 +3,11 @@
 namespace LarsProjekt.Models.Mapping;
 
 public static class OrderModelMappingExtension
-{
+{    
     public static OrderModel ToModel(this Order order)
     {
         return new OrderModel
-        {
-            UserName = order.UserName,
+        {           
             FirstName = order.FirstName,
             LastName = order.LastName,
             Phone = order.Phone,
@@ -18,9 +17,10 @@ public static class OrderModelMappingExtension
             State = order.State,
             PostalCode = order.PostalCode,
             Total = order.Total,
-            Date = order.Date,
-            Id = order.Id,
-            Address = order.Address
+            Date = DateTimeOffset.Now,            
+            Address = order.Address,
+            Id = order.Id, 
+            //UserId = order.User.Id
         };
     }
 
@@ -28,7 +28,7 @@ public static class OrderModelMappingExtension
     {
         return new Order
         {
-            UserName = model.UserName,
+            Id = model.Id,
             FirstName = model.FirstName,
             LastName = model.LastName,
             Phone = model.Phone,
@@ -38,9 +38,9 @@ public static class OrderModelMappingExtension
             State = model.State,
             PostalCode = model.PostalCode,
             Total = model.Total,
-            Date = model.Date,
-            Id = model.Id,
-            Address = model.Address
+            Date = DateTimeOffset.Now,         
+            Address = model.Address,
+            //UserId = model.User.Id
         };
     }
 }

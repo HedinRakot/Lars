@@ -39,4 +39,5 @@ internal class ProductRepository : IProductRepository
         _context.Products.Remove(product);
         _context.SaveChanges();
     }
+
 }

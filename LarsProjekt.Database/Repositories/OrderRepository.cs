@@ -1,4 +1,5 @@
 ﻿using LarsProjekt.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace LarsProjekt.Database.Repositories;
 
@@ -14,6 +15,13 @@ internal class OrderRepository : IOrderRepository
     public List<Order> GetAll()
     {
         var orders = _context.Orders;
+        return orders.ToList();
+    }
+
+    public List<Order> GetOrderWithUser()
+    {
+        var orders = _context.Orders.Include(o => o.User);
+
         return orders.ToList();
     }
 
