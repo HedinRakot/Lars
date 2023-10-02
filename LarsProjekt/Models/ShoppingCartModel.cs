@@ -8,7 +8,6 @@ namespace LarsProjekt.Models;
 
 public partial class ShoppingCartModel
 {
-    public string ShoppingCartId { get; set; }
     public List<ShoppingCartItemModel> Items { get; set; }
 
 }

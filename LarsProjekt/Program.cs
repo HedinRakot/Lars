@@ -1,3 +1,4 @@
+using LarsProjekt.Application;
 using LarsProjekt.Authentication;
 using LarsProjekt.Database;
 using LarsProjekt.ErrorHandling;
@@ -7,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSingleton<ShoppingCartRepository>();
 
 builder.Services.AddDatabase(builder.Configuration);
 

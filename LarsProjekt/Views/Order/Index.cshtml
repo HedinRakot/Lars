@@ -22,12 +22,12 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.OrderId</td>
-                        <td>@item.Username</td>
-                        <td>@item.OrderDate</td>
+                        <td>@item.Id</td>
+                        <td>@item.UserName</td>
+                        <td>@item.Date</td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@item.OrderId" class="btn btn-light mx-2">
+                                <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@item.Id" class="btn btn-light mx-2">
                                     <i class="bi bi-trash"></i> Delete
                                 </a>
                             </div>

@@ -25,7 +25,7 @@ internal class OrderRepository : IOrderRepository
 
     public Order Get(long id)
     {
-        return _context.Orders.FirstOrDefault(u => u.OrderId == id);
+        return _context.Orders.FirstOrDefault(u => u.Id == id);
     }
 
     public void Update(Order order)

@@ -1,6 +1,8 @@
-﻿using LarsProjekt.Database.Repositories;
+﻿using LarsProjekt.Application;
+using LarsProjekt.Database.Repositories;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
+using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Controllers
@@ -8,41 +10,36 @@ namespace LarsProjekt.Controllers
     public class ShoppingCartController : Controller
     {
         private IProductRepository _productRepository;
-        private IShoppingCartItemRepository _cartRepository;
-        public ShoppingCartController(IProductRepository productRepository, IShoppingCartItemRepository cartRepository)
+        private ShoppingCartRepository _cartRepository;
+        public ShoppingCartController(IProductRepository productRepository, ShoppingCartRepository cartRepository)
         {
             _productRepository = productRepository;
             _cartRepository = cartRepository;
         }
+
         [HttpGet]
         public IActionResult Index()
         {
             var list = new List<ShoppingCartItemModel>();
-            foreach (var product in _cartRepository.GetAll())
+            foreach (var item in _cartRepository.ShoppingCartItems)
             {
                 list.Add(new ShoppingCartItemModel
                 {
-                    Id = product.Id,
-                    Amount = product.Amount,
-                    ShoppingCartId = product.ShoppingCartId
+                    Product = item.Product.ToModel(),
+                    Amount = item.Amount,                    
                 });
             }
 
             return View(list);
         }
 
-        [HttpGet]
-        public IActionResult Add() 
-        {
-            return View(new ShoppingCartItemModel());
-        }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult AddToCart(int id)
         {
             var product = _productRepository.Get(id);
             
-            var shoppingCartItem = _cartRepository.GetItem(id);
+            var shoppingCartItem = _cartRepository.ShoppingCartItems.FirstOrDefault(x => x.Product.Id == id);
             if (shoppingCartItem == null)
             {
                 var cartItem = new ShoppingCartItem
@@ -50,7 +47,7 @@ namespace LarsProjekt.Controllers
                     Amount = 1,
                     Product = product
                 };
-                _cartRepository.AddProduct(cartItem);
+                _cartRepository.ShoppingCartItems.Add(cartItem);
             }
             else
             {
@@ -61,28 +58,33 @@ namespace LarsProjekt.Controllers
 
         }
 
+        [HttpDelete]
+        public IActionResult RemoveFromCart(int id)
+        {
+            var item = _cartRepository.ShoppingCartItems.FirstOrDefault(p => p.Product.Id == id);
+            if (item != null)
+            {
+                if (item.Amount > 1)
+                {
+                    item.Amount--;
+                }
+                else
+                {
+                    _cartRepository.ShoppingCartItems.Remove(item);
+                }
+            }
+            return Ok(new { success = "true" });
+        }
 
-
-
-        //        public IActionResult RemoveFromCart(int id)
-        //        {
-        //            var product = _productRepository.Get(id);
-        //            _shoppingCartRepository.RemoveFromCart(product);
-        //        //    var product = _shoppingCartRepository.ShoppingCartItems.FirstOrDefault(p => p.ItemId == id);
-        //        //    if (product != null)
-        //        //    {
-        //        //        if (product.Amount > 1)
-        //        //        {
-        //        //            product.Amount--;
-
-        //        //        }
-        //        //        else
-        //        //        {
-        //        //            _shoppingCartRepository.ShoppingCartItems.Remove(product);
-        //        //        }
-        //        //    }
-        //            return RedirectToAction(nameof(Index));
-        //        }
-
+        [HttpGet]
+        public IActionResult EmptyCart()
+        {
+            var items = _cartRepository.ShoppingCartItems.ToList();
+            foreach (var item in items)
+            {
+                _cartRepository.ShoppingCartItems.Remove(item);
+            }
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

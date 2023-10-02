@@ -1,9 +1,11 @@
-﻿namespace LarsProjekt.Models;
+﻿using LarsProjekt.Domain;
+
+namespace LarsProjekt.Models;
 
 public partial class OrderModel
 {
-    public int OrderId { get; set; }
-    public string Username { get; set; }
+    public long Id { get; set; }
+    public string UserName { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Address { get; set; }
@@ -14,6 +16,6 @@ public partial class OrderModel
     public string Phone { get; set; }
     public string Email { get; set; }
     public decimal Total { get; set; }
-    public DateTime OrderDate { get; set; }
-    public List<OrderDetailModel> OrderDetails { get; set; }
+    public DateTimeOffset Date { get; set; }
+    public List<OrderDetail> Details { get; set; }
 }

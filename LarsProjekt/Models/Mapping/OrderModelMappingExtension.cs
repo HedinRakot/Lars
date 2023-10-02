@@ -8,7 +8,7 @@ public static class OrderModelMappingExtension
     {
         return new OrderModel
         {
-            Username = order.Username,
+            UserName = order.UserName,
             FirstName = order.FirstName,
             LastName = order.LastName,
             Phone = order.Phone,
@@ -18,8 +18,8 @@ public static class OrderModelMappingExtension
             State = order.State,
             PostalCode = order.PostalCode,
             Total = order.Total,
-            OrderDate = order.OrderDate,
-            OrderId = order.OrderId,
+            Date = order.Date,
+            Id = order.Id,
             Address = order.Address
         };
     }
@@ -28,7 +28,7 @@ public static class OrderModelMappingExtension
     {
         return new Order
         {
-            Username = model.Username,
+            UserName = model.UserName,
             FirstName = model.FirstName,
             LastName = model.LastName,
             Phone = model.Phone,
@@ -38,8 +38,8 @@ public static class OrderModelMappingExtension
             State = model.State,
             PostalCode = model.PostalCode,
             Total = model.Total,
-            OrderDate = model.OrderDate,
-            OrderId = model.OrderId,
+            Date = model.Date,
+            Id = model.Id,
             Address = model.Address
         };
     }

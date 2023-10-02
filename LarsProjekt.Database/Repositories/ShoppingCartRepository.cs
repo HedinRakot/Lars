@@ -1,18 +1,18 @@
-﻿using LarsProjekt.Application;
-using LarsProjekt.Domain;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+﻿//using LarsProjekt.Application;
+//using LarsProjekt.Domain;
+//using Microsoft.Extensions.DependencyInjection;
+//using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
-namespace LarsProjekt.Database.Repositories;
+//namespace LarsProjekt.Database.Repositories;
 
-internal class ShoppingCartRepository : IShoppingCartRepository
-{
-    private readonly ApplicationDbContext _context;
+//internal class ShoppingCartRepository : IShoppingCartRepository
+//{
+//    private readonly ApplicationDbContext _context;
 
-    public ShoppingCartRepository(ApplicationDbContext context)
-    {
-        _context = context;
-    }
+//    public ShoppingCartRepository(ApplicationDbContext context)
+//    {
+//        _context = context;
+//    }
 
     //public string ShoppingCartId { get; set; }
     //public List<ShoppingCartItemRepository> Items { get; set; }
@@ -75,4 +75,4 @@ internal class ShoppingCartRepository : IShoppingCartRepository
     //    var items = _context.ShoppingCartItems;
     //    return items.ToList();
     //}
-}
+
