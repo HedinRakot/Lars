@@ -19,8 +19,8 @@ public static class OrderModelMappingExtension
             Total = order.Total,
             Date = DateTimeOffset.Now,            
             Address = order.Address,
-            Id = order.Id, 
-            //UserId = order.User.Id
+            Id = order.Id,
+            UserId = order.UserId
         };
     }
 
@@ -40,7 +40,7 @@ public static class OrderModelMappingExtension
             Total = model.Total,
             Date = DateTimeOffset.Now,         
             Address = model.Address,
-            //UserId = model.User.Id
+            UserId = model.UserId
         };
     }
 }

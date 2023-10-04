@@ -17,6 +17,11 @@ internal class OrderDetailRepository : IOrderDetailRepository
         return orderDetails.ToList();
     }
 
+    public List <OrderDetail> GetListWithOrderId(long id) 
+    { 
+        return _context.OrderDetails.Where(o => o.OrderId == id).ToList();
+    }
+
     public void Add(OrderDetail orderDetail)
     {
         _context.OrderDetails.Add(orderDetail);
@@ -25,7 +30,7 @@ internal class OrderDetailRepository : IOrderDetailRepository
 
     public OrderDetail Get(long id)
     {
-        return _context.OrderDetails.FirstOrDefault(u => u.Id == id);
+        return _context.OrderDetails.FirstOrDefault(u => u.OrderId == id);
     }
 
     public void Update(OrderDetail orderDetail)

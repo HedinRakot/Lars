@@ -24,6 +24,12 @@ public class ApplicationDbContext : DbContext
             .HasKey(o => o.Id);
 
         modelBuilder.Entity<User>()
+            .HasKey(o => o.Id);
+
+        modelBuilder.Entity<Product>()
+            .HasKey(o => o.Id);
+
+        modelBuilder.Entity<User>()
             .HasMany(o => o.Orders)
             .WithOne(o => o.User)
             .HasForeignKey(o => o.UserId)

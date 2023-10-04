@@ -13,7 +13,7 @@
             <thead>
                 <tr>
                     <th>OrderId</th>
-                    <th>Order Number</th>
+                    <th></th>
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Date</th>                    
@@ -24,10 +24,17 @@
                 {
                     <tr>
                         <td>@item.Id</td>
-                        <td>@item.OrderNumber</td>
+                        <td></td>
                         <td>@item.FirstName</td>
                         <td>@item.LastName</td>
                         <td>@item.Date</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a asp-controller="Order" asp-action="Details" asp-route-id="@item.Id" class="btn btn-light mx-2">
+                                    View Order Details
+                                </a>
+                            </div>
+                        </td>
                         <td>
                             <div class="btn-group" role="group">
                                 <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@item.Id" class="btn btn-light mx-2">

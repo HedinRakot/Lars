@@ -12,9 +12,8 @@ public class Order
     public string Country { get; set; }
     public string Phone { get; set; }
     public string Email { get; set; }
-    public decimal? Total { get; set; } = 0;
+    public decimal? Total { get; set; }
     public DateTimeOffset Date { get; set; }
     public User User { get; set; }
     public long UserId { get; set; }
-    public string? OrderNumber { get; set; }
 }

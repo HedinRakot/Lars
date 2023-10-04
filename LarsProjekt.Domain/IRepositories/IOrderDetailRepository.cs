@@ -9,4 +9,5 @@ public interface IOrderDetailRepository
     OrderDetail Get(long id);
     List<OrderDetail> GetAll();
     void Update(OrderDetail orderDetail);
+    List<OrderDetail> GetListWithOrderId(long id);
 }

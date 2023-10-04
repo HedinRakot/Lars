@@ -1,0 +1,88 @@
+﻿@model OrderDetailModel
+
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-primary py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Order Details</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <table class="table table-borderless">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Order Number</th>
+                    <th>Product Id</th>
+                    <th>Quantity</th>
+                    <th>Price (each)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @*@foreach*@
+                <tr>
+                    <td></td>
+                    <td>@Model.OrderId</td>
+                    <td>@Model.ProductId</td>
+                    <td>@Model.Quantity</td>
+                    <td>@Model.UnitPrice</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@Model.Id" class="btn btn-light mx-2">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+
+            </tbody>
+        </table>
+        <div class="row pt-2">
+            <div class="col-4 col-md-3">
+                <a asp-controller="Order" asp-action="Index" class="btn btn-outline-dark border form-control">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<partial name="/Views/Shared/_DeleteModal.cshtml" />
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var deleteModal = document.getElementById('deleteModal');
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                var button = event.relatedTarget;
+
+                // Extract info from data-bs-* attributes
+                var id = $(button).attr('data-bs-id');
+
+                $('#modalId').val(id);
+            });
+        });
+
+        function deleteObj() {
+            var id = $('#modalId').val();
+            $.ajax({
+                url: '@Url.Action("Delete")/' + id,
+                type: 'DELETE',
+                success: function (result) {
+                    window.location = '/ShoppingCart/Index';
+                }
+            });
+        }
+    </script>
+}
