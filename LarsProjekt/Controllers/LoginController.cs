@@ -1,16 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc;
-using LarsProjekt.Application;
+﻿using LarsProjekt.Database.Repositories;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using LarsProjekt.Database.Repositories;
 
 namespace LarsProjekt.Controllers;
-
 public class LoginController : Controller
-{
+{    
     private IUserRepository _userRepository;
     public LoginController(IUserRepository userRepository)
     {
@@ -26,32 +24,42 @@ public class LoginController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SignIn(LoginModel model)
-    {
+    {        
+
         if (ModelState.IsValid)
         {
             try
             {
-                var customer = _userRepository.GetAll().FirstOrDefault(x => x.Username == model.UserName);
+                var userFromDb = _userRepository.GetByName(model.UserName);
+                if (model.Password == userFromDb.Password)
+                {
+                    try
+                    {
+                        await SignIn(userFromDb);
+                        return RedirectToAction(nameof(UserController.Index), nameof(Domain.User));
 
-                //throw new ArgumentException();
+                    }
+                    catch (NullReferenceException x)
+                    {
 
-                await SignIn(customer);
+                        AddError();
+                    }
+                }
+                else { AddError(); }               
 
-                return RedirectToAction(nameof(UserController.Index), nameof(Domain.User));
             }
-            catch (NullReferenceException exception)
+            catch (NullReferenceException x)
             {
-                ModelState.AddModelError("Model", "User doesnt exist");
-                
+                AddError();
             }
-            //catch(Exception exception)
-            //{
-            //    ModelState.AddModelError("Model", "Unexpected error occured. Please try again later..");
-            //
-            //}            
         }
 
-        return View("~/Views/Login/SignIn.cshtml", model);
+        return View("~/Views/User/Index.cshtml", model);
+    }
+
+    private void AddError()
+    {
+        ModelState.AddModelError("Model", "Incorrect username or password");
     }
 
     protected async Task SignIn(User user)
@@ -66,7 +74,7 @@ public class LoginController : Controller
         {
             IsPersistent = true,
             AllowRefresh = true,
-            ExpiresUtc = DateTimeOffset.Now.AddDays(1),
+            ExpiresUtc = DateTimeOffset.Now.AddDays(1)
         };
 
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);

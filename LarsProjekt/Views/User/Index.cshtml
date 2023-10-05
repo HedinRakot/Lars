@@ -10,79 +10,36 @@
     </div>
     
     <div class="card-body p-4">
-        <div class="row pt-4">
-
-            @foreach (var user in Model)
-            {
-                <input asp-for="@user.Id" hidden />
-                <div class="col-sm-3">
-                    <div class="card border-primary mb-3" style="max-width: 10rem;">
-                        <div class="card-body">
-                            <h4 class="card-title text-center">@user.Username</h4>
-                            <div class="btn-group-sm" role="group">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {                    
+                    <tr>
+                        <td>@user.Username</td>
+                        <td>
+                            <div class="btn-group" role="group">
                                 <a asp-controller="User" asp-action="Details" asp-route-id="@user.Id" class="btn btn-light mx-2">
                                     <i class="bi bi-question-lg"></i> Details
                                 </a>
                             </div>
-                            <div class="btn-group-sm" role="group">
-                                <a asp-controller="User" asp-action="CreateEdit" asp-route-id="@user.Id" class="btn btn-outline-dark border mx-2">
+                            <div class="btn-group" role="group">
+                                <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-light mx-2">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
                             </div>
-                            <div class="btn-group-sm" role="group">
-                                <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@user.Id" class="btn btn-danger mx-2">
-                                    <i class="bi bi-trash"></i> Delete
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-        </div>
 
-        @* <table class="table">
-        <thead>
-        <tr>
-        <th>Name</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var user in Model)
-        {
-        <div class="card border-primary mb-3" style="max-width: 20rem;">
-        <div class="card-body">
-        <h4 class="card-title text-center">@user.Name</h4>
-        <div class="btn-group" role="group">
-        <a asp-controller="User" asp-action="Details" asp-route-id="@user.Id" class="btn btn-light mx-2">
-        <i class="bi bi-question-lg"></i> Details
-        </a>
-        </div>
-        <div class="btn-group" role="group">
-        <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-light mx-2">
-        <i class="bi bi-pencil-square"></i> Edit
-        </a>
-        </div>
-        </div>
-        </div>
-        <tr>
-        <td>@user.Name</td>
-        <td>
-        <div class="btn-group" role="group">
-        <a asp-controller="User" asp-action="Details" asp-route-id="@user.Id" class="btn btn-light mx-2">
-        <i class="bi bi-question-lg"></i> Details
-        </a>
-        </div>
-        <div class="btn-group" role="group">
-        <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-light mx-2">
-        <i class="bi bi-pencil-square"></i> Edit
-        </a>
-        </div>
-        </td>
-        </tr>
-        }
-        </tbody>
-        </table> *@
+
     </div>
 </div>
 
@@ -116,3 +73,33 @@
         }
     </script>
 }
+
+@*<div class="row pt-4">
+
+            @foreach (var user in Model)
+            {
+                <input asp-for="@user.Id" hidden />
+                <div class="col-sm-3">
+                    <div class="card border-primary mb-3" style="max-width: 10rem;">
+                        <div class="card-body">
+                            <h4 class="card-title text-center">@user.Username</h4>
+                            <div class="btn-group-sm" role="group">
+                                <a asp-controller="User" asp-action="Details" asp-route-id="@user.Id" class="btn btn-light mx-2">
+                                    <i class="bi bi-question-lg"></i> Details
+                                </a>
+                            </div>
+                            <div class="btn-group-sm" role="group">
+                                <a asp-controller="User" asp-action="CreateEdit" asp-route-id="@user.Id" class="btn btn-outline-dark border mx-2">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                            </div>
+                            <div class="btn-group-sm" role="group">
+                                <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@user.Id" class="btn btn-danger mx-2">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+*@

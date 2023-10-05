@@ -3,10 +3,11 @@ using LarsProjekt.Database.Repositories;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Controllers;
-
+//[Authorize]
 public class ShoppingCartController : Controller
 {
     private IProductRepository _productRepository;

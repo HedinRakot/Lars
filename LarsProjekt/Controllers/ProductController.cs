@@ -1,12 +1,11 @@
-﻿using LarsProjekt.Application;
-using LarsProjekt.Database.Repositories;
-using LarsProjekt.Domain;
+﻿using LarsProjekt.Database.Repositories;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Controllers;
-
+//[Authorize]
 public class ProductController : Controller
 {
     private IProductRepository _productRepository;

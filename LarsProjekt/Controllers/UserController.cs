@@ -1,14 +1,11 @@
-﻿using LarsProjekt.Application;
-using LarsProjekt.Database;
-using LarsProjekt.Database.Repositories;
-using LarsProjekt.Domain;
+﻿using LarsProjekt.Database.Repositories;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Controllers;
-
+//[Authorize]
 public class UserController : Controller
 {
 
@@ -65,7 +62,7 @@ public class UserController : Controller
 
         return View(model);
     }
-    [AllowAnonymous]
+    //[AllowAnonymous]
     [HttpGet]
     public IActionResult CreateEdit(int id)
     {
@@ -82,7 +79,7 @@ public class UserController : Controller
 
     }
 
-    [AllowAnonymous]
+    //[AllowAnonymous]
     [HttpPost]
     public IActionResult CreateEdit(UserModel model)
     {

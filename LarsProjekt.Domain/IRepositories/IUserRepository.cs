@@ -9,5 +9,6 @@ namespace LarsProjekt.Database.Repositories
         List<User> GetAll();
         void Update(User user);
         void Delete (User user);
+        public User GetByName(string name);
     }
 }

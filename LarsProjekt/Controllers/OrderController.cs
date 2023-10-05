@@ -3,11 +3,11 @@ using LarsProjekt.Database.Repositories;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace LarsProjekt.Controllers;
-
+//[Authorize]
 public class OrderController : Controller
 {
     private readonly IOrderRepository _orderRepository;

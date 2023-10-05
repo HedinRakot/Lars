@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace LarsProjekt.Controllers;
+﻿namespace LarsProjekt.Controllers;
 
 public static class ControllerNameExtensions
 {

@@ -28,6 +28,11 @@ internal class UserRepository : IUserRepository
         return _context.Users.FirstOrDefault(u => u.Id == id);
     }
 
+    public User GetByName(string name)
+    {
+        return _context.Users.FirstOrDefault(u => u.Username == name);
+    }
+
     public void Update(User user)
     {
         _context.Users.Update(user);
