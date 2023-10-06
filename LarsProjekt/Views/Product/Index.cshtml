@@ -16,54 +16,98 @@
                 </a>
             </div>
         </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var product in Model)
-                {
-                    <tr>
-                        <td>@product.Name</td>
-                        <td>@product.Category</td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-light mx-2">
-                                    <i class="bi bi-question-lg"></i> Details
-                                </a>
+        <div class="row pb-3">
+            @foreach (var product in Model)
+            {
+
+                <div class="col-lg-3 col-sm-6">
+                    <div class="row p-2">
+                        <div class="col-12 p-1">
+                            <div class="card border-0 p-3 shadow  border-top border-5 rounded">
+                                <img src="https://placehold.co/500x600" class="card-img-top rounded">
+
+                                <div class="card-body pb-0">
+                                    <div class="pl-1">
+                                        <p class="card-title h5 text-dark opacity-75 text-uppercase text-center">@product.Name</p>
+                                        <p class="card-title text-warning text-center"><b>@product.Category</b></p>
+                                    </div>
+                                    <div class="pl-1">
+                                        <p class="text-dark text-opacity-75 text-center mb-0">
+                                            List Price:
+                                            <span class="text-decoration-line-through">
+                                                @product.Price
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="pl-1">
+                                        <p class="text-dark text-opacity-75 text-center">
+                                            As low as:
+                                            <span>
+                                                (Price Offer)
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary bg-gradient border-0 form-control">
+                                        Details
+                                    </a>
+                                </div>
                             </div>
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a asp-controller="Product" asp-action="CreateEdit" asp-route-id="@product.Id" class="btn btn-light mx-2">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </a>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@product.Id" class="btn btn-light mx-2">
-                                    <i class="bi bi-trash"></i> Delete
-                                </a>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@product.Id" class="btn btn-light mx-2">
-                                    <i class="bi bi-bag-plus"></i> Add to cart
-                                </a>                            
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+        @* <table class="table">
+        <thead>
+        <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var product in Model)
+        {
+        <tr>
+        <td>@product.Name</td>
+        <td>@product.Category</td>
+        <td>
+        <div class="btn-group" role="group">
+        <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-light mx-2">
+        <i class="bi bi-question-lg"></i> Details
+        </a>
+        </div>
+        </td>
+        <td>
+        <div class="btn-group" role="group">
+        <a asp-controller="Product" asp-action="CreateEdit" asp-route-id="@product.Id" class="btn btn-light mx-2">
+        <i class="bi bi-pencil-square"></i> Edit
+        </a>
+        </div>
+        </td>
+        <td>
+        <div class="btn-group" role="group">
+        <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@product.Id" class="btn btn-light mx-2">
+        <i class="bi bi-trash"></i> Delete
+        </a>
+        </div>
+        </td>
+        <td>
+        <div class="btn-group" role="group">
+        <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@product.Id" class="btn btn-light mx-2">
+        <i class="bi bi-bag-plus"></i> Add to cart
+        </a>
+        </div>
+        </td>
+        </tr>
+        }
+        </tbody>
+        </table> *@
     </div>
 </div>
 

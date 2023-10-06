@@ -3,11 +3,9 @@ using LarsProjekt.Database.Repositories;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Controllers;
-//[Authorize]
 public class ShoppingCartController : Controller
 {
     private IProductRepository _productRepository;
@@ -30,7 +28,6 @@ public class ShoppingCartController : Controller
                 Amount = item.Amount,                    
             });
         }
-
         return View(list);
     }
 
@@ -38,8 +35,7 @@ public class ShoppingCartController : Controller
     [HttpGet]
     public IActionResult AddToCart(int id)
     {
-        var product = _productRepository.Get(id);
-        
+        var product = _productRepository.Get(id);        
         var shoppingCartItem = _cartRepository.ShoppingCartItems.FirstOrDefault(x => x.Product.Id == id);
         if (shoppingCartItem == null)
         {
@@ -54,10 +50,9 @@ public class ShoppingCartController : Controller
         {
             shoppingCartItem.Amount++;
         }
-
         return RedirectToAction(nameof(Index));
-
     }
+
 
     [HttpDelete]
     public IActionResult RemoveFromCart(int id)
@@ -76,6 +71,7 @@ public class ShoppingCartController : Controller
         }
         return Ok(new { success = "true" });
     }
+
 
     [HttpGet]
     public IActionResult EmptyCart()

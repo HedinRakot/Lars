@@ -3,11 +3,9 @@ using LarsProjekt.Database.Repositories;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Controllers;
-//[Authorize]
 public class OrderController : Controller
 {
     private readonly IOrderRepository _orderRepository;
@@ -15,7 +13,8 @@ public class OrderController : Controller
     private readonly IOrderDetailRepository _orderDetailRepository;
     private readonly IUserRepository _userRepository;
 
-    public OrderController(IOrderRepository orderRepository,
+    public OrderController
+        (IOrderRepository orderRepository,
         ShoppingCartRepository cartRepository,
         IOrderDetailRepository orderDetailRepository,
         IUserRepository userRepository)
@@ -25,82 +24,65 @@ public class OrderController : Controller
         _orderDetailRepository = orderDetailRepository;
         _userRepository = userRepository;
     }
+
+    [HttpGet]
     public IActionResult Index()
     {
+        var user = _userRepository.GetByName(HttpContext.User.Identity.Name);
+        var orders = _orderRepository.GetAll();
         var list = new List<OrderModel>();
-        foreach (var order in _orderRepository.GetAll())
+        foreach (var order in orders)
         {
-            list.Add(order.ToModel());
+            if (user.Id == order.UserId)
+            {
+                list.Add(order.ToModel());                
+            }                
         }
         return View(list);
     }
 
+    [HttpGet]
     public IActionResult Checkout()
     {
-        var list = new List<OrderModel>();
-        foreach (var order in _orderRepository.GetAll())
-        {
-            list.Add(order.ToModel());
-        }
-        return View();
+        var model = new OrderModel(){};
+        return View(model);
     }
 
-
-    private List<UserModel> GetUserModels()
-    {
-        var users = _userRepository.GetAll();
-        var userModels = new List<UserModel>();
-        foreach (var user in users)
-        {
-            userModels.Add(user.ToModel());
-        }
-
-        return userModels;
-    }
 
     [HttpGet]
     public IActionResult Details(long id)
     {
         var detail = _orderDetailRepository.GetListWithOrderId(id);
+        var list = new List<OrderDetailModel>();
         foreach (var item in detail)
         {
-            var model = new OrderDetailModel
+            list.Add(new OrderDetailModel
             {
                 OrderId = item.OrderId,
                 ProductId = item.ProductId,
                 Quantity = item.Quantity,
                 UnitPrice = item.UnitPrice,
                 Id = id
-            };
-            return View(model);
+            });
         }
-        return View();
+        return View(list);
     }
-
-    //[HttpGet]
-    //public IActionResult Details(long id)
-    //{
-    //    var detail = _orderDetailRepository.GetListWithOrderId(id);
-    //    return View(detail);
-
-    //}
-
 
 
     [HttpPost]
     public IActionResult CreateOrder(OrderModel model)
     {
-        // error with id
-        // überschreibt zeit bei jedem eintrag
-        if (!ModelState.IsValid)
+        
+        if (ModelState.IsValid)
         {
+            var user = _userRepository.GetByName(HttpContext.User.Identity.Name);
+
             // add order
             var order = model.ToDomain();
-            //model.UserId = order.User.Id;
+            order.UserId = user.Id;
             _orderRepository.Add(order);
 
-            //add orderDetail
-            // fehler beim schreiben in die db
+            //add orderDetail            
             var cartItems = _cartRepository.ShoppingCartItems.ToList();
             foreach (var item in cartItems)
             {
@@ -131,30 +113,19 @@ public class OrderController : Controller
     {
         return View();
     }
+
+	private List<UserModel> GetUserModels()
+	{
+		var users = _userRepository.GetAll();
+		var userModels = new List<UserModel>();
+		foreach (var user in users)
+		{
+			userModels.Add(user.ToModel());
+		}
+
+		return userModels;
+	}
+
 }
 
-
-//if (!ModelState.IsValid)
-//        {
-//            //decimal orderTotal = 0;
-
-//            var order = model.ToDomain();
-//_orderRepository.Add(order);
-
-//            var cartItems = _cartRepository.ShoppingCartItems.ToList();
-//            foreach (var item in cartItems)
-//            {
-//                var orderDetail = new OrderDetail
-//                {
-//                    Quantity = item.Amount,
-//                    UnitPrice = item.Product.Price,
-//                    ProductId = item.Product.Id,
-//                    OrderId = 1
-//                };
-////orderTotal += (item.Amount * item.Product.Price);
-
-//_orderDetailRepository.Add(orderDetail);                
-//            }
-//            //order.Total = orderTotal;
-//            //unitofwork save
 

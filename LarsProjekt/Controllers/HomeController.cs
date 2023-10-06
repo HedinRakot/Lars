@@ -1,10 +1,8 @@
 ﻿using LarsProjekt.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace LarsProjekt.Controllers;
-//[Authorize]
 public class HomeController : Controller
 {
     public IActionResult Index()

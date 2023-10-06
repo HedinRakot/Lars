@@ -17,10 +17,9 @@ public static class OrderModelMappingExtension
             State = order.State,
             PostalCode = order.PostalCode,
             Total = order.Total,
-            Date = DateTimeOffset.Now,            
+            Date = order.Date,            
             Address = order.Address,
-            Id = order.Id,
-            UserId = order.UserId
+            Id = order.Id
         };
     }
 
@@ -39,8 +38,7 @@ public static class OrderModelMappingExtension
             PostalCode = model.PostalCode,
             Total = model.Total,
             Date = DateTimeOffset.Now,         
-            Address = model.Address,
-            UserId = model.UserId
+            Address = model.Address
         };
     }
 }

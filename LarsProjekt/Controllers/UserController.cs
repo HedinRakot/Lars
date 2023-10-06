@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Controllers;
-//[Authorize]
 public class UserController : Controller
 {
 
@@ -17,10 +16,15 @@ public class UserController : Controller
 
     public IActionResult Index()
     {
+        var SignedInUser = _userRepository.GetByName(HttpContext.User.Identity.Name);
+        var users = _userRepository.GetAll();
         var list = new List<UserModel>();
-        foreach (var user in _userRepository.GetAll())
+        foreach (var user in users)
         {
-            list.Add(user.ToModel());
+            if(SignedInUser.Id == user.Id)
+            {
+                list.Add(user.ToModel());
+            }
         }
         return View(list);
     }
@@ -62,7 +66,7 @@ public class UserController : Controller
 
         return View(model);
     }
-    //[AllowAnonymous]
+    [AllowAnonymous]
     [HttpGet]
     public IActionResult CreateEdit(int id)
     {
@@ -79,7 +83,7 @@ public class UserController : Controller
 
     }
 
-    //[AllowAnonymous]
+    [AllowAnonymous]
     [HttpPost]
     public IActionResult CreateEdit(UserModel model)
     {

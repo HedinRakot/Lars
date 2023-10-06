@@ -16,7 +16,5 @@ public partial class OrderModel
     public string Email { get; set; }
     public decimal? Total { get; set; }
     public DateTimeOffset Date { get; set; }
-    public UserModel User { get; set; }
-    public long UserId { get; set; }
     
 }

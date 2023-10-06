@@ -1,6 +1,157 @@
 ﻿@model OrderModel
 
-<div class="card shadow border-0 mt-4">
+<form asp-action="CreateOrder" asp-controller="Order" method="post">
+	<br />
+	<div class="container">
+		<div class="card shadow border-0">
+			<div class="card-header bg-primary bg-gradient text-light ml-0 py-4">
+				<div class="row px-4">
+					<div class="col-6">
+						<h5 class="pt-2 text-white">
+							Order confirmation
+						</h5>
+					</div>
+					<div class="col-6 text-end">
+						<a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-outline-dark btn-sm">Back to Cart</a>
+					</div>
+				</div>
+			</div>
+			<div class="card-body">
+                <div asp-validation-summary="ModelOnly"></div>
+                <div class="container rounded p-2">
+					<div class="row">
+						<div class="col-12 col-lg-6 pb-4">
+							<div class="row">
+								<h4 class="d-flex justify-content-between align-items-center mb-3">
+									<span class="text-info">Shipping Details:</span>
+								</h4>
+							</div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Email</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="Email" class="form-control" />
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>First Name</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="FirstName" class="form-control" />
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Last Name</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="LastName" class="form-control" />
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Address</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="Address" class="form-control" />
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>City</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="City" class="form-control" />
+                                    <span asp-validation-for="City" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>State</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="State" class="form-control" />
+                                    <span asp-validation-for="State" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Postal Code</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="PostalCode" type="number" class="form-control" />
+                                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Country</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="Country" class="form-control" />
+                                    <span asp-validation-for="Country" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Phone</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="Phone" type="number" class="form-control" />
+                                    <span asp-validation-for="Phone" class="text-danger"></span>
+                                </div>
+                            </div>
+						</div>
+						<div class="col-12 col-lg-5 offset-lg-1">
+							<h4 class="d-flex justify-content-between align-items-center mb-3">
+								<span class="text-info">Order Summary:</span>
+							</h4>
+							<ul class="list-group mb-3">
+								<li class="list-group-item d-flex justify-content-between">
+									<div>
+										<h6 class="my-0">Title</h6>
+										<small class="text-muted">Quantity: Count</small>
+									</div>
+									<span class="text-muted">Price * Count </span>
+								</li>
+
+
+								<li class="list-group-item d-flex justify-content-between bg-light">
+									<small class="text-info">Total (USD)</small>
+									<strong class="text-info">$$</strong>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="card-footer">
+				<div class="row">
+					@* <div class="col-12 col-md-8 pt-2">
+						<p style="color:maroon; font-size:14px;">
+							Estimate Arrival Date:
+
+						</p>
+					</div> *@
+					<div class="col-12 col-md-4">
+						<button type="submit" class="btn btn-primary form-control">Place Order</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+
+
+
+@* <div class="card shadow border-0 mt-4">
     <div class="card-header bg-primary py-3">
         <div class="row">
             <div class="col-12 text-center">
@@ -10,7 +161,6 @@
     </div>
     <div class="card-body p-4">
         <form asp-action="CreateOrder" asp-controller="Order" method="post" class="row">
-            <input asp-for="User.Id" hidden />
             <div class="border p-3">
                 <div asp-validation-summary="ModelOnly"></div>
                 <div class="form-floating py-2 col-12">
@@ -26,12 +176,12 @@
                 <div class="form-floating py-2 col-12">
                     <input asp-for="Address" class="form-control border-0 shadow" />
                     <label asp-for="Address" class="ms-2"></label>
-                    <span asp-validation-for="Address" class="text-danger"></span> 
+                    <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="City" class="form-control border-0 shadow" />
                     <label asp-for="City" class="ms-2"></label>
-                    <span asp-validation-for="City" class="text-danger"></span> 
+                    <span asp-validation-for="City" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="State" class="form-control border-0 shadow" />
@@ -60,7 +210,7 @@
                 </div>
                 <div class="row pt-2">
                     <div class="col-6 col-md-3">
-                        <button type="submit" class="btn btn-success form-control">Continue</button>                    
+                        <button type="submit" class="btn btn-success form-control"></button>
                         <a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-outline-dark border form-control">Back to List</a>
                     </div>
                 </div>
@@ -68,3 +218,4 @@
         </form>
     </div>
 </div>
+ *@

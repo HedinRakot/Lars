@@ -1,105 +1,115 @@
 ﻿@model List<UserModel>
 
-<div class="card shadow border-0 my-4">
-    <div class="card-header bg-primary py-3">
-        <div class="row">
-            <div class="col-12 text-center">
-                <h2 class="text-white py-2">Users</h2>
+<form asp-action="CreateEdit" asp-controller="User" method="post">
+    <br />
+    <div class="container">
+        <div class="card shadow border-0">
+            <div class="card-header bg-primary bg-gradient text-light ml-0 py-4">
+                <div class="row px-4">
+                    <div class="col-6">
+                        <h5 class="pt-2 text-white">
+                            Hi @Context.User.Identity.Name!
+                        </h5>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    
-    <div class="card-body p-4">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var user in Model)
-                {                    
-                    <tr>
-                        <td>@user.Username</td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <a asp-controller="User" asp-action="Details" asp-route-id="@user.Id" class="btn btn-light mx-2">
-                                    <i class="bi bi-question-lg"></i> Details
-                                </a>
+            <div class="card-body">
+                <div class="container rounded p-2">
+                    <div class="row">
+                        <div class="col-12 col-lg-6 pb-4">
+                            <div class="row">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-info">Your personal information:</span>
+                                </h4>
                             </div>
-                            <div class="btn-group" role="group">
-                                <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-light mx-2">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </a>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Email</label>
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-control" />
+                                </div>
+                            </div>                            
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>First Name</label>
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-control" />
+                                </div>
                             </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-
-
-    </div>
-</div>
-
-<partial name="/Views/Shared/_DeleteModal.cshtml" />
-
-@section Scripts
-    {
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var deleteModal = document.getElementById('deleteModal');
-            deleteModal.addEventListener('show.bs.modal', function (event) {
-                // Button that triggered the modal
-                var button = event.relatedTarget;
-
-                // Extract info from data-bs-* attributes
-                var id = $(button).attr('data-bs-id');
-
-                $('#modalId').val(id);
-            });
-        });
-
-        function deleteObj() {
-            var id = $('#modalId').val();
-            $.ajax({
-                url: '@Url.Action("Delete")/' + id,
-                type: 'DELETE',
-                success: function (result) {
-                    window.location = '/User';
-                }
-            });
-        }
-    </script>
-}
-
-@*<div class="row pt-4">
-
-            @foreach (var user in Model)
-            {
-                <input asp-for="@user.Id" hidden />
-                <div class="col-sm-3">
-                    <div class="card border-primary mb-3" style="max-width: 10rem;">
-                        <div class="card-body">
-                            <h4 class="card-title text-center">@user.Username</h4>
-                            <div class="btn-group-sm" role="group">
-                                <a asp-controller="User" asp-action="Details" asp-route-id="@user.Id" class="btn btn-light mx-2">
-                                    <i class="bi bi-question-lg"></i> Details
-                                </a>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Last Name</label>
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-control" />
+                                </div>
                             </div>
-                            <div class="btn-group-sm" role="group">
-                                <a asp-controller="User" asp-action="CreateEdit" asp-route-id="@user.Id" class="btn btn-outline-dark border mx-2">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </a>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Address</label>
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-control" />
+                                </div>
                             </div>
-                            <div class="btn-group-sm" role="group">
-                                <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@user.Id" class="btn btn-danger mx-2">
-                                    <i class="bi bi-trash"></i> Delete
-                                </a>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>City</label>
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-control" />
+                                </div>
                             </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>State</label>
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Postal Code</label>
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Country</label>
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-control" />
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Phone</label>
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-5 offset-lg-1">
                         </div>
                     </div>
                 </div>
-            }
-*@
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-primary form-control">Update</button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-dark border form-control">Back to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

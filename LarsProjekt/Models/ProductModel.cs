@@ -21,4 +21,8 @@ public class ProductModel
     [Range(1, 99999)]
     public decimal Price { get; set; }
 
+    //[Required]
+    //[Range(1, 99999)]
+    //public decimal PriceOffer { get; set; }
+
 }
