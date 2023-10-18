@@ -17,6 +17,7 @@ public static class DbServiceCollectionExtensions
         return result.AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IProductRepository, ProductRepository>()
             .AddScoped<IOrderRepository, OrderRepository>()
-            .AddScoped<IOrderDetailRepository, OrderDetailRepository>();           
+            .AddScoped<IOrderDetailRepository, OrderDetailRepository>()
+            .AddScoped<IAddressRepository, AddressRepository>();
     }
 }

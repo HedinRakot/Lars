@@ -10,4 +10,5 @@ public interface IOrderRepository
     List<Order> GetAll();
     void Update(Order order);
     List<Order> GetOrderWithUser();
+    List<Order> GetWithAddress();
 }

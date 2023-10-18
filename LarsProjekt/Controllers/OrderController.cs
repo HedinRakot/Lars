@@ -12,30 +12,36 @@ public class OrderController : Controller
     private readonly ShoppingCartRepository _cartRepository;
     private readonly IOrderDetailRepository _orderDetailRepository;
     private readonly IUserRepository _userRepository;
+    private readonly IAddressRepository _addressRepository;
 
     public OrderController
         (IOrderRepository orderRepository,
         ShoppingCartRepository cartRepository,
         IOrderDetailRepository orderDetailRepository,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        IAddressRepository addressRepository)
     {
         _orderRepository = orderRepository;
         _cartRepository = cartRepository;
         _orderDetailRepository = orderDetailRepository;
         _userRepository = userRepository;
+        _addressRepository = addressRepository;
     }
 
     [HttpGet]
     public IActionResult Index()
     {
         var user = _userRepository.GetByName(HttpContext.User.Identity.Name);
+        var address = _addressRepository.Get(user.AddressId);
         var orders = _orderRepository.GetAll();
         var list = new List<OrderModel>();
         foreach (var order in orders)
         {
             if (user.Id == order.UserId)
             {
-                list.Add(order.ToModel());                
+                
+                list.Add(order.ToModel());
+                order.Address = address;
             }                
         }
         return View(list);
@@ -44,7 +50,8 @@ public class OrderController : Controller
     [HttpGet]
     public IActionResult Checkout()
     {
-        var model = new OrderModel(){};
+        var user = _userRepository.GetByName(HttpContext.User.Identity.Name);        
+        var model = _addressRepository.Get(user.AddressId).ToModel();        
         return View(model);
     }
 
@@ -80,6 +87,8 @@ public class OrderController : Controller
             // add order
             var order = model.ToDomain();
             order.UserId = user.Id;
+            order.AddressId = user.AddressId;
+            order.Address = user.Address;
             _orderRepository.Add(order);
 
             //add orderDetail            
@@ -92,7 +101,6 @@ public class OrderController : Controller
                     UnitPrice = item.Product.Price,
                     ProductId = item.Product.Id,
                     OrderId = order.Id
-
                 };
                 _orderDetailRepository.Add(orderDetail);
 

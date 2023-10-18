@@ -52,9 +52,31 @@ public class ProductController : Controller
         }
     }
 
+    [HttpGet]
+    public IActionResult AddPic(long id)
+    {
+        return View(_productRepository.Get(id).ToModel());
+    }
+
+    [HttpPost]
+    public IActionResult AddPic([FromForm] IFormFile file, [FromRoute] long id)
+    {
+        if (file != null)
+        {
+            using var ms = new MemoryStream();
+            file.CopyTo(ms);
+            var str = Convert.ToBase64String(ms.ToArray());
+            var product = _productRepository.Get(id);
+            product.Picture = str;
+            _productRepository.Update(product);
+        }
+        return RedirectToAction(nameof(Index));
+    }
+
     [HttpPost]
     public IActionResult CreateEdit(ProductModel model)
     {
+        
         if (model.Id == 0)
         { // create
             if (ModelState.IsValid)

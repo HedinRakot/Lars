@@ -13,6 +13,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderDetail> OrderDetails { get; set; }
+    public DbSet<Address> Address { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -27,6 +28,9 @@ public class ApplicationDbContext : DbContext
             .HasKey(o => o.Id);
 
         modelBuilder.Entity<Product>()
+            .HasKey(o => o.Id);
+
+        modelBuilder.Entity<Address>()
             .HasKey(o => o.Id);
 
         modelBuilder.Entity<User>()

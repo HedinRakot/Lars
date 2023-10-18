@@ -36,7 +36,7 @@ public class LoginController : Controller
                     try
                     {
                         await SignIn(userFromDb);
-                        return RedirectToAction(nameof(UserController.Index), nameof(Domain.User));
+                        return RedirectToAction(nameof(UserController.CreateEditAddress), nameof(Domain.User));
 
                     }
                     catch (NullReferenceException x)
@@ -54,7 +54,7 @@ public class LoginController : Controller
             }
         }
 
-        return View("~/Views/User/Index.cshtml", model);
+        return View("~/Views/Login/SignIn.cshtml", model);
     }
 
     private void AddError()

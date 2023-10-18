@@ -1,4 +1,4 @@
-﻿@model OrderModel
+﻿@model AddressModel
 
 <form asp-action="CreateOrder" asp-controller="Order" method="post">
 	<br />
@@ -25,16 +25,7 @@
 								<h4 class="d-flex justify-content-between align-items-center mb-3">
 									<span class="text-info">Shipping Details:</span>
 								</h4>
-							</div>
-                            <div class="row my-1">
-                                <div class="col-3">
-                                    <label>Email</label>
-                                </div>
-                                <div class="col-9">
-                                    <input asp-for="Email" class="form-control" />
-                                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                                </div>
-                            </div>
+							</div>                            
                             <div class="row my-1">
                                 <div class="col-3">
                                     <label>First Name</label>
@@ -55,11 +46,20 @@
                             </div>
                             <div class="row my-1">
                                 <div class="col-3">
-                                    <label>Address</label>
+                                    <label>Street</label>
                                 </div>
                                 <div class="col-9">
-                                    <input asp-for="Address" class="form-control" />
-                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                    <input asp-for="Street" class="form-control" />
+                                    <span asp-validation-for="Street" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">
+                                    <label>Number</label>
+                                </div>
+                                <div class="col-9">
+                                    <input asp-for="HouseNumber" class="form-control" />
+                                    <span asp-validation-for="HouseNumber" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="row my-1">

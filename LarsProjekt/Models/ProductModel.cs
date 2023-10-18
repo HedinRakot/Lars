@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace LarsProjekt.Models;
 
@@ -21,8 +22,11 @@ public class ProductModel
     [Range(1, 99999)]
     public decimal Price { get; set; }
 
-    //[Required]
-    //[Range(1, 99999)]
-    //public decimal PriceOffer { get; set; }
+    [Required]
+    [Range(1, 99999)]
+    public decimal PriceOffer { get; set; }
+
+    [ValidateNever]
+    public string? Picture { get; set; }
 
 }

@@ -13,7 +13,7 @@ public class UserModel
 
     [Required]
     [RegularExpression("^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,})+)$",
-        ErrorMessage = "Please enter a valid email adress")]
+        ErrorMessage = "Please enter a valid email address")]
     public string Email { get; set; }
 
     [Required]

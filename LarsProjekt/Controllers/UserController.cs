@@ -7,28 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace LarsProjekt.Controllers;
 public class UserController : Controller
 {
-
+    private readonly IAddressRepository _addressRepository;
     private readonly IUserRepository _userRepository;
-    public UserController(IUserRepository userRepository)
+    public UserController(IUserRepository userRepository, IAddressRepository addressRepository)
     {
         _userRepository = userRepository;
+        _addressRepository = addressRepository;
     }
-
-    public IActionResult Index()
-    {
-        var SignedInUser = _userRepository.GetByName(HttpContext.User.Identity.Name);
-        var users = _userRepository.GetAll();
-        var list = new List<UserModel>();
-        foreach (var user in users)
-        {
-            if(SignedInUser.Id == user.Id)
-            {
-                list.Add(user.ToModel());
-            }
-        }
-        return View(list);
-    }
-
     public IActionResult Details(long id)
     {
         var user = _userRepository.Get(id);
@@ -56,7 +41,7 @@ public class UserController : Controller
             if (model.Password == model.PasswordRepeat)
             {
                 user.Password = model.Password;
-                return RedirectToAction(nameof(Index), new { Id = model.Id });
+                return RedirectToAction(nameof(CreateEditAddress), new { Id = model.Id });
             }
             else
             {
@@ -68,32 +53,34 @@ public class UserController : Controller
     }
     [AllowAnonymous]
     [HttpGet]
-    public IActionResult CreateEdit(int id)
+    public IActionResult CreateEdit()
     {
-        if (id == 0)
+        var signedInUser = _userRepository.GetByName(HttpContext.User.Identity.Name);
+        var users = _userRepository.GetAll();
+        foreach (var user in users)
         {
-            return View(new UserModel());
+            if (signedInUser != null && signedInUser.Id == user.Id)
+            {
+                var model = user.ToModel();
+                return View(model);
+            }
         }
-        else
-        {
-            var user = _userRepository.Get(id);
-            var model = user.ToModel();
-            return View(model);
-        }
-
+        return View(new UserModel());
     }
 
     [AllowAnonymous]
     [HttpPost]
     public IActionResult CreateEdit(UserModel model)
     {
-        if (model.Id == 0)
+        var signedInUser = _userRepository.GetByName(HttpContext.User.Identity.Name);
+
+        if (model.Id == signedInUser.Id)
         {
             if (ModelState.IsValid)
             {
-                var user = model.ToDomain();                
-                _userRepository.Add(user);
-                return RedirectToAction(nameof(Index));
+                var user = model.ToDomain();
+                _userRepository.Update(user);
+                return RedirectToAction(nameof(CreateEditAddress));
             }
             else { return View(); }
         }
@@ -102,8 +89,8 @@ public class UserController : Controller
             if (ModelState.IsValid)
             {
                 var user = model.ToDomain();
-                _userRepository.Update(user);
-                return RedirectToAction(nameof(Index));
+                _userRepository.Add(user);
+                return RedirectToAction(nameof(CreateEditAddress));
             }
             else return View();
         }
@@ -122,5 +109,52 @@ public class UserController : Controller
         _userRepository.Delete(model);
         return Ok(new { success = "true" });
     }
+
+    [HttpGet]
+    public IActionResult CreateEditAddress()
+    {
+        var signedInUser = _userRepository.GetByName(HttpContext.User.Identity.Name);
+        var users = _userRepository.GetAll();
+        foreach (var user in users)
+        {
+            if (signedInUser.Id == user.Id)
+            {
+                var address = _addressRepository.Get(user.AddressId);
+                var model = address.ToModel();
+                return View(model);
+            }
+        }
+
+        return View(new AddressModel());
+    }
+
+    [HttpPost]
+    public IActionResult CreateEditAddress(AddressModel model)
+    {
+        var signedInUser = _userRepository.GetByName(HttpContext.User.Identity.Name);
+        var users = _userRepository.GetAll();
+        foreach (var user in users)
+        {
+            if (user.Id == signedInUser.Id)
+            {
+                if (ModelState.IsValid)
+                {
+                    var address = model.ToDomain();
+                    _addressRepository.Update(address);
+                    return RedirectToAction(nameof(CreateEditAddress));
+                }
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    var address = model.ToDomain();
+                    _addressRepository.Add(address);
+                    return RedirectToAction(nameof(CreateEditAddress));
+                }                
+            }
+        } return View(model);
+    }
 }
 
+    

@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="card-body p-4">
-        <form asp-action="CreateEdit" asp-controller="Product" method="post" class="row">
+        <form asp-action="CreateEdit" asp-controller="Product" asp-route-id="@Model.Id" method="post" class="row">
             <input asp-for="Id" hidden />
             <div class="border p-3">
                 <div asp-validation-summary="ModelOnly"></div>
@@ -21,19 +21,22 @@
                 <div class="form-floating py-2 col-12">
                     <input asp-for="Category" class="form-control border-0 shadow" />
                     <label asp-for="Category" class="ms-2"></label>
-                    @* <span asp-validation-for="Category" class="text-danger"></span> *@
                 </div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="Description" class="form-control border-0 shadow" />
                     <label asp-for="Description" class="ms-2"></label>
-                    @* <span asp-validation-for="Description" class="text-danger"></span> *@
                 </div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="Price" class="form-control border-0 shadow" />
                     <label asp-for="Price" class="ms-2"></label>
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
-
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="PriceOffer" class="form-control border-0 shadow" />
+                    <label asp-for="PriceOffer" class="ms-2"></label>
+                    <span asp-validation-for="PriceOffer" class="text-danger"></span>
+                </div>
+                
                 <div class="row pt-2">
                     <div class="col-6 col-md-3">
                         @if (Model.Id != 0)

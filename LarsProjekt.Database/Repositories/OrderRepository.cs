@@ -18,6 +18,11 @@ internal class OrderRepository : IOrderRepository
         return orders.ToList();
     }
 
+    public List<Order> GetWithAddress()
+    {
+        return _context.Orders.Include(o => o.Address).ToList();
+    }
+
     public List<Order> GetOrderWithUser()
     {
         var orders = _context.Orders.Include(o => o.User);
