@@ -27,7 +27,7 @@ public static class ProductModelMappingExtension
             Category = model.Category,
             Price = model.Price,
             PriceOffer = model.PriceOffer,
-            Picture = model.Picture,
+            
         };
     }
 

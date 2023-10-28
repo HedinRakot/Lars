@@ -25,7 +25,7 @@ public class ShoppingCartController : Controller
             list.Add(new ShoppingCartItemModel
             {
                 Product = item.Product.ToModel(),
-                Amount = item.Amount,                    
+                Amount = item.Amount
             });
         }
         return View(list);
@@ -49,6 +49,24 @@ public class ShoppingCartController : Controller
         else
         {
             shoppingCartItem.Amount++;
+        }
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    public IActionResult AmountMinus(int id)
+    {
+        var item = _cartRepository.ShoppingCartItems.FirstOrDefault(p => p.Product.Id == id);
+        if (item != null)
+        {
+            if (item.Amount > 1)
+            {
+                item.Amount--;
+            }
+            else
+            {
+                _cartRepository.ShoppingCartItems.Remove(item);
+            }
         }
         return RedirectToAction(nameof(Index));
     }

@@ -4,6 +4,7 @@ using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace LarsProjekt.Controllers;
 public class OrderController : Controller
@@ -38,10 +39,10 @@ public class OrderController : Controller
         foreach (var order in orders)
         {
             if (user.Id == order.UserId)
-            {
-                
+            {                
                 list.Add(order.ToModel());
                 order.Address = address;
+                
             }                
         }
         return View(list);
@@ -55,6 +56,20 @@ public class OrderController : Controller
         return View(model);
     }
 
+    [HttpGet]
+    public IActionResult Confirmation()
+    {
+        var list = new List<ShoppingCartItemModel>();
+        foreach (var item in _cartRepository.ShoppingCartItems)
+        {
+            list.Add(new ShoppingCartItemModel
+            {
+                Product = item.Product.ToModel(),
+                Amount = item.Amount
+            });
+        }
+        return View(list);
+    }
 
     [HttpGet]
     public IActionResult Details(long id)
@@ -89,6 +104,7 @@ public class OrderController : Controller
             order.UserId = user.Id;
             order.AddressId = user.AddressId;
             order.Address = user.Address;
+            order.Total = GetTotal();
             _orderRepository.Add(order);
 
             //add orderDetail            
@@ -98,7 +114,7 @@ public class OrderController : Controller
                 var orderDetail = new OrderDetail
                 {
                     Quantity = item.Amount,
-                    UnitPrice = item.Product.Price,
+                    UnitPrice = item.Product.PriceOffer,
                     ProductId = item.Product.Id,
                     OrderId = order.Id
                 };
@@ -122,18 +138,14 @@ public class OrderController : Controller
         return View();
     }
 
-	private List<UserModel> GetUserModels()
-	{
-		var users = _userRepository.GetAll();
-		var userModels = new List<UserModel>();
-		foreach (var user in users)
-		{
-			userModels.Add(user.ToModel());
-		}
+    private decimal? GetTotal()
+    {
+        decimal? total = (from cartItems in _cartRepository.ShoppingCartItems
+                          select cartItems.Amount *
+                          cartItems.Product.Price).Sum();
 
-		return userModels;
-	}
-
+        return total ?? decimal.Zero;
+    }
 }
 
 

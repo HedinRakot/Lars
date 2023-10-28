@@ -8,7 +8,7 @@ public partial class OrderModel
     public decimal? Total { get; set; }
     public DateTimeOffset Date { get; set; }
 
-    //[ValidateNever]
+    [ValidateNever]
     public AddressModel Address { get; set; }
     
 }

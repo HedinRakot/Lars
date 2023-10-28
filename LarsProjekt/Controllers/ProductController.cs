@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LarsProjekt.Controllers;
 public class ProductController : Controller
 {
-    private IProductRepository _productRepository;
+    private readonly IProductRepository _productRepository;
     public ProductController(IProductRepository productRepository)
     {
         _productRepository = productRepository;
@@ -40,7 +40,7 @@ public class ProductController : Controller
     [HttpGet]
     public IActionResult CreateEdit(long id)
     {
-        if (id == 0)
+        if (id == 0 || id == null)
         {
             return View(new ProductModel());
         }

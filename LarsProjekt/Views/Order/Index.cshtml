@@ -15,7 +15,8 @@
                     <th>OrderId</th>
                     @* <th>First Name</th>
                     <th>Last Name</th> *@
-                    <th>Date</th>                    
+                    <th>Date</th>
+                    <th>Total($)</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,6 +28,7 @@
                         @* <td>@order.Address.FirstName</td>
                         <td>@order.Address.LastName</td> *@
                         <td>@order.Date.LocalDateTime</td>
+                        <td>@order.Total</td>
                         <td>
                             <div class="btn-group" role="group">
                                 <a asp-controller="Order" asp-action="Details" asp-route-id="@order.Id" class="btn btn-light mx-2">

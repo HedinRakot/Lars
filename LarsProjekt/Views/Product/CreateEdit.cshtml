@@ -4,12 +4,13 @@
     <div class="card-header bg-primary py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">@(Model.Id != 0 ? "Edit" : "Create") Product</h2>
+                <h2 class="text-white py-2">@* @(Model.Id != 0 ? "Edit" : "Create") *@ Create Product</h2>
             </div>
         </div>
     </div>
     <div class="card-body p-4">
-        <form asp-action="CreateEdit" asp-controller="Product" asp-route-id="@Model.Id" method="post" class="row">
+        <form asp-action="CreateEdit" asp-controller="Product" method="post" class="row">
+            @* asp-route-id="@Model.Id" *@
             <input asp-for="Id" hidden />
             <div class="border p-3">
                 <div asp-validation-summary="ModelOnly"></div>
@@ -39,14 +40,15 @@
                 
                 <div class="row pt-2">
                     <div class="col-6 col-md-3">
-                        @if (Model.Id != 0)
+                        <button type="submit" class="btn btn-light form-control">Create</button>
+                        @* @if (Model.Id != 0)
                         {
                             <button type="submit" class="btn btn-light form-control">Update</button>
                         }
                         else
                         {
                             <button type="submit" class="btn btn-light form-control">Create</button>
-                        }
+                        } *@
                     </div>
                     <div class="col-6 col-md-3">
                         <a asp-controller="Product" asp-action="Index" class="btn btn-outline-dark border form-control">Back to List</a>

@@ -1,0 +1,85 @@
+﻿@model List<CouponModel>
+
+<div class="card shadow border-0 my-4">
+    <div class="card-header bg-success py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Coupons</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row">
+            <div class="col-12 text-end">
+                <a asp-controller="Coupon" asp-action="CreateEdit" class="btn btn-light">
+                    <i class="bi bi-plus-circle"></i> Create new Coupon
+                </a>
+            </div>
+        </div>
+        <div class="row pb-3">
+            <table class="table table-borderless">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Coupon Code</th>
+                        <th>Discount(%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var coupon in Model)
+                    {
+                        <tr>
+                            <td>@coupon.Id</td>
+                            <td>@coupon.Code</td>
+                            <td>@coupon.Discount</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@coupon.Id" class="btn btn-light mx-2">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <a asp-controller="Coupon" asp-action="CreateEdit" asp-route-id="@coupon.Id" class="btn btn-light mx-2">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<partial name="/Views/Shared/_DeleteModal.cshtml" />
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var deleteModal = document.getElementById('deleteModal');
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                var button = event.relatedTarget;
+
+                // Extract info from data-bs-* attributes
+                var id = $(button).attr('data-bs-id');
+
+                $('#modalId').val(id);
+            });
+        });
+
+        function deleteObj() {
+            var id = $('#modalId').val();
+            $.ajax({
+                url: '@Url.Action("Delete")/' + id,
+                type: 'DELETE',
+                success: function (result) {
+                    window.location = '/Coupon';
+                }
+            });
+        }
+    </script>
+}

@@ -19,12 +19,18 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach( var item in Model)
+                @foreach(var item in Model)
                 {
                     <tr>
                         <td>@item.Product.Name</td>
-                        <td>@item.Product.Price</td>
-                        <td>@item.Amount</td>
+                        <td>@item.Product.PriceOffer</td>
+                        <td>
+                            <div class="input-group">
+                                <input asp-for="@item.Amount" value="@item.Amount" type="text" class="form-control" >
+                                <a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.Product.Id" class="btn btn-outline-secondary" type="button"><i class="bi bi-plus"></i></a>
+                                <a asp-controller="ShoppingCart" asp-action="AmountMinus" asp-route-id="@item.Product.Id" class="btn btn-outline-secondary" type="button"><i class="bi bi-dash"></i></a>
+                            </div>
+                        </td>
                         <td>
                             <div class="btn-group" role="group">
                                 <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@item.Product.Id" class="btn btn-light mx-2">
