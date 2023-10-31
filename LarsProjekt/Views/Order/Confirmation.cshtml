@@ -106,7 +106,7 @@
         });
 
         function sendForm(text, price) {
-            var data = { UserInput: text, TotalOld: price }
+            var data = { UserInput: text, Total: price }
             $.ajax({                
                 url: '@Url.Action("Redeem")',
                 type: 'POST',
