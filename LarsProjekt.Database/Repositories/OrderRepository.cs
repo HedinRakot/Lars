@@ -33,7 +33,7 @@ internal class OrderRepository : IOrderRepository
     public void Add(Order order)
     {
         _context.Orders.Add(order);
-        _context.SaveChanges();
+        //_context.SaveChanges();
     }
 
     public Order Get(long id)

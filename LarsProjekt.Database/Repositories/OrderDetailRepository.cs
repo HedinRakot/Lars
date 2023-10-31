@@ -25,7 +25,7 @@ internal class OrderDetailRepository : IOrderDetailRepository
     public void Add(OrderDetail orderDetail)
     {
         _context.OrderDetails.Add(orderDetail);
-        _context.SaveChanges();
+        //_context.SaveChanges();
     }
 
     public OrderDetail Get(long id)

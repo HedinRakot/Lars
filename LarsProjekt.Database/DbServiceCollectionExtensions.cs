@@ -19,6 +19,7 @@ public static class DbServiceCollectionExtensions
             .AddScoped<IOrderRepository, OrderRepository>()
             .AddScoped<IOrderDetailRepository, OrderDetailRepository>()
             .AddScoped<IAddressRepository, AddressRepository>()
-            .AddScoped<ICouponRepository, CouponRepository>();
+            .AddScoped<ICouponRepository, CouponRepository>()
+            .AddScoped<ISqlUnitOfWork, SqlUnitOfWork>();
     }
 }

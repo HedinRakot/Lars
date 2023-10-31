@@ -1,9 +1,12 @@
 ﻿using LarsProjekt.Application;
+using LarsProjekt.Database;
 using LarsProjekt.Database.Repositories;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
+using LarsProjekt.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Collections.Generic;
 
 namespace LarsProjekt.Controllers;
@@ -14,19 +17,28 @@ public class OrderController : Controller
     private readonly IOrderDetailRepository _orderDetailRepository;
     private readonly IUserRepository _userRepository;
     private readonly IAddressRepository _addressRepository;
+    private readonly ICouponRepository _couponRepository;
+    private readonly ISqlUnitOfWork _sqlUnitOfWork;
+    //private readonly DiscountPriceRepository _discountPriceRepository;
 
     public OrderController
         (IOrderRepository orderRepository,
         ShoppingCartRepository cartRepository,
         IOrderDetailRepository orderDetailRepository,
         IUserRepository userRepository,
-        IAddressRepository addressRepository)
+        IAddressRepository addressRepository,
+        ICouponRepository couponRepository,
+        ISqlUnitOfWork sqlUnitOfWork)
+        //DiscountPriceRepository discountPriceRepository)
     {
         _orderRepository = orderRepository;
         _cartRepository = cartRepository;
         _orderDetailRepository = orderDetailRepository;
         _userRepository = userRepository;
         _addressRepository = addressRepository;
+        _couponRepository = couponRepository;
+        _sqlUnitOfWork = sqlUnitOfWork;
+        //_discountPriceRepository = discountPriceRepository;
     }
 
     [HttpGet]
@@ -68,7 +80,15 @@ public class OrderController : Controller
                 Amount = item.Amount
             });
         }
-        return View(list);
+
+        OrderConfirmationVM orderConfirmationVM = new OrderConfirmationVM()
+        {
+            Coupons = new CouponModel(),
+            Items = list,
+            Total = GetTotal()
+        };
+       
+        return View(orderConfirmationVM);
     }
 
     [HttpGet]
@@ -105,7 +125,8 @@ public class OrderController : Controller
             order.AddressId = user.AddressId;
             order.Address = user.Address;
             order.Total = GetTotal();
-            _orderRepository.Add(order);
+            _sqlUnitOfWork.OrderRepository.Add(order);
+            _sqlUnitOfWork.SaveChanges();
 
             //add orderDetail            
             var cartItems = _cartRepository.ShoppingCartItems.ToList();
@@ -118,9 +139,9 @@ public class OrderController : Controller
                     ProductId = item.Product.Id,
                     OrderId = order.Id
                 };
-                _orderDetailRepository.Add(orderDetail);
-
-            }
+                _sqlUnitOfWork.OrderDetailRepository.Add(orderDetail);
+                _sqlUnitOfWork.SaveChanges();
+            }            
 
             // clear cart
             var items = _cartRepository.ShoppingCartItems.ToList();
@@ -133,6 +154,35 @@ public class OrderController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpPost]
+    public IActionResult Redeem(OrderConfirmationVM model)
+    {
+        var coupons = _couponRepository.GetAll();       
+
+        foreach (var coupon in coupons)
+        {
+            if (model.UserInput == coupon.Code)
+            {
+                var discount = coupon.Discount;
+                decimal.TryParse(discount, out decimal x);                
+                var totalDiscount = (x / 100) * model.Total;                
+                var newTotalPrice = model.Total - totalDiscount;
+                model.Total = newTotalPrice;
+
+                //_discountPriceRepository.Price.PriceAfterDiscount = newTotalPrice;
+
+                return Json(new { success = "true", model });
+            }
+        }
+        return View();
+    }
+
+    //[HttpGet]
+    //public IActionResult Redeem()
+    //{
+    //    return Ok(new { success = "true", newPrice = _discountPriceRepository.Price.PriceAfterDiscount });
+    //}
+
     public IActionResult Payment()
     {
         return View();
@@ -142,10 +192,11 @@ public class OrderController : Controller
     {
         decimal? total = (from cartItems in _cartRepository.ShoppingCartItems
                           select cartItems.Amount *
-                          cartItems.Product.Price).Sum();
+                          cartItems.Product.PriceOffer).Sum();
 
         return total ?? decimal.Zero;
     }
+
 }
 
 

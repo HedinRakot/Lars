@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<ShoppingCartRepository>();
+builder.Services.AddSingleton<DiscountPriceRepository>();
 
 builder.Services.AddDatabase(builder.Configuration);
 
