@@ -29,7 +29,7 @@ public class OrderController : Controller
         IAddressRepository addressRepository,
         ICouponRepository couponRepository,
         ISqlUnitOfWork sqlUnitOfWork)
-        //DiscountPriceRepository discountPriceRepository)
+    //DiscountPriceRepository discountPriceRepository)
     {
         _orderRepository = orderRepository;
         _cartRepository = cartRepository;
@@ -51,11 +51,11 @@ public class OrderController : Controller
         foreach (var order in orders)
         {
             if (user.Id == order.UserId)
-            {                
+            {
                 list.Add(order.ToModel());
                 order.Address = address;
-                
-            }                
+
+            }
         }
         return View(list);
     }
@@ -63,8 +63,8 @@ public class OrderController : Controller
     [HttpGet]
     public IActionResult Checkout()
     {
-        var user = _userRepository.GetByName(HttpContext.User.Identity.Name);        
-        var model = _addressRepository.Get(user.AddressId).ToModel();        
+        var user = _userRepository.GetByName(HttpContext.User.Identity.Name);
+        var model = _addressRepository.Get(user.AddressId).ToModel();
         return View(model);
     }
 
@@ -87,7 +87,7 @@ public class OrderController : Controller
             Items = list,
             Total = GetTotal()
         };
-       
+
         return View(orderConfirmationVM);
     }
 
@@ -114,7 +114,6 @@ public class OrderController : Controller
     [HttpPost]
     public IActionResult CreateOrder(OrderModel model)
     {
-        
         if (ModelState.IsValid)
         {
             var user = _userRepository.GetByName(HttpContext.User.Identity.Name);
@@ -141,7 +140,7 @@ public class OrderController : Controller
                 };
                 _sqlUnitOfWork.OrderDetailRepository.Add(orderDetail);
                 _sqlUnitOfWork.SaveChanges();
-            }            
+            }
 
             // clear cart
             var items = _cartRepository.ShoppingCartItems.ToList();
@@ -155,26 +154,30 @@ public class OrderController : Controller
     }
 
     [HttpPost]
-    public IActionResult Redeem(OrderConfirmationVM model)
+    public IActionResult Redeem(string couponCode)
     {
-        var coupons = _couponRepository.GetAll();       
+        var coupons = _couponRepository.GetAll() //TODO eine Query bauen beim DB Aufruf  
+            .Where(c => c.Code == couponCode);
 
-        foreach (var coupon in coupons)
+        //TODO in domain objekt auslagern
+        var total = GetTotal();
+
+        if (total > 0)
         {
-            if (model.UserInput == coupon.Code)
+            
+            foreach (var coupon in coupons)
             {
                 var discount = coupon.Discount;
-                decimal.TryParse(discount, out decimal x);                
-                var totalDiscount = (x / 100) * model.Total;                
-                var newTotalPrice = model.Total - totalDiscount;
-                model.Total = newTotalPrice;
-
-                //_discountPriceRepository.Price.PriceAfterDiscount = newTotalPrice;
-
-                return Json(new { success = "true", model });
+                decimal.TryParse(discount, out decimal x);
+                var totalDiscount = (x / 100) * total;
+                var newTotalPrice = total - totalDiscount;
+                total = newTotalPrice;
             }
         }
-        return View();
+
+        //Coupon codes speichern...
+
+        return Json(new { success = "true", total = total });
     }
 
     //[HttpGet]
@@ -188,13 +191,13 @@ public class OrderController : Controller
         return View();
     }
 
-    private decimal? GetTotal()
+    private decimal GetTotal()
     {
         decimal? total = (from cartItems in _cartRepository.ShoppingCartItems
                           select cartItems.Amount *
                           cartItems.Product.PriceOffer).Sum();
 
-        return total ?? decimal.Zero;
+        return total ?? 0;
     }
 
 }
