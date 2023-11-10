@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-
+﻿
 namespace LarsProjekt.Models.ViewModels
 {
     public class OrderConfirmationVM

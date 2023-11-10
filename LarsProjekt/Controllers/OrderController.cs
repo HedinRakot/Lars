@@ -224,7 +224,7 @@ public class OrderController : Controller
         return View();
     }
 
-    private decimal? GetTotal()
+    private decimal GetTotal()
     {
         var shoppingCartItems = GetCartModels();
 
@@ -232,7 +232,7 @@ public class OrderController : Controller
                           select cartItems.Amount *
                           cartItems.PriceOffer).Sum();
 
-        return total ?? decimal.Zero;
+        return total ?? 0;
     }
 
     private decimal? GetDiscountPrice()
