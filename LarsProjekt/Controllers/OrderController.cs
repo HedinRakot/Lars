@@ -156,7 +156,7 @@ public class OrderController : Controller
     public IActionResult Redeem(string couponCode)
     {
         Coupon coupon = _couponRepository.Get(couponCode);
-        decimal? total = GetDiscountPrice();
+        decimal total = GetDiscountPrice();
         List<OfferModel>? offers = GetOfferModels();
 
         var offer = offers.FirstOrDefault(x => x.CouponCode == couponCode);
@@ -235,7 +235,7 @@ public class OrderController : Controller
         return total ?? 0;
     }
 
-    private decimal? GetDiscountPrice()
+    private decimal GetDiscountPrice()
     {
         var offers = GetOfferModels();
         var total = GetTotal();
