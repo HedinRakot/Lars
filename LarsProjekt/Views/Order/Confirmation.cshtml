@@ -82,7 +82,7 @@
                                 {
                                     <div>
                                         <span>@offer.CouponCode</span>
-                                        <button id="Delete" data-bs-id="@offer.CouponCode" class="btn btn-sm btn-outline-info"><i class="bi bi-trash"></i></button>
+                                        <button data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@offer.Id" class="btn btn-sm btn-outline-info"><i class="bi bi-trash"></i></button>
                                     </div>
                                 }
                             </div>
@@ -105,18 +105,22 @@
     </div>
 </div>
 
+<partial name="/Views/Shared/_DeleteModal.cshtml" />
+
 
 @section Scripts
 {
     <script type="text/javascript">
         $(document).ready(function () {
+            var deleteModal = document.getElementById('deleteModal');
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var id = $(button).attr('data-bs-id');
+                $('#modalId').val(id);
+            });
             $('#Redeem').click(function () {
                 var text = $('#UserInput').val();
                 sendForm(text);
-            });
-            $('#Delete').click(function () {
-                var codeId = $('#Delete').attr('data-bs-id');
-                deleteCoupon(codeId);
             });
         });
 
@@ -145,16 +149,12 @@
             });
         };
 
-        function deleteCoupon(codeId) {
-            var data = { couponCode: codeId }
+        function deleteObj() {
+            var id = $('#modalId').val();
             $.ajax({
-                url: '@Url.Action(nameof(OrderController.RemoveCoupon), typeof(OrderController).GetControllerName())/ ' + codeId,
+                url: '@Url.Action(nameof(OrderController.RemoveCoupon), typeof(OrderController).GetControllerName())/ ' + id,
                 type: 'DELETE',
-                data: data,
-                success: function (data) {
-                    let formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
-                    let price = formatter.format(data.total);
-                    $('#Total').text(price);
+                success: function (result) {
                     window.location.reload();
                 }
             })
