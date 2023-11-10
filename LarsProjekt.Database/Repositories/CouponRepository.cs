@@ -23,7 +23,12 @@ internal class CouponRepository : ICouponRepository
         _context.SaveChanges();
     }
 
-    public Coupon Get(long id)
+    public Coupon Get(string code)
+    {
+        return _context.Coupons.FirstOrDefault(u => u.Code == code);
+    }
+
+    public Coupon GetById(long id)
     {
         return _context.Coupons.FirstOrDefault(u => u.Id == id);
     }

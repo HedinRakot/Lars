@@ -1,62 +1,84 @@
-﻿using LarsProjekt.Application;
-using LarsProjekt.Database.Repositories;
-using LarsProjekt.Domain;
+﻿using LarsProjekt.Database.Repositories;
 using LarsProjekt.Models;
-using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace LarsProjekt.Controllers;
 public class ShoppingCartController : Controller
 {
     private IProductRepository _productRepository;
-    private ShoppingCartRepository _cartRepository;
-    public ShoppingCartController(IProductRepository productRepository, ShoppingCartRepository cartRepository)
+    public ShoppingCartController(IProductRepository productRepository)
     {
         _productRepository = productRepository;
-        _cartRepository = cartRepository;
     }
 
     [HttpGet]
     public IActionResult Index()
     {
-        var list = new List<ShoppingCartItemModel>();
-        foreach (var item in _cartRepository.ShoppingCartItems)
+        var models = new List<ShoppingCartItemModel>();
+        var cookieValue = Request.Cookies["cookieShoppingCartItems"];
+
+        if (!string.IsNullOrWhiteSpace(cookieValue))
         {
-            list.Add(new ShoppingCartItemModel
-            {
-                Product = item.Product.ToModel(),
-                Amount = item.Amount
-            });
+            models = JsonSerializer.Deserialize<List<ShoppingCartItemModel>>(cookieValue);
         }
-        return View(list);
+        return View(models);
     }
 
 
     [HttpGet]
     public IActionResult AddToCart(int id)
     {
-        var product = _productRepository.Get(id);        
-        var shoppingCartItem = _cartRepository.ShoppingCartItems.FirstOrDefault(x => x.Product.Id == id);
-        if (shoppingCartItem == null)
+        var product = _productRepository.Get(id);
+
+        var shoppingCartItems = new List<ShoppingCartItemModel>();
+        var cookieValue = Request.Cookies["cookieShoppingCartItems"];
+
+        if (!string.IsNullOrWhiteSpace(cookieValue))
         {
-            var cartItem = new ShoppingCartItem
+            shoppingCartItems = JsonSerializer.Deserialize<List<ShoppingCartItemModel>>(cookieValue);
+        }
+
+        var shoppingCartItem = shoppingCartItems.FirstOrDefault(x => x.ProductId == id);
+        if(shoppingCartItem == null) 
+        {
+            var cartItem = new ShoppingCartItemModel
             {
                 Amount = 1,
-                Product = product
+                Name = product.Name,
+                PriceOffer = product.PriceOffer,
+                ProductId = id,
             };
-            _cartRepository.ShoppingCartItems.Add(cartItem);
+            shoppingCartItems.Add(cartItem);
         }
         else
         {
             shoppingCartItem.Amount++;
         }
+
+        var newCookieValue = JsonSerializer.Serialize(shoppingCartItems);
+        var options = new CookieOptions
+        {
+            Expires = DateTime.UtcNow.AddDays(1)            
+        };
+        Response.Cookies.Append("cookieShoppingCartItems", newCookieValue, options);
+
         return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
     public IActionResult AmountMinus(int id)
     {
-        var item = _cartRepository.ShoppingCartItems.FirstOrDefault(p => p.Product.Id == id);
+        var shoppingCartItems = new List<ShoppingCartItemModel>();
+        var cookieValue = Request.Cookies["cookieShoppingCartItems"];
+
+        if (!string.IsNullOrWhiteSpace(cookieValue))
+        {
+            shoppingCartItems = JsonSerializer.Deserialize<List<ShoppingCartItemModel>>(cookieValue);
+        }
+
+        var item = shoppingCartItems.FirstOrDefault(x => x.ProductId == id);
+
         if (item != null)
         {
             if (item.Amount > 1)
@@ -65,9 +87,12 @@ public class ShoppingCartController : Controller
             }
             else
             {
-                _cartRepository.ShoppingCartItems.Remove(item);
+                shoppingCartItems.Remove(item);
             }
         }
+        var newCookieValue = JsonSerializer.Serialize(shoppingCartItems);
+        Response.Cookies.Append("cookieShoppingCartItems", newCookieValue);
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -75,18 +100,23 @@ public class ShoppingCartController : Controller
     [HttpDelete]
     public IActionResult RemoveFromCart(int id)
     {
-        var item = _cartRepository.ShoppingCartItems.FirstOrDefault(p => p.Product.Id == id);
+        var shoppingCartItems = new List<ShoppingCartItemModel>();
+        var cookieValue = Request.Cookies["cookieShoppingCartItems"];
+
+        if (!string.IsNullOrWhiteSpace(cookieValue))
+        {
+            shoppingCartItems = JsonSerializer.Deserialize<List<ShoppingCartItemModel>>(cookieValue);
+        }
+
+        var item = shoppingCartItems.FirstOrDefault(x => x.ProductId == id);
         if (item != null)
         {
-            if (item.Amount > 1)
-            {
-                item.Amount--;
-            }
-            else
-            {
-                _cartRepository.ShoppingCartItems.Remove(item);
-            }
+            shoppingCartItems.Remove(item);
         }
+
+        var newCookieValue = JsonSerializer.Serialize(shoppingCartItems);
+        Response.Cookies.Append("cookieShoppingCartItems", newCookieValue);
+
         return Ok(new { success = "true" });
     }
 
@@ -94,11 +124,22 @@ public class ShoppingCartController : Controller
     [HttpGet]
     public IActionResult EmptyCart()
     {
-        var items = _cartRepository.ShoppingCartItems.ToList();
-        foreach (var item in items)
+        var shoppingCartItems = new List<ShoppingCartItemModel>();
+        var cookieValue = Request.Cookies["cookieShoppingCartItems"];
+
+        if (!string.IsNullOrWhiteSpace(cookieValue))
         {
-            _cartRepository.ShoppingCartItems.Remove(item);
-        }        
+            shoppingCartItems = JsonSerializer.Deserialize<List<ShoppingCartItemModel>>(cookieValue);
+        }
+
+        var newCookieValue = JsonSerializer.Serialize(shoppingCartItems);
+        var options = new CookieOptions
+        {
+            Expires = DateTime.UtcNow.AddDays(-1)
+        };
+        Response.Cookies.Append("cookieShoppingCartItems", newCookieValue, options);
+
         return RedirectToAction(nameof(Index));
     }
+
 }

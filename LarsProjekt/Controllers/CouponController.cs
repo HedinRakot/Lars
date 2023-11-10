@@ -1,5 +1,4 @@
-﻿using LarsProjekt.Application;
-using LarsProjekt.Database.Repositories;
+﻿using LarsProjekt.Database.Repositories;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +33,7 @@ namespace LarsProjekt.Controllers
             }
             else
             {
-                var coupon = _couponRepository.Get(id);
+                var coupon = _couponRepository.GetById(id);
                 var model = coupon.ToModel();
                 return View(model);
             }
@@ -71,7 +70,7 @@ namespace LarsProjekt.Controllers
         {
             try
             {
-                var model = _couponRepository.Get(id);
+                var model = _couponRepository.GetById(id);
                 _couponRepository.Delete(model);
                 return Ok(new { success = "true" });
             }

@@ -1,4 +1,5 @@
 ﻿@using LarsProjekt.Models.ViewModels
+@using LarsProjekt.Controllers
 @model OrderConfirmationVM
 
 
@@ -20,8 +21,10 @@
         <div class="card-body">
             <div class="container rounded p-2">
                 <div class="row">
-                    <form asp-action="CreateOrder" asp-controller="Order" method="post">
-                        <div class="col-12 col-lg-5 offset-lg-1">
+                    <div class="col-12 col-lg-5 offset-lg-1">
+                        <form asp-action="CreateOrder" asp-controller="Order" method="post">
+                            <div asp-validation-summary="ModelOnly"></div>
+
                             <h4 class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="text-info">Order Summary:</span>
                             </h4>
@@ -31,50 +34,60 @@
 
                                     <li class="list-group-item d-flex justify-content-between">
                                         <div>
-                                            <h6 class="my-0">@item.Product.Name</h6>
+                                            <h6 class="my-0">@item.Name</h6>
                                             <small class="text-muted">Quantity: @item.Amount</small>
                                         </div>
-                                        <span class="text-muted">@((item.Product.PriceOffer * item.Amount).ToString("c"))</span>
+                                        <span class="text-muted">@((item.PriceOffer * item.Amount)?.ToString("c"))</span>
                                     </li>
                                 }
 
                                 <li class="list-group-item d-flex justify-content-between bg-light">
                                     <small class="text-info">Total (EUR)</small>
                                     <strong id="Total" class="text-info">
-                                        @* @((from cartItems in Model.Items
-                                               select cartItems.Amount *
-                                               cartItems.Product.PriceOffer).Sum().ToString("c")) *@
-                                               @Model.Total
+                                        @Model.Total?.ToString("c")
                                     </strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between bg-light">
                                     <button type="submit" class="btn btn-primary form-control">Place Order</button>
                                 </li>
                             </ul>
-                        </div>
-                    </form>
-                    <form>
+
+                        </form>
+                    </div>
                     <div class="col-12 col-lg-5 offset-lg-1">
                         <h4 class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-info">
-                                Do you have a voucher?
-                                <br />
-                                Enter it here:
+                                Apply coupon code
                             </span>
                         </h4>
-
                         <div class="row my-1">
                             <div class="col-12">
-                                <input id="UserInput" class="form-control" />
-                                @* <span class="text-danger"></span> *@
+                                <input placeholder="Enter coupon code" id="UserInput" class="form-control" />
+                                <span id="ErrorMsg" class="text-danger"></span>
                             </div>
-                        </div><div class="row my-1">
+                        </div>
+                        <div class="row my-1">
                             <div class="col-12">
-                                <button id="Redeem" class="btn btn-outline-primary form-control">Redeem</button>
+                                <button id="Redeem" class="btn btn-outline-primary form-control">Apply</button>
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-12">
+                                <div>
+                                    <span class="text-info">
+                                        Applied codes:
+                                    </span>
+                                </div>
+                                @foreach (var offer in Model.Offers)
+                                {
+                                    <div>
+                                        <span>@offer.CouponCode</span>
+                                        <button id="Delete" data-bs-id="@offer.CouponCode" class="btn btn-sm btn-outline-info"><i class="bi bi-trash"></i></button>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -97,39 +110,55 @@
 {
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#Redeem').click(function () {                
+            $('#Redeem').click(function () {
                 var text = $('#UserInput').val();
-                var price = document.getElementById('Total').innerText;
-                sendForm(text, price);
+                sendForm(text);
             });
-            
+            $('#Delete').click(function () {
+                var codeId = $('#Delete').attr('data-bs-id');
+                deleteCoupon(codeId);
+            });
         });
 
-        function sendForm(text, price) {
-            var data = { UserInput: text, Total: price }
-            $.ajax({                
-                url: '@Url.Action("Redeem")',
+        function sendForm(text) {
+            var data = { couponCode: text }
+            $.ajax({
+                url: '@Url.Action(nameof(OrderController.Redeem), typeof(OrderController).GetControllerName())',
                 type: 'POST',
                 data: data,
                 success: function (data) {
-                    document.getElementById('Total').innerText(data.Total)
-                    //window.location = '/Confirmation';
+                    if (data.success == "false") {
+                        $('#ErrorMsg').text(data.message).delay(4000).fadeOut();
+                        $('#UserInput').val('');
+                        let formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+                        let price = formatter.format(data.discountPrice);
+                        $('#Total').text(price);
+                    }
+                    else {
+                        let formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+                        let price = formatter.format(data.total);
+                        $('#Total').text(price);
+                        $('#UserInput').val('');
+                        location.reload();
+                    }
                 }
             });
-            debugger
         };
 
-        // function updatePrice() {
-        //     $.ajax({
-        //         url: '@Url.Action("Redeem")',
-        //         type: 'GET',
-        //         data: data,
-        //         success: function (data) {
-        //             document.getElementById('Total').innerText(data.newPrice)                    
-        //         }
-        //     });
-        //     debugger
-        // }
+        function deleteCoupon(codeId) {
+            var data = { couponCode: codeId }
+            $.ajax({
+                url: '@Url.Action(nameof(OrderController.RemoveCoupon), typeof(OrderController).GetControllerName())/ ' + codeId,
+                type: 'DELETE',
+                data: data,
+                success: function (data) {
+                    let formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+                    let price = formatter.format(data.total);
+                    $('#Total').text(price);
+                    window.location.reload();
+                }
+            })
+        }
+
     </script>
 }
-

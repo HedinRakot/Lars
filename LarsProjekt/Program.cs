@@ -1,4 +1,3 @@
-using LarsProjekt.Application;
 using LarsProjekt.Authentication;
 using LarsProjekt.Database;
 using LarsProjekt.ErrorHandling;
@@ -9,16 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSingleton<ShoppingCartRepository>();
-builder.Services.AddSingleton<DiscountPriceRepository>();
-
 builder.Services.AddDatabase(builder.Configuration);
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         options.Cookie.SameSite = SameSiteMode.Lax;
         options.Cookie.Name = CookieAuthenticationDefaults.AuthenticationScheme;
         options.LoginPath = "/Login/SignIn/";
