@@ -81,17 +81,6 @@ public class UserController : Controller
             AddressModel = new AddressModel()
         };
         return View(vme);
-
-        //var users = _userRepository.GetAll();
-        //foreach (var user in users)
-        //{
-        //    if (signedInUser != null && signedInUser.Id == user.Id)
-        //    {
-        //        var model = user.ToModel();
-        //        return View(model);
-        //    }
-        //}
-        //return View(new UserModel());
     }
 
     [AllowAnonymous]
@@ -137,65 +126,5 @@ public class UserController : Controller
         }
         return View(model);
     }
-
-    [HttpDelete]
-    public IActionResult Delete(long id)
-    {
-        if (id == 0)
-        {
-            return BadRequest();
-        }
-
-        var model = _userRepository.Get(id);
-        _userRepository.Delete(model);
-        return Ok(new { success = "true" });
-    }
-
-    //[HttpGet]
-    //public IActionResult CreateEditAddress()
-    //{
-    //    var signedInUser = _userRepository.GetByName(HttpContext.User.Identity.Name);
-    //    var users = _userRepository.GetAll();
-    //    foreach (var user in users)
-    //    {
-    //        if (signedInUser.Id == user.Id)
-    //        {
-    //            var address = _addressRepository.Get(user.AddressId);
-    //            var model = address.ToModel();
-    //            return View(model);
-    //        }
-    //    }
-
-    //    return View(new AddressModel());
-    //}
-
-    //[HttpPost]
-    //public IActionResult CreateEditAddress(AddressModel model)
-    //{
-    //    var signedInUser = _userRepository.GetByName(HttpContext.User.Identity.Name);
-    //    var users = _userRepository.GetAll();
-    //    foreach (var user in users)
-    //    {
-    //        if (user.Id == signedInUser.Id)
-    //        {
-    //            if (ModelState.IsValid)
-    //            {
-    //                var address = model.ToDomain();
-    //                _addressRepository.Update(address);
-    //                return RedirectToAction(nameof(CreateEditAddress));
-    //            }
-    //        }
-    //        else
-    //        {
-    //            if (ModelState.IsValid)
-    //            {
-    //                var address = model.ToDomain();
-    //                _addressRepository.Add(address);
-    //                return RedirectToAction(nameof(CreateEditAddress));
-    //            }
-    //        }
-    //    }
-    //    return View(model);
-    //}
 }
 
