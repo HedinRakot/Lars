@@ -16,13 +16,15 @@ public class OrderController : Controller
     private readonly IAddressRepository _addressRepository;
     private readonly ICouponRepository _couponRepository;
     private readonly ISqlUnitOfWork _sqlUnitOfWork;
+    private readonly ILogger<OrderController> _logger;
     public OrderController
         (IOrderRepository orderRepository,
         IOrderDetailRepository orderDetailRepository,
         IUserRepository userRepository,
         IAddressRepository addressRepository,
         ICouponRepository couponRepository,
-        ISqlUnitOfWork sqlUnitOfWork)
+        ISqlUnitOfWork sqlUnitOfWork,
+        ILogger<OrderController> logger)
     {
         _orderRepository = orderRepository;
         _orderDetailRepository = orderDetailRepository;
@@ -30,6 +32,7 @@ public class OrderController : Controller
         _addressRepository = addressRepository;
         _couponRepository = couponRepository;
         _sqlUnitOfWork = sqlUnitOfWork;
+        _logger = logger;
     }
 
     [HttpGet]

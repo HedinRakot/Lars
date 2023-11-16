@@ -42,27 +42,22 @@ namespace LarsProjekt.Controllers
         [HttpPost]
         public IActionResult CreateEdit(CouponModel model)
         {
-
-            if (model.Id == 0)
+            if(ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                if (model.Id == 0)
                 {
                     var coupon = model.ToDomain();
                     _couponRepository.Add(coupon);
                     return RedirectToAction(nameof(Index));
                 }
-                else { return View(); }
-            }
-            else
-            {
-                if (ModelState.IsValid)
+                else
                 {
                     var coupon = model.ToDomain();
                     _couponRepository.Update(coupon);
                     return RedirectToAction(nameof(Index), new { Id = coupon.Id });
                 }
-                else return View();
             }
+            return View(model);            
         }
 
         [HttpDelete]

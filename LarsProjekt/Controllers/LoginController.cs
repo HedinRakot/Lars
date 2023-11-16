@@ -10,9 +10,11 @@ namespace LarsProjekt.Controllers;
 public class LoginController : Controller
 {    
     private IUserRepository _userRepository;
-    public LoginController(IUserRepository userRepository)
+    private readonly ILogger<LoginController> _logger;
+    public LoginController(IUserRepository userRepository, ILogger<LoginController> logger)
     {
         _userRepository = userRepository;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -36,12 +38,12 @@ public class LoginController : Controller
                     try
                     {
                         await SignIn(userFromDb);
-                        return RedirectToAction(nameof(UserController.CreateEditAddress), nameof(Domain.User));
+                        return RedirectToAction(nameof(UserController.CreateEdit), nameof(Domain.User));
 
                     }
                     catch (NullReferenceException x)
                     {
-
+                        _logger.LogError(x.Message);
                         AddError();
                     }
                 }
@@ -50,6 +52,7 @@ public class LoginController : Controller
             }
             catch (NullReferenceException x)
             {
+                _logger.LogError(x.Message);
                 AddError();
             }
         }

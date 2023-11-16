@@ -40,7 +40,7 @@ public class ProductController : Controller
     [HttpGet]
     public IActionResult CreateEdit(long id)
     {
-        if (id == 0 || id == null)
+        if (id == 0)
         {
             return View(new ProductModel());
         }
@@ -76,26 +76,22 @@ public class ProductController : Controller
     [HttpPost]
     public IActionResult CreateEdit(ProductModel model)
     {
-        
-        if (model.Id == 0)
-        { // create
-            if (ModelState.IsValid)
+        if (ModelState.IsValid)
+        {
+            if (model.Id == 0)
             {
-                var product = model.ToDomain();               
+                var product = model.ToDomain();
                 _productRepository.Add(product);
                 return RedirectToAction(nameof(Index));
-            } else { return View(); }
-        }
-        else
-        { // edit
-            if (ModelState.IsValid)
+            }
+            else
             {
                 var product = model.ToDomain();
                 _productRepository.Update(product);
-                return RedirectToAction(nameof(Details), new { Id = product.Id});
+                return RedirectToAction(nameof(Details), new { Id = product.Id });
             }
-            else return View();           
         }
+        return View(model);        
     }
 
     [HttpDelete]
