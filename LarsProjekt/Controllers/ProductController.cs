@@ -90,7 +90,7 @@ public class ProductController : Controller
                 _productRepository.Update(product);
                 return RedirectToAction(nameof(Details), new { Id = product.Id });
             }
-        }
+        }       
         return View(model);        
     }
 

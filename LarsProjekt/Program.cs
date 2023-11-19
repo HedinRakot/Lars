@@ -30,6 +30,8 @@ builder.Services.AddAuthorization(o =>
     });
 });
 
+builder.Services.AddSession();
+
 builder.Services.AddMvc(options =>
 {
     options.Conventions.Add(new AuthorizeControllerModelConvention());
@@ -49,6 +51,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseSession();
 
 app.UseRouting();
 app.UseAuthentication();

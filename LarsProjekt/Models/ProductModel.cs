@@ -15,7 +15,7 @@ public class ProductModel
     [Required]
     [MinLength(20, ErrorMessage = "Please enter a detailed description")]
     [MaxLength(4000)]
-    public string? Description { get; set; }
+    public string Description { get; set; }
     public string? Category { get; set; }
 
     [Required]
