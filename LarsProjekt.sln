@@ -11,7 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LarsProjekt.Domain", "LarsP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LarsProjekt.Database", "LarsProjekt.Database\LarsProjekt.Database.csproj", "{343A6729-E2AE-419D-B8B9-4C78A0FBD676}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LarsProjekt.Database.Migrations", "LarsProjekt.Database.Migrations\LarsProjekt.Database.Migrations.csproj", "{77EADED6-3CFB-4BFE-BA29-38405398BCCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LarsProjekt.Database.Migrations", "LarsProjekt.Database.Migrations\LarsProjekt.Database.Migrations.csproj", "{77EADED6-3CFB-4BFE-BA29-38405398BCCB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{538BC8A8-34F8-4C2A-8FCF-65CFB54B3595}"
+	ProjectSection(SolutionItems) = preProject
+		Docker-compose.yml = Docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

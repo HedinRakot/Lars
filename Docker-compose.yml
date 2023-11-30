@@ -1,0 +1,13 @@
+version: '3.4'
+ 
+services:
+  sampleapp:
+    image: ${DOCKER_REGISTRY-}larsprojekt
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "80"
+    build:
+      context: .
+      dockerfile: LarsProjekt/Dockerfile
