@@ -8,14 +8,16 @@ using System.Text.Json;
 namespace LarsProjekt.Controllers;
 public class ShoppingCartController : Controller
 {
-    private IProductRepository _productRepository;
-    public ShoppingCartController(IProductRepository productRepository)
+    private readonly IProductRepository _productRepository;
+    private readonly ICouponRepository _couponRepository;
+    public ShoppingCartController(IProductRepository productRepository, ICouponRepository couponRepository)
     {
         _productRepository = productRepository;
+        _couponRepository = couponRepository;
     }
 
     [HttpGet]
-    public IActionResult NewIndex()
+    public IActionResult Index()
     {
         var cart = GetCartModel();
         var offers = GetOfferModels();
@@ -24,6 +26,7 @@ public class ShoppingCartController : Controller
         if (offers.Count != 0)
         {
             total = offers.MinBy(x => x.DiscountedPrice).DiscountedPrice;
+            
         }
 
         OrderConfirmationVM orderConfirmationVM = new OrderConfirmationVM()
@@ -35,18 +38,11 @@ public class ShoppingCartController : Controller
         };
 
         return View(orderConfirmationVM);
-        //var models = new CartModel();
-        //var user = HttpContext.User.Identity.Name;
-        //var cookie = $"shoppingCart{user}";
-        //var cookieValue = Request.Cookies[cookie];
-
-        //if (!string.IsNullOrWhiteSpace(cookieValue))
-        //{
-        //    models = JsonSerializer.Deserialize<CartModel>(cookieValue);
-        //}
-        //return View(models);
+        
     }
 
+
+    // TODO Wenn Anzahl der Produkte im Warenkorb verändert wird, den Preis mit Rabatt anpassen.
 
     [HttpGet]
     public IActionResult AddToCart(int id)
@@ -56,6 +52,7 @@ public class ShoppingCartController : Controller
         var cookie = $"shoppingCart{user}";
         var cart = new CartModel();
         var cookieValue = Request.Cookies[cookie];
+        var offers = GetOfferModels();
 
         if (!string.IsNullOrWhiteSpace(cookieValue))
         {
@@ -77,6 +74,7 @@ public class ShoppingCartController : Controller
         else
         {
             shoppingCartItem.Amount++;
+            
         }
 
         var newCookieValue = JsonSerializer.Serialize(cart);
@@ -165,6 +163,79 @@ public class ShoppingCartController : Controller
 
     }
 
+    [HttpPost]
+    public IActionResult Redeem(string couponCode)
+    {
+        Coupon coupon = _couponRepository.Get(couponCode);
+        decimal total = GetDiscountPrice();
+        decimal totalDiscount = 0;
+        List<OfferModel>? offers = GetOfferModels();
+        var user = HttpContext.User.Identity.Name;
+        var cookieOffer = $"Offer{user}";
+
+        var offer = offers.FirstOrDefault(x => x.CouponCode == couponCode);
+
+        if (offers.Count() >= 3)
+        {
+            var discountPrice = GetDiscountPrice();
+            string message = "You can use a maximum of 3 codes per order.";
+            return Json(new { success = "false", message = message, discountPrice = discountPrice });
+        }
+        if (offer == null)
+        {
+            if (total > 0)
+            {
+                var discount = coupon.Discount;
+                decimal.TryParse(discount, out decimal x);
+                totalDiscount = (x / 100) * total;
+                var newTotalPrice = total - totalDiscount;
+                total = newTotalPrice;
+            }
+            var model = new OfferModel
+            {
+                CouponCode = couponCode,
+                DiscountedPrice = total,
+                DiscountValue = coupon.Discount,
+                Discount = totalDiscount,
+                Id = offers.Count > 0 ? offers.Max(o => o.Id) + 1 : 1
+            };
+            offers.Add(model);
+            var newCookieValue = JsonSerializer.Serialize(offers);
+            var options = new CookieOptions
+            {
+                Expires = DateTime.UtcNow.AddDays(1)
+            };
+            Response.Cookies.Append(cookieOffer, newCookieValue, options);
+
+            return Json(new { success = "true", total = total });
+        }
+        else
+        {
+            var discountPrice = GetDiscountPrice();
+            string message = "This code can only be used once for an order.";
+            return Json(new { success = "false", message = message, discountPrice = discountPrice });
+        }
+
+        //TODO in domain objekt auslagern
+    }
+
+    [HttpDelete]
+    public IActionResult RemoveCoupon(long id)
+    {
+        var offers = GetOfferModels();
+        var user = HttpContext.User.Identity.Name;
+        var cookieOffer = $"Offer{user}";
+
+        var offer = offers.FirstOrDefault(x => x.Id == id);
+        if (offer != null)
+        {
+            offers.Remove(offer);
+        }
+
+        var newCookieValue = JsonSerializer.Serialize(offers);
+        Response.Cookies.Append(cookieOffer, newCookieValue);
+        return Ok(new { success = "true" });
+    }
 
     private decimal GetTotal()
     {
@@ -216,4 +287,5 @@ public class ShoppingCartController : Controller
         }
         return cart;
     }
+
 }

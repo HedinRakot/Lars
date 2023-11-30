@@ -32,13 +32,6 @@ public class Initial : AutoReversingMigration
             .WithColumn("Code").AsString(int.MaxValue).NotNullable()
             .WithColumn("Discount").AsString(int.MaxValue).Nullable();
 
-        Create.Table("OrderDetails")
-            .WithColumn("Id").AsInt64().NotNullable().Identity().PrimaryKey()
-            .WithColumn("Quantity").AsInt32().NotNullable()
-            .WithColumn("UnitPrice").AsDecimal().NotNullable()
-            .WithColumn("OrderId").AsInt64().NotNullable().ForeignKey("FK_OrderDetails_Orders", "Orders", "Id")
-            .WithColumn("ProductId").AsInt64().NotNullable().ForeignKey("FK_OrderDetails_Products", "Products", "Id");
-
         Create.Table("Orders")
             .WithColumn("Id").AsInt64().NotNullable().Identity().PrimaryKey()
             .WithColumn("Total").AsDecimal().NotNullable()
@@ -54,6 +47,13 @@ public class Initial : AutoReversingMigration
             .WithColumn("Price").AsDecimal().NotNullable()
             .WithColumn("PriceOffer").AsDecimal().NotNullable()
             .WithColumn("Image").AsString(int.MaxValue).Nullable();
-        
+
+        Create.Table("OrderDetails")
+            .WithColumn("Id").AsInt64().NotNullable().Identity().PrimaryKey()
+            .WithColumn("Quantity").AsInt32().NotNullable()
+            .WithColumn("UnitPrice").AsDecimal().NotNullable()
+            .WithColumn("OrderId").AsInt64().NotNullable().ForeignKey("FK_OrderDetails_Orders", "Orders", "Id")
+            .WithColumn("ProductId").AsInt64().NotNullable().ForeignKey("FK_OrderDetails_Products", "Products", "Id");
+
     }
 }

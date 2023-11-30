@@ -63,29 +63,6 @@ public class OrderController : Controller
     }
 
     [HttpGet]
-    public IActionResult Confirmation()
-    {
-        var cart = GetCartModel();        
-        var offers = GetOfferModels();
-        var total = GetTotal();
-
-        if (offers.Count != 0)
-        {
-            total = offers.MinBy(x => x.DiscountedPrice).DiscountedPrice;
-        }
-
-        OrderConfirmationVM orderConfirmationVM = new OrderConfirmationVM()
-        {
-            Coupons = new CouponModel(),    
-            Cart = cart,            
-            Total = total,
-            Offers = offers
-        };
-
-        return View(orderConfirmationVM);
-    }
-
-    [HttpGet]
     public IActionResult Details(long id)
     {
         var detail = _orderDetailRepository.GetListWithOrderId(id);
@@ -159,85 +136,6 @@ public class OrderController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    [HttpPost]
-    public IActionResult Redeem(string couponCode)
-    {
-        Coupon coupon = _couponRepository.Get(couponCode);
-        decimal total = GetDiscountPrice();
-        decimal totalDiscount = 0;
-        List<OfferModel>? offers = GetOfferModels();
-        var user = HttpContext.User.Identity.Name;
-        var cookieOffer = $"Offer{user}";
-
-        var offer = offers.FirstOrDefault(x => x.CouponCode == couponCode);
-
-        if(offers.Count() >= 3)
-        {
-            var discountPrice = GetDiscountPrice();
-            string message = "You can use a maximum of 3 codes per order.";
-            return Json(new { success = "false", message = message, discountPrice = discountPrice });
-        }
-        if (offer == null)
-        {
-            if (total > 0)
-            {
-                var discount = coupon.Discount;
-                decimal.TryParse(discount, out decimal x);
-                totalDiscount = (x / 100) * total;
-                var newTotalPrice = total - totalDiscount;
-                total = newTotalPrice;
-            }
-            var model = new OfferModel
-            {
-                CouponCode = couponCode,
-                DiscountedPrice = total,
-                DiscountValue = coupon.Discount,
-                Discount = totalDiscount,
-                Id = offers.Count > 0 ? offers.Max(o => o.Id) + 1 : 1
-            };
-            offers.Add(model);
-            var newCookieValue = JsonSerializer.Serialize(offers);
-            var options = new CookieOptions
-            {
-                Expires = DateTime.UtcNow.AddDays(1)
-            };
-            Response.Cookies.Append(cookieOffer, newCookieValue, options);
-
-            return Json(new { success = "true", total = total });
-        }
-        else
-        {
-            var discountPrice = GetDiscountPrice();
-            string message = "This code can only be used once for an order.";
-            return Json(new { success = "false", message = message, discountPrice = discountPrice });
-        }
-        
-        //TODO in domain objekt auslagern
-    }
-
-    [HttpDelete]
-    public IActionResult RemoveCoupon(long id)
-    {
-        var offers = GetOfferModels();
-        var user = HttpContext.User.Identity.Name;
-        var cookieOffer = $"Offer{user}";
-
-        var offer = offers.FirstOrDefault(x => x.Id == id);
-        if (offer != null)
-        {
-            offers.Remove(offer);
-        }
-
-        var newCookieValue = JsonSerializer.Serialize(offers);
-        Response.Cookies.Append(cookieOffer, newCookieValue);
-        return Ok(new { success = "true"});
-    }
-
-    public IActionResult Payment()
-    {
-        return View();
-    }
-
     private decimal GetTotal()
     {
         var shoppingCartItems = GetCartModel().Items;
@@ -277,7 +175,7 @@ public class OrderController : Controller
 
     private CartModel? GetCartModel()
     {
-        var cart = new CartModel(); 
+        var cart = new CartModel();
         var user = HttpContext.User.Identity.Name;
         var cookie = $"shoppingCart{user}";
         var cookieValue = Request.Cookies[cookie];

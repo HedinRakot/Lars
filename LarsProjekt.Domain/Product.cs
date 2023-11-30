@@ -8,5 +8,5 @@ public class Product
     public string? Category { get; set; } 
     public decimal Price { get; set; }
     public decimal PriceOffer { get; set; }
-    public string? Picture { get; set; }
+    public string? Image { get; set; }
 }

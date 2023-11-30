@@ -67,7 +67,7 @@ public class ProductController : Controller
             file.CopyTo(ms);
             var str = Convert.ToBase64String(ms.ToArray());
             var product = _productRepository.Get(id);
-            product.Picture = str;
+            product.Image = str;
             _productRepository.Update(product);
         }
         return RedirectToAction(nameof(Index));

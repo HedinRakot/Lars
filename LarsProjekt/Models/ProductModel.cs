@@ -27,6 +27,6 @@ public class ProductModel
     public decimal PriceOffer { get; set; }
 
     [ValidateNever]
-    public string? Picture { get; set; }
+    public string? Image { get; set; }
 
 }

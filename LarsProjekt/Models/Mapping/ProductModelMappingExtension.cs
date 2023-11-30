@@ -13,7 +13,7 @@ public static class ProductModelMappingExtension
             Description = product.Description,
             Category = product.Category,
             Price = product.Price,
-            Picture = product.Picture,
+            Image = product.Image,
             PriceOffer = product.PriceOffer,
         };
     }

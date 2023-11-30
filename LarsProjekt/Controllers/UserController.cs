@@ -1,11 +1,13 @@
 ﻿using LarsProjekt.Database;
 using LarsProjekt.Database.Repositories;
-using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using LarsProjekt.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LarsProjekt.Controllers;
 public class UserController : Controller
@@ -85,7 +87,7 @@ public class UserController : Controller
 
     [AllowAnonymous]
     [HttpPost]
-    public IActionResult CreateEdit(UserRegistrationVM model)
+    public async Task<IActionResult> CreateEditAsync(UserRegistrationVM model)
     {
         var signedInUser = _userRepository.GetByName(HttpContext.User.Identity.Name);
 
@@ -99,16 +101,24 @@ public class UserController : Controller
                 _unitOfWork.AddressRepository.Add(address);               
                 _unitOfWork.UserRepository.Add(user);                
                 _unitOfWork.SaveChanges();
+
+                var claims = new[] {
+                new Claim(ClaimTypes.Name, user.Username),
+                };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var authProperties = new AuthenticationProperties()
+                {
+                    IsPersistent = true,
+                    AllowRefresh = true,
+                    ExpiresUtc = DateTimeOffset.Now.AddDays(1)
+                };
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
+
                 return RedirectToAction(nameof(CreateEdit));
 
-                // TODO Login nach dem registrieren
-                //
-                //var logInModel = new LoginModel()
-                //{
-                //    UserName = model.UserModel.Username,
-                //    Password = model.UserModel.Password
-                //};
-                //return RedirectToAction("SignIn", "LoginController", logInModel);
             }
                 // TODO Nutzernamen ändern
             if (model.UserModel.Id == signedInUser.Id)
