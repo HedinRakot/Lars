@@ -17,4 +17,10 @@
     <ProjectReference Include="..\LarsProjekt.Database\LarsProjekt.Database.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="appsettings.k8s.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "LarsProjekt.Database.Migrations": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

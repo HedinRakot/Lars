@@ -4,10 +4,7 @@
     {
         public long Id { get; set; }
         public decimal DiscountedPrice { get; set; }
-        public string DiscountValue { get; set; }
-        public decimal Discount { get; set; }
-        public string CouponCode { get; set; }
-        
+        public CouponModel Coupon { get; set; } = new CouponModel();
 
     }
 }

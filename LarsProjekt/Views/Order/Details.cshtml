@@ -1,5 +1,6 @@
-﻿@model List<OrderDetailModel>
-
+﻿@using LarsProjekt.Models.ViewModels
+@using LarsProjekt.Controllers
+@model OrderVM
 
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-primary py-3">
@@ -15,27 +16,24 @@
                 <tr>
                     <th></th>
                     <th>Order Number</th>
-                    <th>Product Id</th>
+                    <th>Product</th>
                     <th>Quantity</th>
-                    <th>Price (each)</th>
+                    <th>RRP</th>
+                    <th>Discount</th>
+                    <th>Price</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach(var item in Model)
+                @foreach(var item in Model.Details)
                 {
                     <tr>
                         <td></td>
                         <td>@item.OrderId</td>
-                        <td>@item.ProductId</td>
+                        <td>@item.ItemModel.Product.Name</td>
                         <td>@item.Quantity</td>
-                        <td>@item.UnitPrice</td>
-                        @* <td>
-                    <div class="btn-group" role="group">
-                    <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@Model.Id" class="btn btn-light mx-2">
-                    <i class="bi bi-trash"></i> Delete
-                    </a>
-                    </div>
-                    </td> *@
+                        <td>@item.UnitPrice?.ToString("c")</td>
+                        <td>@Model.Discount.ToString("c")</td>
+                        <td>@((item.UnitPrice - Model.Discount)?.ToString("c"))</td>
                     </tr>
                 }
             </tbody>
@@ -47,14 +45,6 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
 
 <partial name="/Views/Shared/_DeleteModal.cshtml" />
 

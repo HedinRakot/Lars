@@ -11,7 +11,7 @@ public static class DbServiceCollectionExtensions
     {
         var result = services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("Default Connection"));
+            options.UseSqlServer(configuration.GetConnectionString("MyTemsDb"));
         });
 
         return result.AddScoped<IUserRepository, UserRepository>()

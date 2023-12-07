@@ -1,6 +1,6 @@
 ﻿@using LarsProjekt.Models.ViewModels
 @using LarsProjekt.Controllers
-@model OrderConfirmationVM
+@model ShoppingCartVM
 
 
 <br />
@@ -36,7 +36,7 @@
                                 {
                                     <tr>
                                         <td>@item.Name</td>
-                                        <td>@item.PriceOffer</td>
+                                        <td>@item.PriceOffer?.ToString("c")</td>
                                         <td>
                                             <div class="input-group">
                                                 <input asp-for="@item.Amount" value="@item.Amount" type="text" class="form-control">
@@ -46,7 +46,7 @@
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@item.ProductId" class="btn btn-light mx-2">
+                                                <a asp-controller="ShoppingCart" asp-action="RemoveFromCart" asp-route-id="@item.ProductId" class="btn btn-light mx-2">
                                                     <i class="bi bi-trash"></i> Delete
                                                 </a>
                                             </div>
@@ -82,18 +82,25 @@
                                             <h6 class="my-0">@item.Name</h6>
                                             <small class="text-muted">Quantity: @item.Amount</small>
                                         </div>
-                                        <span class="text-muted">@((item.PriceOffer * item.Amount)?.ToString("c"))</span>
+                                        <span class="text-muted">
+                                            @* @if(@Model.Cart.Discount != 0){
+                                            @((item.PriceOffer * item.Amount - Model.Cart.Offers.)?.ToString("c"))
+                                            } else {
+                                            @((item.PriceOffer * item.Amount)?.ToString("c"))
+                                            } *@
+                                            @((item.PriceOffer * item.Amount)?.ToString("c"))
+                                            </span>
                                     </li>
                                 }
 
                                 <li class="list-group-item d-flex justify-content-between bg-light">
                                     <small class="text-info">Total (EUR)</small>
                                     <strong id="Total" class="text-info">
-                                        @Model.Total?.ToString("c")
+                                        @Model.Cart.Total.ToString("c")
                                     </strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between bg-light">
-                                    <button type="submit" class="btn btn-primary form-control">Place Order</button>
+                                    <button disabled type="submit" class="btn btn-primary form-control">Place Order</button>
                                 </li>
                             </ul>                           
 
@@ -121,12 +128,12 @@
                                         Applied codes:
                                     </span>
                                 </div>
-                                @foreach (var offer in Model.Offers)
+                                @foreach (var offer in Model.Cart.Offers)
                                 {
                                     <div>
-                                        <span>@offer.CouponCode</span>
-                                        <span class="text-danger"> -@offer.DiscountValue %</span>
-                                        <span class="text-danger"> (@offer.Discount.ToString("c"))</span>
+                                        <span>@offer.Coupon.Code</span>
+                                        <span class="text-danger"> -@offer.Coupon.Discount %</span>
+                                        <span class="text-danger"> (@offer.DiscountedPrice.ToString("c"))</span>
                                         <button data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@offer.Id" class="btn btn-sm btn-outline-info"><i class="bi bi-x"></i></button>
                                     </div>
                                 }
@@ -180,7 +187,7 @@
                         $('#ErrorMsg').text(data.message).delay(4000).fadeOut();
                         $('#UserInput').val('');
                         let formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
-                        let price = formatter.format(data.discountPrice);
+                        let price = formatter.format(data.total);
                         $('#Total').text(price);
                     }
                     else {
@@ -203,6 +210,10 @@
                     window.location.reload();
                 }
             })
+        }
+
+        function delteItem() {
+
         }
 
     </script>

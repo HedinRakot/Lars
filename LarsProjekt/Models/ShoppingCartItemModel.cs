@@ -7,5 +7,6 @@ public class ShoppingCartItemModel
     public string? Name { get; set; }
     public decimal? PriceOffer { get; set; }
     public int Amount { get; set; }
+    
 
 }

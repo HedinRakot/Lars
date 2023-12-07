@@ -30,6 +30,12 @@ internal class OrderRepository : IOrderRepository
         return orders.ToList();
     }
 
+    public List<Order> GetOrdersById(long id)
+    {
+        var orders = _context.Orders.Where(o => o.UserId == id).ToList();
+        return orders;
+    }
+
     public void Add(Order order)
     {
         _context.Orders.Add(order);

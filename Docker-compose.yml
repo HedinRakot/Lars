@@ -1,13 +1,32 @@
 version: '3.4'
  
 services:
-  sampleapp:
+  sql-server:
+    image: mcr.microsoft.com/azure-sql-edge
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Test12345-"
+      MSSQL_PID: "Developer"
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "Test12345-" -Q "SELECT 1" -b -o /dev/null
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    ports:
+      - "1443:1433"    
+  larsprojekt:
     image: ${DOCKER_REGISTRY-}larsprojekt
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=k8s
       - ASPNETCORE_URLS=http://+:80
     ports:
-      - "80"
+      - "5100:80"
     build:
       context: .
       dockerfile: LarsProjekt/Dockerfile
+  larsprojekt.database.migrations:
+    image: ${DOCKER_REGISTRY-}larsprojekt.database.migrations
+    build:
+      context: .
+      dockerfile: LarsProjekt.Database.Migrations/Dockerfile
