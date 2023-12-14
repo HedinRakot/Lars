@@ -22,11 +22,20 @@ services:
       - ASPNETCORE_URLS=http://+:80
     ports:
       - "5100:80"
+    depends_on:
+      - larsprojekt-database-migrations
     build:
       context: .
       dockerfile: LarsProjekt/Dockerfile
-  larsprojekt.database.migrations:
-    image: ${DOCKER_REGISTRY-}larsprojekt.database.migrations
+  larsprojekt-database-migrations:
+    image: ${DOCKER_REGISTRY-}larsprojekt-database-migrations
+    environment:
+      - ASPNETCORE_ENVIRONMENT=k8s
+    depends_on:
+      - sql-server
+    deploy:
+        restart_policy:
+          condition: on-failure
     build:
       context: .
       dockerfile: LarsProjekt.Database.Migrations/Dockerfile

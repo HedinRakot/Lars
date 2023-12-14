@@ -22,7 +22,9 @@
                     <tr>
                         <th>Id</th>
                         <th>Coupon Code</th>
-                        <th>Discount(%)</th>
+                        <th>Discount</th>
+                        <th>Type</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -32,6 +34,7 @@
                             <td>@coupon.Id</td>
                             <td>@coupon.Code</td>
                             <td>@coupon.Discount</td>
+                            <td>@coupon.Type</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@coupon.Id" class="btn btn-light mx-2">

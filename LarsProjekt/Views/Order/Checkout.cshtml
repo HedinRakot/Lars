@@ -129,7 +129,7 @@
                                             <h6 class="my-0">@item.Name</h6>
                                             <small class="text-muted">Quantity: @item.Amount</small>
                                         </div>
-                                        <span class="text-muted">@((item.PriceOffer * item.Amount)?.ToString("c"))</span>
+                                        <span class="text-muted">@((item.PriceOffer * item.Amount).ToString("c"))</span>
                                     </li>
                                 }
 
@@ -155,7 +155,7 @@
                                         <div>
                                             <span>@offer.Coupon.Code</span>
                                             <span class="text-danger"> -@offer.Coupon.Discount %</span>
-                                            <span class="text-danger"> (@offer.DiscountedPrice.ToString("c"))</span>
+                                            <span class="text-danger"> (@offer.Discount.ToString("c"))</span>
                                             <button data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@offer.Id" class="btn btn-sm btn-outline-info"><i class="bi bi-x"></i></button>
                                         </div>
                                     }

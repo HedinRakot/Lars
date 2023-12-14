@@ -1,6 +1,6 @@
 ﻿@using LarsProjekt.Models.ViewModels
 @using LarsProjekt.Controllers
-@model OrderVM
+@model List<OrderDetailModel>
 
 <div class="card shadow border-0 my-4">
     <div class="card-header bg-primary py-3">
@@ -24,16 +24,16 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach(var item in Model.Details)
+                @foreach(var item in Model)
                 {
                     <tr>
                         <td></td>
                         <td>@item.OrderId</td>
-                        <td>@item.ItemModel.Product.Name</td>
+                        <td>@item.Product.Name</td>
                         <td>@item.Quantity</td>
                         <td>@item.UnitPrice?.ToString("c")</td>
-                        <td>@Model.Discount.ToString("c")</td>
-                        <td>@((item.UnitPrice - Model.Discount)?.ToString("c"))</td>
+                        <td>@item.Discount.ToString("c")</td>
+                        <td>@item.DiscountedPrice.ToString("c")</td>
                     </tr>
                 }
             </tbody>

@@ -17,6 +17,7 @@ public class OrderController : Controller
     private readonly IAddressRepository _addressRepository;
     private readonly ICouponRepository _couponRepository;
     private readonly ISqlUnitOfWork _sqlUnitOfWork;
+    private readonly IProductRepository _productRepository;
     private readonly ILogger<OrderController> _logger;
     
     public OrderController
@@ -26,6 +27,7 @@ public class OrderController : Controller
         IAddressRepository addressRepository,
         ICouponRepository couponRepository,
         ISqlUnitOfWork sqlUnitOfWork,
+        IProductRepository productRepository,
         ILogger<OrderController> logger
         )
     {
@@ -35,6 +37,7 @@ public class OrderController : Controller
         _addressRepository = addressRepository;
         _couponRepository = couponRepository;
         _sqlUnitOfWork = sqlUnitOfWork;
+        _productRepository = productRepository;
         _logger = logger;
     }
 
@@ -86,6 +89,15 @@ public class OrderController : Controller
 
     private decimal CalcDiscountedTotal()
     {
+        var total = GetTotal();
+        var moneyDiscount = CalcMoneyDiscount();
+        var discount = CalcDiscount();
+        total = total - moneyDiscount - discount;
+
+        return total;
+    }
+    private decimal CalcDiscount()
+    {
         var user = HttpContext.User.Identity.Name;
         var cookie = $"shoppingCart{user}";
         var cart = new CartModel();
@@ -96,11 +108,49 @@ public class OrderController : Controller
             cart = JsonSerializer.Deserialize<CartModel>(cookieValue);
         }
         var total = GetTotal();
-        var value = cart.Offers.Sum(x => Convert.ToDecimal(x.Coupon.Discount));
-        var discount = (value / 100) * total;
-        total -= discount;
+        var list = new List<string>();
 
-        return total;
+        foreach (var item in cart.Offers)
+        {
+            if (item.Coupon.Type == "Percent")
+            {
+                list.Add(item.Coupon.Discount);
+            }
+        }
+        var value = list.Sum(x => Convert.ToDecimal(x));
+        return (value / 100) * total;
+
+        //var value = cart.Offers.Sum(x => Convert.ToDecimal(x.Coupon.Discount));
+        //var discount = (value / 100) * total;
+
+        //return discount;
+    }
+
+    private decimal CalcMoneyDiscount()
+    {
+        var user = HttpContext.User.Identity.Name;
+        var cookie = $"shoppingCart{user}";
+        var cart = new CartModel();
+        var cookieValue = Request.Cookies[cookie];
+
+        if (!string.IsNullOrWhiteSpace(cookieValue))
+        {
+            cart = JsonSerializer.Deserialize<CartModel>(cookieValue);
+        }
+        var total = GetTotal();
+        var list = new List<string>();
+
+        foreach (var item in cart.Offers)
+        {
+            if (item.Coupon.Type == "Money")
+            {
+                list.Add(item.Coupon.Discount);
+            }
+
+        }
+        var value = list.Sum(x => Convert.ToDecimal(x));
+        return value;
+
     }
 
     private decimal GetTotal()
@@ -116,9 +166,7 @@ public class OrderController : Controller
 
     [HttpGet]
     public IActionResult Details(long id)
-    {
-        var cart = GetCartModel();
-        
+    {                
         var detail = _orderDetailRepository.GetListWithOrderId(id);
         var list = new List<OrderDetailModel>();
         foreach (var item in detail)
@@ -129,20 +177,14 @@ public class OrderController : Controller
                 ProductId = item.ProductId,
                 Quantity = item.Quantity,
                 UnitPrice = item.UnitPrice,
+                Discount = item.Discount,
+                DiscountedPrice = item.DiscountedPrice,
                 Id = id,
-                ItemModel = cart.Items.FirstOrDefault(x => x.ProductId == item.ProductId),
-                
+                Product = _productRepository.Get(item.ProductId).ToModel()
             });
         }
 
-        OrderVM vm = new OrderVM
-        {            
-            Details = list,
-            Discount = cart.Discount,
-            Offers = cart.Offers
-        };
-
-        return View(vm);
+        return View(list);
     }
 
 
@@ -164,16 +206,17 @@ public class OrderController : Controller
             _sqlUnitOfWork.OrderRepository.Add(order);
             _sqlUnitOfWork.SaveChanges();
 
-            //add orderDetail            
+            //add orderDetail                                   
             foreach (var item in cart.Items)
             {
-                var orderDetail = new OrderDetail
-                {
-                    Quantity = item.Amount,
-                    UnitPrice = item.PriceOffer,
-                    ProductId = item.ProductId,
-                    OrderId = order.Id,
-                };
+                var orderDetail = new OrderDetail();                
+                orderDetail.Quantity = item.Amount;
+                orderDetail.UnitPrice = item.PriceOffer;
+                orderDetail.ProductId = item.ProductId;
+                orderDetail.OrderId = order.Id;
+                orderDetail.Discount = item.Discount;
+                orderDetail.DiscountedPrice = item.DiscountedPrice;
+
                 _sqlUnitOfWork.OrderDetailRepository.Add(orderDetail);
                 _sqlUnitOfWork.SaveChanges();
             }

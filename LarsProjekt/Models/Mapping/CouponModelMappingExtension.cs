@@ -10,7 +10,8 @@ namespace LarsProjekt.Models.Mapping
             {
                 Id = coupon.Id,
                 Code = coupon.Code,
-                Discount = coupon.Discount
+                Discount = coupon.Discount,
+                Type = coupon.Type
             };
         }
 
@@ -20,7 +21,8 @@ namespace LarsProjekt.Models.Mapping
             {
                 Id = model.Id,
                 Code = model.Code,
-                Discount = model.Discount
+                Discount = model.Discount,
+                Type = model.Type
             };
         }
     }

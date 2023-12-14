@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace LarsProjekt.Models
 {
@@ -9,6 +10,12 @@ namespace LarsProjekt.Models
 
         [Required]
         public string Code { get; set; }
+
         public string? Discount { get; set; }
+
+        [Required]
+        [ValidateNever]
+        //[Validation.CouponTypeValidation(ErrorMessage = "Please choose one of the given values")]
+        public string Type { get; set; }
     }
 }

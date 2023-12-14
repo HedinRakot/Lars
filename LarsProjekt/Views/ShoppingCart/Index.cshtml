@@ -36,7 +36,7 @@
                                 {
                                     <tr>
                                         <td>@item.Name</td>
-                                        <td>@item.PriceOffer?.ToString("c")</td>
+                                        <td>@item.PriceOffer.ToString("c")</td>
                                         <td>
                                             <div class="input-group">
                                                 <input asp-for="@item.Amount" value="@item.Amount" type="text" class="form-control">
@@ -83,18 +83,18 @@
                                             <small class="text-muted">Quantity: @item.Amount</small>
                                         </div>
                                         <span class="text-muted">
-                                            @* @if(@Model.Cart.Discount != 0){
-                                            @((item.PriceOffer * item.Amount - Model.Cart.Offers.)?.ToString("c"))
+                                            @if(@Model.Cart.Discount != 0){
+                                                <span><s>@((item.PriceOffer * item.Amount).ToString("c"))</s></span>
+                                            <span class="text-danger">@item.DiscountedPrice.ToString("c")</span>
                                             } else {
-                                            @((item.PriceOffer * item.Amount)?.ToString("c"))
-                                            } *@
-                                            @((item.PriceOffer * item.Amount)?.ToString("c"))
+                                            @((item.PriceOffer * item.Amount).ToString("c"))
+                                            }                                            
                                             </span>
                                     </li>
                                 }
 
                                 <li class="list-group-item d-flex justify-content-between bg-light">
-                                    <small class="text-info">Total (EUR)</small>
+                                    <small class="text-info">Total (EUR)</small>                                    
                                     <strong id="Total" class="text-info">
                                         @Model.Cart.Total.ToString("c")
                                     </strong>
@@ -132,8 +132,15 @@
                                 {
                                     <div>
                                         <span>@offer.Coupon.Code</span>
-                                        <span class="text-danger"> -@offer.Coupon.Discount %</span>
-                                        <span class="text-danger"> (@offer.DiscountedPrice.ToString("c"))</span>
+                                        @if(offer.Coupon.Type == "Percent")
+                                        {
+                                            <span class="text-danger"> -@offer.Coupon.Discount %</span>
+                                            <span class="text-danger"> (@offer.Discount.ToString("c"))</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-danger"> -@offer.Coupon.Discount €</span>
+                                        }
                                         <button data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@offer.Id" class="btn btn-sm btn-outline-info"><i class="bi bi-x"></i></button>
                                     </div>
                                 }

@@ -24,7 +24,7 @@ var serviceCollection = new ServiceCollection()
     .AddLogging(log => log.AddFluentMigratorConsole())
     .BuildServiceProvider();
 
-var databaseName = "LarsProjektDb";
+var databaseName = "LarsProjekt";
 var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
 connectionStringBuilder.Remove("initial catalog");
 connectionStringBuilder.Remove("database");

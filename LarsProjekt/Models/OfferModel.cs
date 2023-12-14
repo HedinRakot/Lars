@@ -3,7 +3,7 @@
     public class OfferModel
     {
         public long Id { get; set; }
-        public decimal DiscountedPrice { get; set; }
+        public decimal Discount { get; set; }
         public CouponModel Coupon { get; set; } = new CouponModel();
 
     }
