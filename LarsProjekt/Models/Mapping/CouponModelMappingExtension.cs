@@ -14,7 +14,8 @@ namespace LarsProjekt.Models.Mapping
                 Type = coupon.Type,
                 ExpiryDate = coupon.ExpiryDate,
                 Expired = coupon.Expired,
-                Count = coupon.Count
+                Count = coupon.Count,
+                AppliedCount = coupon.AppliedCount
             };
         }
 
