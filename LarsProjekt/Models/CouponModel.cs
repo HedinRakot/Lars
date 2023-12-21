@@ -21,7 +21,9 @@ namespace LarsProjekt.Models
         public DateTimeOffset ExpiryDate { get; set; }
         [Required]
         public bool Expired { get; set; }
+        [Required]
         public int Count { get; set; }
+        [Required]
         public int AppliedCount { get; set; }
         [ValidateNever]
         public byte[] Version { get; private set; }

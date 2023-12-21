@@ -48,16 +48,6 @@ public class OrderController : Controller
     {
         var user = _userRepository.GetByName(HttpContext.User.Identity.Name);
         var address = _addressRepository.Get(user.AddressId);
-        //var orders = _orderRepository.GetOrdersById(user.Id);
-        
-        //foreach (var order in orders)
-        //{
-        //    orders.Add(order);
-        //    order.Address = address;
-        //    order.ToModel();
-        //}
-        //return View(orders);
-
         var orders = _orderRepository.GetAll();
         var list = new List<OrderModel>();
         foreach (var order in orders)
@@ -121,11 +111,6 @@ public class OrderController : Controller
         }
         var value = list.Sum(x => Convert.ToDecimal(x));
         return (value / 100) * total;
-
-        //var value = cart.Offers.Sum(x => Convert.ToDecimal(x.Coupon.Discount));
-        //var discount = (value / 100) * total;
-
-        //return discount;
     }
 
     private decimal CalcMoneyDiscount()
