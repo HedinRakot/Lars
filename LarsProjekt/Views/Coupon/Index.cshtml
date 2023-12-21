@@ -17,6 +17,7 @@
             </div>
         </div>
         <div class="row pb-3">
+            
             <table class="table table-borderless">
                 <thead>
                     <tr>
@@ -24,6 +25,9 @@
                         <th>Coupon Code</th>
                         <th>Discount</th>
                         <th>Type</th>
+                        <th>Count</th>
+                        <th>Expiry Date</th>
+                        <th>Expired</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -35,6 +39,9 @@
                             <td>@coupon.Code</td>
                             <td>@coupon.Discount</td>
                             <td>@coupon.Type</td>
+                            <td>@coupon.Count</td>
+                            <td>@coupon.ExpiryDate</td>
+                            <td>@coupon.Expired</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@coupon.Id" class="btn btn-light mx-2">

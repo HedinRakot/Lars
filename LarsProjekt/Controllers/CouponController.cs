@@ -1,78 +1,80 @@
 ﻿using LarsProjekt.Database.Repositories;
+using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LarsProjekt.Controllers
+namespace LarsProjekt.Controllers;
+
+public class CouponController : Controller
 {
-    public class CouponController : Controller
+    private readonly ICouponRepository _couponRepository;
+
+    public CouponController(ICouponRepository couponRepository)
     {
-        private readonly ICouponRepository _couponRepository;
-
-        public CouponController(ICouponRepository couponRepository)
+        _couponRepository = couponRepository;
+    }
+    public IActionResult Index()
+    {
+        var list = new List<CouponModel>();
+        foreach ( var coupon in _couponRepository.GetAll())
         {
-            _couponRepository = couponRepository;
-        }
-        public IActionResult Index()
-        {
-            var list = new List<CouponModel>();
-            foreach ( var coupon in _couponRepository.GetAll())
-            {
-                list.Add(coupon.ToModel());
-            }
-
-            return View(list);
+            list.Add(coupon.ToModel());
         }
 
-        [HttpGet]
-        public IActionResult CreateEdit(long id)
+        return View(list);
+    }
+
+    [HttpGet]
+    public IActionResult CreateEdit(long id)
+    {
+        if (id == 0)
         {
-            if (id == 0)
+            return View(new CouponModel());
+        }
+        else
+        {
+            var coupon = _couponRepository.GetById(id);
+            var model = coupon.ToModel();
+            return View(model);
+        }
+    }
+
+    [HttpPost]
+    public IActionResult CreateEdit(CouponModel model)
+    {
+        if(ModelState.IsValid)
+        {
+            if (model.Id == 0)
             {
-                return View(new CouponModel());
+                var coupon = model.ToDomain();
+                _couponRepository.Add(coupon);
+                return RedirectToAction(nameof(Index));
             }
             else
             {
-                var coupon = _couponRepository.GetById(id);
-                var model = coupon.ToModel();
-                return View(model);
+                var coupon = model.ToDomain();
+                _couponRepository.Update(coupon);
+                return RedirectToAction(nameof(Index), new { Id = coupon.Id });
             }
         }
+        return View(model);            
+    }
 
-        [HttpPost]
-        public IActionResult CreateEdit(CouponModel model)
+    [HttpDelete]
+    public IActionResult Delete(long id)
+    {
+        try
         {
-            if(ModelState.IsValid)
-            {
-                if (model.Id == 0)
-                {
-                    var coupon = model.ToDomain();
-                    _couponRepository.Add(coupon);
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    var coupon = model.ToDomain();
-                    _couponRepository.Update(coupon);
-                    return RedirectToAction(nameof(Index), new { Id = coupon.Id });
-                }
-            }
-            return View(model);            
+            var model = _couponRepository.GetById(id);
+            _couponRepository.Delete(model);
+            return Ok(new { success = "true" });
         }
-
-        [HttpDelete]
-        public IActionResult Delete(long id)
+        catch
         {
-            try
-            {
-                var model = _couponRepository.GetById(id);
-                _couponRepository.Delete(model);
-                return Ok(new { success = "true" });
-            }
-            catch
-            {
-                throw new BadHttpRequestException("Oops, please try again!", 400);
-            }
+            throw new BadHttpRequestException("Oops, please try again!", 400);
         }
     }
+
+   
 }

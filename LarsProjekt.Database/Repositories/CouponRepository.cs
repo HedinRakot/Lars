@@ -1,4 +1,5 @@
 ﻿using LarsProjekt.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace LarsProjekt.Database.Repositories;
 
@@ -43,6 +44,12 @@ internal class CouponRepository : ICouponRepository
     {
         _context.Coupons.Remove(coupon);
         _context.SaveChanges();
+    }
+    public Coupon UpdateCouponCount(Coupon coupon)
+    {
+         coupon.AppliedCount++;
+        _context.Update(coupon);
+        return coupon;
     }
 
 }

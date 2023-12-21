@@ -4,7 +4,7 @@
     <div class="card-header bg-primary py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">@(Model.Id != 0 ? "Edit" : "Create") Product</h2>
+                <h2 class="text-white py-2">@(Model.Id != 0 ? "Edit" : "Create") Coupon</h2>
             </div>
         </div>
     </div>
@@ -17,18 +17,25 @@
                     <input asp-for="Code" class="form-control border-0 shadow" />
                     <label asp-for="Code" class="ms-2"></label>
                     <span asp-validation-for="Code" class="text-danger"></span>
-                    @* <a class="btn btn-dark">Generate Code</a> *@
                 </div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="Discount" class="form-control border-0 shadow" />
                     <label asp-for="Discount" class="ms-2"></label>
                 </div>
                 <div class="form-floating py-2 col-12">
-                    <select class="form-select" aria-label="Default select example">                        
-                        <option value="@Model.Type" selected>Percent</option>
-                        <option value="@Model.Type">Money</option>
-                        @* <option value="@Model.Type">BuyXGetY</option> *@
-                    </select>
+                    <input asp-for="Type" class="form-control border-0 shadow" />
+                    <label asp-for="Type" class="ms-2"></label>
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="ExpiryDate" class="form-control border-0 shadow" />
+                    <label asp-for="ExpiryDate" class="ms-2"></label>
+                    <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+                </div>                
+                <div class="form-floating py-2 col-12">
+                    <input asp-for="Count" class="form-control border-0 shadow" />
+                    <label asp-for="Count" class="ms-2">Please enter how often it can be used</label>
+                    <span asp-validation-for="Count" class="text-danger"></span>
                 </div>
                 <div class="row pt-2">
                     <div class="col-6 col-md-3">                        

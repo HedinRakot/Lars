@@ -5,7 +5,6 @@ using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using LarsProjekt.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using System.Text.Json;
 
 namespace LarsProjekt.Controllers;
@@ -19,6 +18,7 @@ public class OrderController : Controller
     private readonly ISqlUnitOfWork _sqlUnitOfWork;
     private readonly IProductRepository _productRepository;
     private readonly ILogger<OrderController> _logger;
+    private readonly ICouponCountService _couponCountService;
     
     public OrderController
         (IOrderRepository orderRepository,
@@ -28,7 +28,8 @@ public class OrderController : Controller
         ICouponRepository couponRepository,
         ISqlUnitOfWork sqlUnitOfWork,
         IProductRepository productRepository,
-        ILogger<OrderController> logger
+        ILogger<OrderController> logger,
+        ICouponCountService couponCountService
         )
     {
         _orderRepository = orderRepository;
@@ -39,6 +40,7 @@ public class OrderController : Controller
         _sqlUnitOfWork = sqlUnitOfWork;
         _productRepository = productRepository;
         _logger = logger;
+        _couponCountService = couponCountService;
     }
 
     [HttpGet]
@@ -219,6 +221,11 @@ public class OrderController : Controller
 
                 _sqlUnitOfWork.OrderDetailRepository.Add(orderDetail);
                 _sqlUnitOfWork.SaveChanges();
+            }
+            
+            foreach(var offer in cart.Offers)
+            {
+                _couponCountService.UpdateCouponCount(offer.Coupon.Code);
             }
 
             // clear cart

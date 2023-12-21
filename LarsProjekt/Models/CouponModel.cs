@@ -14,8 +14,17 @@ namespace LarsProjekt.Models
         public string? Discount { get; set; }
 
         [Required]
-        [ValidateNever]
-        //[Validation.CouponTypeValidation(ErrorMessage = "Please choose one of the given values")]
+        [Validation.CouponTypeValidation(ErrorMessage = "Please enter Money or Percent.")]
         public string Type { get; set; }
+        
+        [Required]
+        public DateTimeOffset ExpiryDate { get; set; }
+        [Required]
+        public bool Expired { get; set; }
+        public int Count { get; set; }
+        public int AppliedCount { get; set; }
+        [ValidateNever]
+        public byte[] Version { get; private set; }
+
     }
 }

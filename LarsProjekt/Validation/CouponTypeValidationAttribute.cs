@@ -8,7 +8,7 @@ public class CouponTypeValidationAttribute : ValidationAttribute
 {
     public override bool IsValid(object? value)
     {
-        if (value != null && value.ToString() == "Percent" || value.ToString() == "Money" || value.ToString() == "BuyXGetY")
+        if (value != null && value.ToString() == "Percent" || value.ToString() == "Money")
             return true;
 
         return false;

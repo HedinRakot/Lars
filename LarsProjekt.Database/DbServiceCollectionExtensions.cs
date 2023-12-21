@@ -1,4 +1,5 @@
 ﻿using LarsProjekt.Database.Repositories;
+using LarsProjekt.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,7 @@ public static class DbServiceCollectionExtensions
             .AddScoped<IOrderDetailRepository, OrderDetailRepository>()
             .AddScoped<IAddressRepository, AddressRepository>()
             .AddScoped<ICouponRepository, CouponRepository>()
+            .AddScoped<ICouponCountService, CouponCountService>()
             .AddScoped<ISqlUnitOfWork, SqlUnitOfWork>();
     }
 }

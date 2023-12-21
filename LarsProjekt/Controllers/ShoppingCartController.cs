@@ -4,8 +4,6 @@ using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using LarsProjekt.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 
 namespace LarsProjekt.Controllers;
@@ -45,7 +43,7 @@ public class ShoppingCartController : Controller
 
             foreach (var cartItem in cart.Items)
             {
-                cartItem.DiscountedPrice = CalcDiscountedItemPrice(cartItem.PriceOffer);
+                cartItem.DiscountedPrice = CalcDiscountedItemPrice(cartItem.PriceOffer, cartItem.Amount);
                 cartItem.Discount = CalcItemDiscount(cartItem.PriceOffer);
             }
 
@@ -197,70 +195,83 @@ public class ShoppingCartController : Controller
         var cookie = $"shoppingCart{user}";
         var cart = GetCartModel();
         var offer = cart.Offers.FirstOrDefault(x => x.Coupon.Code == couponCode);
-
+        
         if(coupon != null)
         {
-            if (cart.Offers.Count >= 3)
-            {
-                string message = "You can use a maximum of 3 codes per order.";
-                return Json(new { success = "false", message, total = cart.Total });
-            }
+            coupon.Expired = Expired(coupon);
+            _couponRepository.Update(coupon);
 
-            if (offer == null)
+            if (coupon.Expired == false) 
             {
-                decimal.TryParse(coupon.Discount, out decimal x);
-                cart.Total = CalcDiscountedTotal();
-                cart.Discount = CalcDiscount() + CalcMoneyDiscount();
+                if (cart.Offers.Count >= 3)
+                {
+                    string message = "You can use a maximum of 3 codes per order.";
+                    return Json(new { success = "false", message, total = cart.Total });
+                }
 
-                if (cart.Discount == 0)
-                {                    
-                    if(coupon.Type == "Percent")
+                if (offer == null)
+                {
+                    decimal.TryParse(coupon.Discount, out decimal x);
+                    cart.Total = CalcDiscountedTotal();
+                    cart.Discount = CalcDiscount() + CalcMoneyDiscount();
+
+                    if (cart.Discount == 0)
                     {
-                        cart.Discount = (x / 100) * cart.Total;
-                        cart.Total = cart.Total - cart.Discount;
+                        if (coupon.Type == "Percent")
+                        {
+                            cart.Discount = (x / 100) * cart.Total;
+                            cart.Total = cart.Total - cart.Discount;
+                        }
+                        else
+                        {
+                            cart.Discount = x;
+                        }
+                    }
+
+                    var model = new OfferModel
+                    {
+                        Id = cart.Offers.Count > 0 ? cart.Offers.Max(o => o.Id) + 1 : 1,
+                        Coupon = coupon.ToModel()
+                    };
+
+                    if (coupon.Type == "Percent")
+                    {
+                        model.Discount = (x / 100) * GetTotal();
                     }
                     else
                     {
-                        cart.Discount = x;
-                    }                    
-                }
+                        model.Discount = x;
+                    }
 
-                var model = new OfferModel
-                {
-                    Id = cart.Offers.Count > 0 ? cart.Offers.Max(o => o.Id) + 1 : 1,
-                    Coupon = coupon.ToModel()
-                };
+                    cart.Offers.Add(model);
 
-                if (coupon.Type == "Percent")
-                {
-                    model.Discount = (x / 100) * GetTotal();
+                    var newCookieValue = JsonSerializer.Serialize(cart);
+                    var options = new CookieOptions
+                    {
+                        Expires = DateTime.UtcNow.AddDays(1)
+                    };
+                    Response.Cookies.Append(cookie, newCookieValue, options);
+                    return Json(new { success = "true", total = cart.Total });
                 }
                 else
                 {
-                    model.Discount = x;
+                    cart.Total = CalcDiscountedTotal();
+                    cart.Discount = CalcDiscount() + CalcMoneyDiscount();
+                    string message = "This code can only be used once for an order.";
+                    return Json(new { success = "false", message, total = cart.Total });
                 }
-
-                cart.Offers.Add(model);                
-
-                var newCookieValue = JsonSerializer.Serialize(cart);
-                var options = new CookieOptions
-                {
-                    Expires = DateTime.UtcNow.AddDays(1)
-                };
-                Response.Cookies.Append(cookie, newCookieValue, options);
-                return Json(new { success = "true", total = cart.Total });
             }
             else
             {
                 cart.Total = CalcDiscountedTotal();
-                cart.Discount = CalcDiscount() + CalcMoneyDiscount();
-                string message = "This code can only be used once for an order.";
+                string message = "This code has expired.";
                 return Json(new { success = "false", message, total = cart.Total });
             }
         }
         else
         {
-            string message = "This code does not exist or cannot be redeemed.";
+            cart.Total = CalcDiscountedTotal();
+            string message = "This code does not exist.";
             return Json(new { success = "false", message, total = cart.Total });
         }
 
@@ -310,11 +321,11 @@ public class ShoppingCartController : Controller
         return cart;
     }
 
-    private decimal CalcDiscountedItemPrice(decimal price)
+    private decimal CalcDiscountedItemPrice(decimal price, int amount)
     {        
         var moneyDiscount = CalcCartItemMoneyDiscount();
         var discount = CalcCartItemDiscount(price);
-        price = price - moneyDiscount - discount;
+        price = (price - discount) * amount - moneyDiscount;
         return price;
     }
 
@@ -437,4 +448,18 @@ public class ShoppingCartController : Controller
         return value;
 
     }
+
+    private bool Expired(Coupon coupon)
+    {
+        if (coupon == null)
+        {
+            return false;
+        }
+        if (coupon.ExpiryDate < DateTimeOffset.Now || coupon.Count <= coupon.AppliedCount)
+        {
+            return true;
+        }
+        return false;
+    }
+
 }

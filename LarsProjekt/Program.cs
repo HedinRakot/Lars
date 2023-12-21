@@ -65,4 +65,4 @@ app.MapControllerRoute(
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
-app.Run();
+await app.RunAsync();

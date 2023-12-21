@@ -11,7 +11,10 @@ namespace LarsProjekt.Models.Mapping
                 Id = coupon.Id,
                 Code = coupon.Code,
                 Discount = coupon.Discount,
-                Type = coupon.Type
+                Type = coupon.Type,
+                ExpiryDate = coupon.ExpiryDate,
+                Expired = coupon.Expired,
+                Count = coupon.Count
             };
         }
 
@@ -22,7 +25,9 @@ namespace LarsProjekt.Models.Mapping
                 Id = model.Id,
                 Code = model.Code,
                 Discount = model.Discount,
-                Type = model.Type
+                Type = model.Type,
+                ExpiryDate = model.ExpiryDate,
+                Count = model.Count
             };
         }
     }

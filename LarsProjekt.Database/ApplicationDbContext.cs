@@ -42,6 +42,7 @@ public class ApplicationDbContext : DbContext
             .WithOne(o => o.User)
             .HasForeignKey(o => o.UserId)
             .HasPrincipalKey(o => o.Id);
-            
+
+        modelBuilder.Entity<Coupon>().Property("Version").IsRowVersion();
     }
 }
