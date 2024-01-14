@@ -14,7 +14,9 @@ public class ProductController : Controller
         _productRepository = productRepository;
     }
 
-    [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
+    //[Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
+    [AllowAnonymous]
+    [ServiceFilter(typeof(ApiKeyAuthenticationFilter))]
     public IActionResult Index()
     {
         var list = new List<ProductModel>();
@@ -23,7 +25,7 @@ public class ProductController : Controller
             list.Add(product.ToModel());
         }
 
-        return View(list);
+        return Ok(list);
     }
 
     public IActionResult Details(long id)
