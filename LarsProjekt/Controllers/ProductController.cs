@@ -1,6 +1,8 @@
-﻿using LarsProjekt.Database.Repositories;
+﻿using LarsProjekt.Authentication;
+using LarsProjekt.Database.Repositories;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Controllers;
@@ -11,6 +13,8 @@ public class ProductController : Controller
     {
         _productRepository = productRepository;
     }
+
+    [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
     public IActionResult Index()
     {
         var list = new List<ProductModel>();

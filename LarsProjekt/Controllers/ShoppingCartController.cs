@@ -134,6 +134,7 @@ public class ShoppingCartController : Controller
                 if (cart.Items.Count == 0)
                 {
                     Response.Cookies.Delete(cookie);
+                    return RedirectToAction(nameof(Index));
                 }
             }
         }

@@ -1,7 +1,9 @@
 using LarsProjekt.Authentication;
 using LarsProjekt.Database;
 using LarsProjekt.ErrorHandling;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging.Console;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +29,7 @@ builder.Services.AddAuthorization(o =>
     o.AddPolicy(AuthorizeControllerModelConvention.PolicyName, policy =>
     {
         policy.RequireAuthenticatedUser();
+        //policy.AddAuthenticationSchemes(ApiKeyAuthenticationScheme.DefaultScheme);
     });
 });
 
@@ -57,7 +60,6 @@ app.UseSession();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 app.MapControllerRoute(
     name: "default",
