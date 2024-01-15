@@ -45,36 +45,6 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
             }
         }
 
-        //var authSection = _configuration.GetSection(ApiKeyAuthenticationScheme.ApiKeySectionName);
-        //var apiList = new List<string>();
-        //foreach (var section in authSection.GetChildren())
-        //{
-        //    apiList.Add(section.Value);
-        //}
-        //var list = GetAppUsersFromAppSettings(_configuration);
-
-        //var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-        //var apiKey = _configuration.GetValue<List<string>>(ApiKeyAuthenticationScheme.ApiKeySectionName);
-
         return AuthenticateResult.Fail("No Api key or key is wrong");
     }
-
-    //public static IEnumerable<AppUser> GetAppUsersFromAppSettings(IConfiguration configuration)
-    //{
-    //    IConfigurationSection usersSection = configuration.GetSection(ApiKeyAuthenticationScheme.ApiKeySectionName);
-    //    IEnumerable<IConfigurationSection> usersArray = usersSection.GetChildren();
-
-    //    return usersArray.Select(configSection =>
-    //        new AppUser
-    //        (
-    //            Name: configSection["Name"]!.ToString(),
-    //            Key: configSection["Key"]!.ToString()
-    //        ));
-    //}
-
-    //public static List<AppUser>? GetAppUsersFromAppSettings(IConfiguration configuration)
-    //{
-    //    return configuration.GetSection(ApiKeyAuthenticationScheme.ApiKeySectionName).Get<List<AppUser>>();
-    //}
 }
