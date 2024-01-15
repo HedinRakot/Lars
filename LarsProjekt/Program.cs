@@ -1,6 +1,7 @@
 using LarsProjekt.Authentication;
 using LarsProjekt.Database;
 using LarsProjekt.ErrorHandling;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Logging.Console;
 
@@ -11,6 +12,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDatabase(builder.Configuration);
 
+//builder.Services.AddAuthentication(ApiKeyAuthenticationScheme.DefaultScheme);
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -20,14 +23,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = CookieAuthenticationDefaults.AuthenticationScheme;
         options.LoginPath = "/Login/SignIn/";
         options.AccessDeniedPath = "/Login/Forbidden/";
-    });
+    })
+    .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationScheme.DefaultScheme, null);
 
 builder.Services.AddAuthorization(o =>
 {
     o.AddPolicy(AuthorizeControllerModelConvention.PolicyName, policy =>
     {
-        policy.RequireAuthenticatedUser();
-        //policy.AddAuthenticationSchemes(ApiKeyAuthenticationScheme.DefaultScheme);
+        policy.RequireAuthenticatedUser();        
     });
 });
 
@@ -40,7 +43,7 @@ builder.Services.AddMvc(options =>
 
 builder.Logging.AddSimpleConsole(i => i.ColorBehavior = LoggerColorBehavior.Enabled);
 
-builder.Services.AddScoped<ApiKeyAuthenticationFilter>();
+builder.Services.AddScoped<ApiKeyAuthorizationFilter>();
 
 var app = builder.Build();
 

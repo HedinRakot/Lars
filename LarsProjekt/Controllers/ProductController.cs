@@ -14,9 +14,9 @@ public class ProductController : Controller
         _productRepository = productRepository;
     }
 
-    //[Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
-    [AllowAnonymous]
-    [ServiceFilter(typeof(ApiKeyAuthenticationFilter))]
+    [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
+    //[AllowAnonymous]
+    //[ServiceFilter(typeof(ApiKeyAuthorizationFilter))]
     public IActionResult Index()
     {
         var list = new List<ProductModel>();

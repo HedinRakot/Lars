@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Authentication
 {
-    public class ApiKeyAuthenticationFilter : IAuthorizationFilter
+    public class ApiKeyAuthorizationFilter : IAuthorizationFilter
     {
         private readonly IConfiguration _configuration;
 
-        public ApiKeyAuthenticationFilter(IConfiguration configuration)
+        public ApiKeyAuthorizationFilter(IConfiguration configuration)
         {
             _configuration = configuration;
         }
