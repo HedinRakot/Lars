@@ -24,16 +24,19 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
     {
         Request.Headers.TryGetValue(ApiKeyAuthenticationScheme.ApiKeyHeaderName, out var key);
 
-        var valuesSection = _configuration.GetSection("Authentication:Users");
-        foreach (IConfigurationSection section in valuesSection.GetChildren())
+        List<AppUser> list = new List<AppUser>();
+        var authSection = _configuration.GetSection(ApiKeyAuthenticationScheme.ApiKeySectionName);
+        foreach (IConfigurationSection section in authSection.GetChildren())
         {
+            
             var apiKey = section.GetValue<string>("Key");
             var name = section.GetValue<string>("Name");
+            list.Add(new AppUser(name, apiKey));
 
             if (key == apiKey)
             {
                 var claims = new[] {
-                new Claim(ClaimTypes.Name, name),
+                new Claim(ClaimTypes.Name, name)
             };
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

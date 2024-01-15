@@ -7,8 +7,3 @@ using System.Threading.Tasks;
 namespace LarsProjekt.Domain;
 
 public record AppUser(string Name, string Key);
-
-public record AppSettings
-{
-    public List<AppUser>? Users { get; init;}
-}
