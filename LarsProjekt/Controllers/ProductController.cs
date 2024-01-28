@@ -1,31 +1,26 @@
-﻿using LarsProjekt.Authentication;
-using LarsProjekt.Database.Repositories;
+﻿using LarsProjekt.Application;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarsProjekt.Controllers;
 public class ProductController : Controller
 {
-    private readonly IProductRepository _productRepository;
-    public ProductController(IProductRepository productRepository)
+    private readonly IProductService _productService;
+    public ProductController(IProductService productService)
     {
-        _productRepository = productRepository;
+        _productService = productService;
     }
-
-    [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
-    //[AllowAnonymous]
-    //[ServiceFilter(typeof(ApiKeyAuthorizationFilter))]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var list = new List<ProductModel>();
-        foreach (var product in _productRepository.GetAll())
+        var models = new List<ProductModel>();
+        var list = await _productService.GetProducts();
+        foreach (var product in list)
         {
-            list.Add(product.ToModel());
+            models.Add(product.ToModel());
         }
 
-        return Ok(list);
+        return Ok(models);
     }
 
     public IActionResult Details(long id)

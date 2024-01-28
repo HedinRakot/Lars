@@ -1,7 +1,6 @@
-﻿using LarsProjekt.Domain;
+﻿using LarsProjekt.Dtos;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
@@ -24,14 +23,13 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
     {
         Request.Headers.TryGetValue(ApiKeyAuthenticationScheme.ApiKeyHeaderName, out var key);
 
-        List<AppUser> list = new List<AppUser>();
+        List<AppUserDto> list = new List<AppUserDto>();
         var authSection = _configuration.GetSection(ApiKeyAuthenticationScheme.ApiKeySectionName);
         foreach (IConfigurationSection section in authSection.GetChildren())
-        {
-            
+        {            
             var apiKey = section.GetValue<string>("Key");
             var name = section.GetValue<string>("Name");
-            list.Add(new AppUser(name, apiKey));
+            list.Add(new AppUserDto(name, apiKey));
 
             if (key == apiKey)
             {

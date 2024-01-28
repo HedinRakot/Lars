@@ -1,6 +1,7 @@
 using LarsProjekt.Authentication;
 using LarsProjekt.Database;
 using LarsProjekt.ErrorHandling;
+using LarsProjekt.Application;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Logging.Console;
@@ -11,8 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDatabase(builder.Configuration);
-
-//builder.Services.AddAuthentication(ApiKeyAuthenticationScheme.DefaultScheme);
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -31,10 +30,13 @@ builder.Services.AddAuthorization(o =>
     o.AddPolicy(AuthorizeControllerModelConvention.PolicyName, policy =>
     {
         policy.RequireAuthenticatedUser();        
+        policy.AddAuthenticationSchemes(ApiKeyAuthenticationScheme.DefaultScheme);
     });
 });
 
 builder.Services.AddSession();
+
+builder.Services.AddApplication();
 
 builder.Services.AddMvc(options =>
 {
