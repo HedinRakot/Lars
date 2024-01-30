@@ -22,15 +22,15 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = CookieAuthenticationDefaults.AuthenticationScheme;
         options.LoginPath = "/Login/SignIn/";
         options.AccessDeniedPath = "/Login/Forbidden/";
-    })
-    .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationScheme.DefaultScheme, null);
+    });
+    //.AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationScheme.DefaultScheme, null);
 
 builder.Services.AddAuthorization(o =>
 {
     o.AddPolicy(AuthorizeControllerModelConvention.PolicyName, policy =>
     {
         policy.RequireAuthenticatedUser();        
-        policy.AddAuthenticationSchemes(ApiKeyAuthenticationScheme.DefaultScheme);
+        //policy.AddAuthenticationSchemes(ApiKeyAuthenticationScheme.DefaultScheme);
     });
 });
 

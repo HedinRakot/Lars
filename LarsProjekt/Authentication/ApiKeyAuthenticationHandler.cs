@@ -1,4 +1,4 @@
-﻿using LarsProjekt.Dtos;
+﻿using LarsProjekt.Dto;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Options;

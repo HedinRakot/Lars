@@ -1,4 +1,5 @@
 ﻿using LarsProjekt.Application;
+using LarsProjekt.Dto.Mapping;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Mvc;
@@ -20,26 +21,31 @@ public class ProductController : Controller
             models.Add(product.ToModel());
         }
 
-        return Ok(models);
+        return View(models);
     }
 
-    public IActionResult Details(long id)
+    public async Task<IActionResult> Details(long id)
     {
-        var product = _productRepository.Get(id);
-       
-        try
-        {
-            var model = product.ToModel();
-            return View(model);
-        }
-        catch
-        {
-            throw new Exception("Product not found");
-        }
+        var product = await _productService.GetById(id);
+        //if(product == null)
+        //{
+        //    return NotFound();
+        //}
+        return View(product.ToModel());
+
+
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> Delete(long id)
+    {
+        _productService.Delete(id);
+        return Ok(new { success = "true" });
+
     }
 
     [HttpGet]
-    public IActionResult CreateEdit(long id)
+    public async Task<IActionResult> CreateEdit(long id)
     {
         if (id == 0)
         {
@@ -47,29 +53,29 @@ public class ProductController : Controller
         }
         else
         {
-            var product = _productRepository.Get(id);
-            var model = product.ToModel();
-            return View(model);           
+            var product = await _productService.GetById(id);
+            return View(product.ToModel());
         }
     }
 
     [HttpGet]
-    public IActionResult AddPic(long id)
+    public async Task<IActionResult> AddPic(long id)
     {
-        return View(_productRepository.Get(id).ToModel());
+        var product = await _productService.GetById(id);
+        return View(product.ToModel());
     }
 
-    [HttpPost]
-    public IActionResult AddPic([FromForm] IFormFile file, [FromRoute] long id)
+    [HttpPut]
+    public async Task<IActionResult> AddPic([FromForm] IFormFile file, [FromRoute] long id)
     {
         if (file != null)
         {
             using var ms = new MemoryStream();
             file.CopyTo(ms);
             var str = Convert.ToBase64String(ms.ToArray());
-            var product = _productRepository.Get(id);
+            var product = await _productService.GetById(id);
             product.Image = str;
-            _productRepository.Update(product);
+            await _productService.Update(product.ToDto());
         }
         return RedirectToAction(nameof(Index));
     }
@@ -81,32 +87,22 @@ public class ProductController : Controller
         {
             if (model.Id == 0)
             {
-                var product = model.ToDomain();
-                _productRepository.Add(product);
+
+                _productService.Create(model.ToDomain());
                 return RedirectToAction(nameof(Index));
             }
-            else
-            {
-                var product = model.ToDomain();
-                _productRepository.Update(product);
-                return RedirectToAction(nameof(Details), new { Id = product.Id });
-            }
-        }       
-        return View(model);        
-    }
-
-    [HttpDelete]
-    public IActionResult Delete(long id)
-    {
-        try
-        {
-            var model = _productRepository.Get(id);
-            _productRepository.Delete(model);
-            return Ok(new { success = "true" });
-        } 
-        catch 
-        { 
-            throw new BadHttpRequestException("Oops, please try again!", 400);
         }
+        return View();
     }
 }
+//        else
+//        {
+//            var product = model.ToDomain();
+//            _productRepository.Update(product);
+//            return RedirectToAction(nameof(Details), new { Id = product.Id });
+//        }
+//    }
+//    return View(model);
+//}
+
+

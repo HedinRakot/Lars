@@ -1,6 +1,6 @@
 ﻿using LarsProjekt.Domain;
 
-namespace LarsProjekt.Dtos.Mapping;
+namespace LarsProjekt.Dto.Mapping;
 
 public static class ProductDtoMappingExtension
 {
