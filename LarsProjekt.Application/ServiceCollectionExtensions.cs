@@ -6,6 +6,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        return services.AddScoped<IProductService, ProductService>();
+        return services.AddScoped<IProductService, ProductService>()
+            .AddScoped<ICouponService, CouponService>()
+            .AddScoped<IApiClient, ApiClient>();
+
     }
 }

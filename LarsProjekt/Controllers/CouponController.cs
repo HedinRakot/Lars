@@ -3,26 +3,30 @@ using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Mvc;
+using LarsProjekt.Application;
+
 
 namespace LarsProjekt.Controllers;
 
 public class CouponController : Controller
 {
     private readonly ICouponRepository _couponRepository;
-
-    public CouponController(ICouponRepository couponRepository)
+    private readonly ICouponService _couponService;
+    public CouponController(ICouponRepository couponRepository, ICouponService couponService)
     {
         _couponRepository = couponRepository;
+        _couponService = couponService;
     }
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var list = new List<CouponModel>();
-        foreach ( var coupon in _couponRepository.GetAll())
+        var models = new List<CouponModel>();
+        var list = await _couponService.GetCoupons();
+        foreach ( var coupon in list)
         {
-            list.Add(coupon.ToModel());
+            models.Add(coupon.ToModel());
         }
 
-        return View(list);
+        return View(models);
     }
 
     [HttpGet]

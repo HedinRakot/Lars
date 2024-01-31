@@ -27,13 +27,7 @@ public class ProductController : Controller
     public async Task<IActionResult> Details(long id)
     {
         var product = await _productService.GetById(id);
-        //if(product == null)
-        //{
-        //    return NotFound();
-        //}
         return View(product.ToModel());
-
-
     }
 
     [HttpDelete]
@@ -75,7 +69,7 @@ public class ProductController : Controller
             var str = Convert.ToBase64String(ms.ToArray());
             var product = await _productService.GetById(id);
             product.Image = str;
-            await _productService.Update(product.ToDto());
+            await _productService.Update(product);
         }
         return RedirectToAction(nameof(Index));
     }
@@ -87,22 +81,17 @@ public class ProductController : Controller
         {
             if (model.Id == 0)
             {
-
                 _productService.Create(model.ToDomain());
                 return RedirectToAction(nameof(Index));
             }
+            else
+            {
+                _productService.Update(model.ToDomain());
+                return RedirectToAction(nameof(Index));
+            }
         }
-        return View();
+        return BadRequest();
     }
 }
-//        else
-//        {
-//            var product = model.ToDomain();
-//            _productRepository.Update(product);
-//            return RedirectToAction(nameof(Details), new { Id = product.Id });
-//        }
-//    }
-//    return View(model);
-//}
 
 

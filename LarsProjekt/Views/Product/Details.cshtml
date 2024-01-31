@@ -94,6 +94,11 @@
                                    class="btn btn-primary bg-gradient pt-2 w-100 py-2 text-uppercase fw-semibold">
                                    Add a picture
                                 </a>
+                                
+                                    <a data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-id="@Model.Id" class="btn btn-light mx-2">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                
                             </div>
                         </div>
                     </div>
@@ -103,4 +108,35 @@
         </div>
     </div>
 </form>
+
+<partial name="/Views/Shared/_DeleteModal.cshtml" />
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var deleteModal = document.getElementById('deleteModal');
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                var button = event.relatedTarget;
+
+                // Extract info from data-bs-* attributes
+                var id = $(button).attr('data-bs-id');
+
+                $('#modalId').val(id);
+            });
+        });
+
+        function deleteObj() {
+            var id = $('#modalId').val();
+            $.ajax({
+                url: '@Url.Action("Delete")/' + id,
+                type: 'DELETE',
+                success: function (result) {
+                    window.location = '/Product';
+                }
+            });
+        }
+    </script>
+}
 
