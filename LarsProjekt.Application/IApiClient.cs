@@ -3,6 +3,6 @@ namespace LarsProjekt.Application
 {
     public interface IApiClient
     {
-        Task<string> GetHttpResponseMessageAsync(string obj, string uriMethod, HttpMethod httpMethod);
+        Task<T> GetHttpResponseMessageAsync<T>(string obj, string uriMethod, HttpMethod httpMethod) where T : class, new();
     }
 }

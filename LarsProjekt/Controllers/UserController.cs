@@ -1,4 +1,5 @@
-﻿using LarsProjekt.Database;
+﻿using LarsProjekt.Application;
+using LarsProjekt.Database;
 using LarsProjekt.Database.Repositories;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
@@ -15,15 +16,17 @@ public class UserController : Controller
     private readonly IAddressRepository _addressRepository;
     private readonly IUserRepository _userRepository;
     private readonly ISqlUnitOfWork _unitOfWork;
-    public UserController(IUserRepository userRepository, IAddressRepository addressRepository, ISqlUnitOfWork sqlUnitOfWork)
+    private readonly IUserService _userService;
+    public UserController(IUserRepository userRepository, IAddressRepository addressRepository, ISqlUnitOfWork sqlUnitOfWork, IUserService userService)
     {
         _userRepository = userRepository;
         _addressRepository = addressRepository;
         _unitOfWork = sqlUnitOfWork;
+        _userService = userService;
     }
-    public IActionResult Details(long id)
+    public async Task<IActionResult> Details(long id)
     {
-        var user = _userRepository.Get(id);
+        var user = await _userService.GetById(id);
         var model = user.ToModel();
 
         return View(model);
@@ -40,11 +43,11 @@ public class UserController : Controller
     }
 
     [HttpPost]
-    public IActionResult ChangePassword(ChangePasswordModel model)
+    public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
     {
         if (ModelState.IsValid)
         {
-            var user = _userRepository.Get(model.Id);
+            var user = await _userService.GetById(model.Id);
             if (model.Password == model.PasswordRepeat)
             {
                 user.Password = model.Password;
@@ -60,9 +63,9 @@ public class UserController : Controller
     }
     [AllowAnonymous]
     [HttpGet]
-    public IActionResult CreateEdit()
+    public async Task<Task<IActionResult> CreateEdit()
     {
-        var signedInUser = _userRepository.GetByName(HttpContext.User.Identity.Name);
+        var signedInUser = await _userService.GetByName(HttpContext.User.Identity.Name);
 
         if( signedInUser != null )
         {

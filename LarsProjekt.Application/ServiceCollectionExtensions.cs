@@ -8,7 +8,9 @@ public static class ServiceCollectionExtensions
     {
         return services.AddScoped<IProductService, ProductService>()
             .AddScoped<ICouponService, CouponService>()
-            .AddScoped<IApiClient, ApiClient>();
-
+            .AddScoped<IApiClient, ApiClient>()
+            .AddScoped<IUserService, UserService>()
+            .AddScoped<IOrderDetailService, OrderDetailService>()
+            .AddScoped<IOrderService, OrderService>();
     }
 }

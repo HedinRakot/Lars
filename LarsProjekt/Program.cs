@@ -1,8 +1,7 @@
+using LarsProjekt.Application;
 using LarsProjekt.Authentication;
 using LarsProjekt.Database;
 using LarsProjekt.ErrorHandling;
-using LarsProjekt.Application;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Logging.Console;
 
@@ -46,6 +45,8 @@ builder.Services.AddMvc(options =>
 builder.Logging.AddSimpleConsole(i => i.ColorBehavior = LoggerColorBehavior.Enabled);
 
 builder.Services.AddScoped<ApiKeyAuthorizationFilter>();
+
+builder.Services.Configure<ApiUserOptions>(builder.Configuration.GetSection(ApiUserOptions.Section));
 
 var app = builder.Build();
 
