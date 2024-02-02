@@ -1,4 +1,4 @@
-﻿using LarsProjekt.Database.Repositories;
+﻿using LarsProjekt.Application;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
@@ -9,12 +9,12 @@ using System.Text.Json;
 namespace LarsProjekt.Controllers;
 public class ShoppingCartController : Controller
 {
-    private readonly IProductRepository _productRepository;
-    private readonly ICouponRepository _couponRepository;
-    public ShoppingCartController(IProductRepository productRepository, ICouponRepository couponRepository)
+    private readonly IProductService _productService;
+    private readonly ICouponService _couponService;
+    public ShoppingCartController(IProductService productService, ICouponService couponService)
     {
-        _productRepository = productRepository;
-        _couponRepository = couponRepository;
+        _productService = productService;
+        _couponService = couponService;
     }
 
     [HttpGet]
@@ -67,9 +67,9 @@ public class ShoppingCartController : Controller
 
 
     [HttpGet]
-    public IActionResult AddToCart(int id)
+    public async  Task<IActionResult> AddToCart(int id)
     {
-        var product = _productRepository.Get(id);
+        var product = await _productService.GetById(id);
         var user = HttpContext.User.Identity.Name;
         var cookie = $"shoppingCart{user}";
         var cart = new CartModel();
@@ -189,9 +189,9 @@ public class ShoppingCartController : Controller
 
 
     [HttpPost]
-    public IActionResult Redeem(string couponCode)
+    public async Task<IActionResult> Redeem(string couponCode)
     {
-        var coupon = _couponRepository.Get(couponCode);
+        var coupon = await _couponService.GetByName(couponCode);
         var user = HttpContext.User.Identity.Name;
         var cookie = $"shoppingCart{user}";
         var cart = GetCartModel();
@@ -200,7 +200,7 @@ public class ShoppingCartController : Controller
         if(coupon != null)
         {
             coupon.Expired = Expired(coupon);
-            _couponRepository.Update(coupon);
+            await _couponService.Update(coupon);
 
             if (coupon.Expired == false) 
             {

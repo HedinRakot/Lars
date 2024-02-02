@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IApiClient, ApiClient>()
             .AddScoped<IUserService, UserService>()
             .AddScoped<IOrderDetailService, OrderDetailService>()
-            .AddScoped<IOrderService, OrderService>();
+            .AddScoped<IOrderService, OrderService>()
+            .AddScoped<IAddressService, AddressService>();
     }
 }

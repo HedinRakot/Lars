@@ -30,6 +30,11 @@ internal class CouponService : ICouponService
 
         return content;
     }
+    public async Task<Coupon> GetByName(string name)
+    {
+        var content = await _client.GetHttpResponseMessageAsync<Coupon>("coupons", $"getbyname?name={name}", HttpMethod.Get);
+        return content;
+    }
 
     public async Task<string> Delete(long id)
     {
@@ -42,25 +47,25 @@ internal class CouponService : ICouponService
     // Wie in den Post und Put Methoden das object (coupon.ToDto) übergeben?
 
 
-    //public async Task<Coupon> Update(Coupon coupon)
-    //{
-    //    var content = await _client.GetHttpResponseMessageAsync<Coupon>("coupons", "update", HttpMethod.Put);
+    public async Task<Coupon> Update(Coupon coupon)
+    {
+        var content = await _client.GetHttpResponseMessageAsync<Coupon>("coupons", "update", HttpMethod.Put);
 
-    //    var requestContent = JsonSerializer.Serialize(coupon.ToDto());
-    //    httpRequestMessage.Content = new StringContent(requestContent, System.Text.Encoding.UTF8, "application/json");
+        //var requestContent = JsonSerializer.Serialize(coupon.ToDto());
+        //httpRequestMessage.Content = new StringContent(requestContent, System.Text.Encoding.UTF8, "application/json");
 
 
-    //    return content;
-    //}
-    //public async Task<Coupon> Create(Coupon coupon)
-    //{
-    //    var content = await _client.GetHttpResponseMessageAsync<Coupon>("coupons", "create", HttpMethod.Post);
+        return content;
+    }
+    public async Task<Coupon> Create(Coupon coupon)
+    {
+        var content = await _client.GetHttpResponseMessageAsync<Coupon>("coupons", "create", HttpMethod.Post);
 
-    //    var requestContent = JsonSerializer.Serialize(coupon.ToDto());
-    //    httpRequestMessage.Content = new StringContent(requestContent, System.Text.Encoding.UTF8, "application/json");
+        //var requestContent = JsonSerializer.Serialize(coupon.ToDto());
+        //httpRequestMessage.Content = new StringContent(requestContent, System.Text.Encoding.UTF8, "application/json");
 
-    //    return content;
+        return content;
 
-    //}
+    }
 
 }

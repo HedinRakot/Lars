@@ -13,9 +13,16 @@ internal class UserService : IUserService
     {
         _client = client;
     }
+
+    public async Task<User> GetByName(string name)
+    {
+        var content = await _client.GetHttpResponseMessageAsync<User>("users", $"getbyname?name={name}", HttpMethod.Get);
+
+        return content;
+    }
     public async Task<List<User>> Get()
     {
-        var content = await _client.GetHttpResponseMessageAsync<List<UserDto>>("products", "getall", HttpMethod.Get);
+        var content = await _client.GetHttpResponseMessageAsync<List<UserDto>>("users", "getall", HttpMethod.Get);
 
         var users = new List<User>();
         foreach (var user in content)

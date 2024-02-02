@@ -63,7 +63,7 @@ public class UserController : Controller
     }
     [AllowAnonymous]
     [HttpGet]
-    public async Task<Task<IActionResult> CreateEdit()
+    public async Task<IActionResult> CreateEdit()
     {
         var signedInUser = await _userService.GetByName(HttpContext.User.Identity.Name);
 
@@ -92,7 +92,7 @@ public class UserController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateEditAsync(UserRegistrationVM model)
     {
-        var signedInUser = _userRepository.GetByName(HttpContext.User.Identity.Name);
+        var signedInUser = await _userService.GetByName(HttpContext.User.Identity.Name);
 
         if (ModelState.IsValid)
         {

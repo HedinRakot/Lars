@@ -13,7 +13,7 @@ internal class OrderService : IOrderService
     {
         _client = client;
     }
-    public async Task<List<Order>> GetProducts()
+    public async Task<List<Order>> Get()
     {
         var content = await _client.GetHttpResponseMessageAsync<List<OrderDto>>("order", "getall", HttpMethod.Get);
 

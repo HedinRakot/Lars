@@ -25,6 +25,12 @@ internal class OrderDetailService : IOrderDetailService
 
         return list;
     }
+    public async Task<List<OrderDetail>> GetListWithOrderId(long id)
+    {
+        var content = await _client.GetHttpResponseMessageAsync<List<OrderDetail>>("orderdetails", $"getwithorderid?id={id}", HttpMethod.Get);
+
+        return content;
+    }
 
     public async Task<OrderDetail> GetById(long id)
     {

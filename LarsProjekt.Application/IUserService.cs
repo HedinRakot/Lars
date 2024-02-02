@@ -8,5 +8,6 @@ public interface IUserService
     Task<string> Delete(long id);
     Task<List<User>> Get();
     Task<User> GetById(long id);
+    Task<User> GetByName(string name);
     Task<User> Update(User user);
 }

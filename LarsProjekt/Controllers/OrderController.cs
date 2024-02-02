@@ -1,5 +1,5 @@
-﻿using LarsProjekt.Database;
-using LarsProjekt.Database.Repositories;
+﻿using LarsProjekt.Application;
+using LarsProjekt.Database;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
@@ -10,45 +10,40 @@ using System.Text.Json;
 namespace LarsProjekt.Controllers;
 public class OrderController : Controller
 {
-    private readonly IOrderRepository _orderRepository;
-    private readonly IOrderDetailRepository _orderDetailRepository;
-    private readonly IUserRepository _userRepository;
-    private readonly IAddressRepository _addressRepository;
-    private readonly ICouponRepository _couponRepository;
     private readonly ISqlUnitOfWork _sqlUnitOfWork;
-    private readonly IProductRepository _productRepository;
     private readonly ILogger<OrderController> _logger;
     private readonly ICouponCountService _couponCountService;
-    
+    private readonly IUserService _userService;
+    private readonly IOrderService _orderService;
+    private readonly IOrderDetailService _orderDetailService;
+    private readonly IAddressService _addressService;
+    private readonly IProductService _productService;
     public OrderController
-        (IOrderRepository orderRepository,
-        IOrderDetailRepository orderDetailRepository,
-        IUserRepository userRepository,
-        IAddressRepository addressRepository,
-        ICouponRepository couponRepository,
-        ISqlUnitOfWork sqlUnitOfWork,
-        IProductRepository productRepository,
+        (ISqlUnitOfWork sqlUnitOfWork,
         ILogger<OrderController> logger,
-        ICouponCountService couponCountService
-        )
+        ICouponCountService couponCountService,
+        IAddressService addressService,
+        IUserService userService,
+        IOrderDetailService orderDetailService,
+        IOrderService orderService,
+        IProductService productService)
     {
-        _orderRepository = orderRepository;
-        _orderDetailRepository = orderDetailRepository;
-        _userRepository = userRepository;
-        _addressRepository = addressRepository;
-        _couponRepository = couponRepository;
         _sqlUnitOfWork = sqlUnitOfWork;
-        _productRepository = productRepository;
         _logger = logger;
         _couponCountService = couponCountService;
+        _orderDetailService = orderDetailService;
+        _addressService = addressService;
+        _orderService = orderService;
+        _userService = userService;
+        _productService = productService;
     }
 
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var user = _userRepository.GetByName(HttpContext.User.Identity.Name);
-        var address = _addressRepository.Get(user.AddressId);
-        var orders = _orderRepository.GetAll();
+        var user = await _userService.GetByName(HttpContext.User.Identity.Name);
+        var address = await _addressService.GetById(user.AddressId);
+        var orders = await _orderService.Get();
         var list = new List<OrderModel>();
         foreach (var order in orders)
         {
@@ -62,11 +57,11 @@ public class OrderController : Controller
     }
 
     [HttpGet]
-    public IActionResult Checkout()
+    public async Task<IActionResult> Checkout()
     {
         var cart = GetCartModel();
-        var user = _userRepository.GetByName(HttpContext.User.Identity.Name);
-        var address = _addressRepository.Get(user.AddressId);
+        var user = await _userService.GetByName(HttpContext.User.Identity.Name);
+        var address = await _addressService.GetById(user.AddressId);
 
         cart.Total = CalcDiscountedTotal();       
 
@@ -152,12 +147,14 @@ public class OrderController : Controller
     }
 
     [HttpGet]
-    public IActionResult Details(long id)
+    public async Task<IActionResult> Details(long id)
     {                
-        var detail = _orderDetailRepository.GetListWithOrderId(id);
+        var detail = await _orderDetailService.GetListWithOrderId(id);
         var list = new List<OrderDetailModel>();
         foreach (var item in detail)
         {
+            var product = await _productService.GetById(item.ProductId);     // TESTEN
+
             list.Add(new OrderDetailModel
             {
                 OrderId = item.OrderId,
@@ -167,7 +164,7 @@ public class OrderController : Controller
                 Discount = item.Discount,
                 DiscountedPrice = item.DiscountedPrice,
                 Id = id,
-                Product = _productRepository.Get(item.ProductId).ToModel()
+                Product = product.ToModel()
             });
         }
 
@@ -176,12 +173,12 @@ public class OrderController : Controller
 
 
     [HttpPost]
-    public IActionResult CreateOrder(OrderModel model)
+    public async Task<IActionResult> CreateOrder(OrderModel model)
     {
 
         if (ModelState.IsValid)
         {
-            var user = _userRepository.GetByName(HttpContext.User.Identity.Name);
+            var user = await _userService.GetByName(HttpContext.User.Identity.Name);
             var cart = GetCartModel();
             var cookie = $"shoppingCart{HttpContext.User.Identity.Name}";
             
