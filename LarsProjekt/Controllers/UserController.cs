@@ -1,6 +1,4 @@
 ﻿using LarsProjekt.Application;
-using LarsProjekt.Database;
-using LarsProjekt.Database.Repositories;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using LarsProjekt.Models.ViewModels;
@@ -13,16 +11,12 @@ using System.Security.Claims;
 namespace LarsProjekt.Controllers;
 public class UserController : Controller
 {
-    private readonly IAddressRepository _addressRepository;
-    private readonly IUserRepository _userRepository;
-    private readonly ISqlUnitOfWork _unitOfWork;
+    private readonly IAddressService _addressSerivce;
     private readonly IUserService _userService;
-    public UserController(IUserRepository userRepository, IAddressRepository addressRepository, ISqlUnitOfWork sqlUnitOfWork, IUserService userService)
-    {
-        _userRepository = userRepository;
-        _addressRepository = addressRepository;
-        _unitOfWork = sqlUnitOfWork;
+    public UserController(IUserService userService, IAddressService addressService)
+    {        
         _userService = userService;
+        _addressSerivce = addressService;
     }
     public async Task<IActionResult> Details(long id)
     {
@@ -69,7 +63,7 @@ public class UserController : Controller
 
         if( signedInUser != null )
         {
-            var address = _unitOfWork.AddressRepository.Get(signedInUser.AddressId);
+            var address = await _addressSerivce.GetById(signedInUser.AddressId);
             if (signedInUser != null)
             {
                 UserRegistrationVM vm = new UserRegistrationVM()
@@ -101,9 +95,8 @@ public class UserController : Controller
                 var user = model.UserModel.ToDomain();
                 var address = model.AddressModel.ToDomain();
                 user.Address = address;
-                _unitOfWork.AddressRepository.Add(address);               
-                _unitOfWork.UserRepository.Add(user);                
-                _unitOfWork.SaveChanges();
+                await _addressSerivce.Create(address);               
+                await _userService.Create(user);                           
 
                 var claims = new[] {
                 new Claim(ClaimTypes.Name, user.Username),
@@ -121,22 +114,21 @@ public class UserController : Controller
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
 
                 return RedirectToAction(nameof(CreateEdit));
-
             }
-                // TODO Nutzernamen ändern
-            if (model.UserModel.Id == signedInUser.Id)
-            {
-                //var user = model.UserModel.ToDomain();
-                var address = model.AddressModel.ToDomain();
-                //_unitOfWork.UserRepository.Update(user);
-                _unitOfWork.AddressRepository.Update(address);
-                _unitOfWork.SaveChanges();
-                return RedirectToAction(nameof(CreateEdit));
-            }
+            
         } else
         {
             ModelState.AddModelError("Model", "Please check your information");
         }
+
+        // TODO Nutzernamen ändern
+        if (model.UserModel.Id == signedInUser.Id)
+        {
+            var address = model.AddressModel.ToDomain();
+            await _addressSerivce.Update(address);
+            return RedirectToAction(nameof(CreateEdit));
+        }
+
         return View(model);
     }
 }

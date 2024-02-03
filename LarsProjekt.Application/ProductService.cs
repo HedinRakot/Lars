@@ -28,31 +28,27 @@ internal class ProductService : IProductService
 
     public async Task<Product> GetById(long id)
     {
-        var content = await _client.GetHttpResponseMessageAsync<Product>("products", $"getbyid?id={id}", HttpMethod.Get);
+        var content = await _client.GetHttpResponseMessageAsync<ProductDto>("products", $"getbyid?id={id}", HttpMethod.Get);
 
-        return content;        
+        return content.ToDomain();        
     }
     public async Task<Product> Update(Product product)
     {
-        var content = await _client.GetHttpResponseMessageAsync<Product>("products", "update", HttpMethod.Put);
-
-        //var requestContent = JsonSerializer.Serialize(product.ToDto());
-        //httpRequestMessage.Content = new StringContent(requestContent, System.Text.Encoding.UTF8, "application/json");
+        var requestContent = JsonSerializer.Serialize(product.ToDto());
+        var content = await _client.PostHttpResponseMessageAsync<Product>("products", "update", requestContent, HttpMethod.Put);        
 
         return content;
     }
     public async Task<Product> Create(Product product)
-    {
-        var content = await _client.GetHttpResponseMessageAsync<Product>("products", "create", HttpMethod.Post);
-
-        //var requestContent = JsonSerializer.Serialize(product.ToDto());
-        //httpRequestMessage.Content = new StringContent(requestContent, System.Text.Encoding.UTF8, "application/json");
+    { 
+        var requestContent = JsonSerializer.Serialize(product.ToDto());
+        var content = await _client.PostHttpResponseMessageAsync<Product>("products", "update", requestContent, HttpMethod.Post);       
 
         return content;
     }
     public async Task<string> Delete(long id)
     {
-        var content = await _client.GetHttpResponseMessageAsync<Product>("products", $"delete?id={id}", HttpMethod.Delete);
+        var content = await _client.GetHttpResponseMessageAsync<ProductDto>("products", $"delete?id={id}", HttpMethod.Delete);
         return content.ToString();
     }
 }

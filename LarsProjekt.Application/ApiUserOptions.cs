@@ -4,9 +4,8 @@ namespace LarsProjekt.Application;
 
 public class ApiUserOptions
 {
-    public const string Section = "Authentication:Users";
+    public const string Section = "Authentication";
 
-    public List<AppUserDto> AppUserDtos {  get; set; }
-    //public string Key { get; set; }
-    //public string Name { get; set; }
+    public List<AppUserDto> Users {  get; set; }
+    
 }

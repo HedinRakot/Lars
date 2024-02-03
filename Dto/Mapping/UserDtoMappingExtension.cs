@@ -10,7 +10,9 @@ public static class UserDtoMappingExtension
             user.Id,
             user.Username,
             user.Password,
-            user.Email
+            user.Email,
+            user.Address.ToDto(),
+            user.AddressId
             );
     }
 
@@ -21,7 +23,8 @@ public static class UserDtoMappingExtension
             Id = dto.Id,
             Username = dto.Username,
             Email = dto.Email,
-            Password = dto.Password
+            Password = dto.Password,
+            AddressId = dto.AddressId
         };
     }
 }

@@ -1,6 +1,7 @@
 ﻿using LarsProjekt.Domain;
 using LarsProjekt.Dto;
 using LarsProjekt.Dto.Mapping;
+using System.Text.Json;
 
 namespace LarsProjekt.Application;
 
@@ -26,43 +27,35 @@ internal class CouponService : ICouponService
 
     public async Task<Coupon> GetById(long id)
     {
-        var content = await _client.GetHttpResponseMessageAsync<Coupon>("coupons", $"getbyid?id={id}", HttpMethod.Get);  // RECORD GEHT NICHT
+        var content = await _client.GetHttpResponseMessageAsync<CouponDto>("coupons", $"getbyid?id={id}", HttpMethod.Get);
 
-        return content;
+        return content.ToDomain();
     }
     public async Task<Coupon> GetByName(string name)
     {
-        var content = await _client.GetHttpResponseMessageAsync<Coupon>("coupons", $"getbyname?name={name}", HttpMethod.Get);
-        return content;
+        var content = await _client.GetHttpResponseMessageAsync<CouponDto>("coupons", $"getbyname?name={name}", HttpMethod.Get);
+
+        return content.ToDomain();
     }
 
     public async Task<string> Delete(long id)
     {
-        var content = await _client.GetHttpResponseMessageAsync<Coupon>("coupons", $"delete?id={id}", HttpMethod.Delete);
+        var content = await _client.GetHttpResponseMessageAsync<string>("coupons", $"delete?id={id}", HttpMethod.Delete);
 
         return content.ToString();
 
     }
-
-    // Wie in den Post und Put Methoden das object (coupon.ToDto) übergeben?
-
-
-    public async Task<Coupon> Update(Coupon coupon)
+    public async Task<Coupon> Update(Coupon coupon) // error concurrency
     {
-        var content = await _client.GetHttpResponseMessageAsync<Coupon>("coupons", "update", HttpMethod.Put);
-
-        //var requestContent = JsonSerializer.Serialize(coupon.ToDto());
-        //httpRequestMessage.Content = new StringContent(requestContent, System.Text.Encoding.UTF8, "application/json");
-
+        var requestContent = JsonSerializer.Serialize(coupon.ToDto());
+        var content = await _client.PostHttpResponseMessageAsync<Coupon>("coupons", "update", requestContent, HttpMethod.Put);
 
         return content;
     }
     public async Task<Coupon> Create(Coupon coupon)
     {
-        var content = await _client.GetHttpResponseMessageAsync<Coupon>("coupons", "create", HttpMethod.Post);
-
-        //var requestContent = JsonSerializer.Serialize(coupon.ToDto());
-        //httpRequestMessage.Content = new StringContent(requestContent, System.Text.Encoding.UTF8, "application/json");
+        var requestContent = JsonSerializer.Serialize(coupon.ToDto());
+        var content = await _client.PostHttpResponseMessageAsync<Coupon>("coupons", "create", requestContent, HttpMethod.Post);
 
         return content;
 

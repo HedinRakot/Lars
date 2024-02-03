@@ -8,4 +8,6 @@ public interface IOrderDetailService
     Task<List<OrderDetail>> Get();
     Task<OrderDetail> GetById(long id);
     Task<List<OrderDetail>> GetListWithOrderId(long id);
+    Task<OrderDetail> Update(OrderDetail orderDetail);
+    Task<OrderDetail> Create(OrderDetail orderDetail);
 }

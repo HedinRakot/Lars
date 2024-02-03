@@ -28,25 +28,21 @@ internal class AddressService : IAddressService
 
     public async Task<Address> GetById(long id)
     {
-        var content = await _client.GetHttpResponseMessageAsync<Address>("address", $"getbyid?id={id}", HttpMethod.Get);
+        var content = await _client.GetHttpResponseMessageAsync<AddressDto>("address", $"getbyid?id={id}", HttpMethod.Get);
 
-        return content;
+        return content.ToDomain();
     }
     public async Task<Address> Update(Address address)
-    {
-        var content = await _client.GetHttpResponseMessageAsync<Address>("address", "update", HttpMethod.Put);
-
-        //var requestContent = JsonSerializer.Serialize(address.ToDto());
-        //httpRequestMessage.Content = new StringContent(requestContent, System.Text.Encoding.UTF8, "application/json");
+    {        
+        var requestContent = JsonSerializer.Serialize(address.ToDto());
+        var content = await _client.PostHttpResponseMessageAsync<Address>("address", "update", requestContent, HttpMethod.Put);
 
         return content;
     }
     public async Task<Address> Create(Address address)
-    {
-        var content = await _client.GetHttpResponseMessageAsync<Address>("address", "create", HttpMethod.Post);
-
-        //var requestContent = JsonSerializer.Serialize(address.ToDto());
-        //httpRequestMessage.Content = new StringContent(requestContent, System.Text.Encoding.UTF8, "application/json");
+    {       
+        var requestContent = JsonSerializer.Serialize(address.ToDto());
+        var content = await _client.PostHttpResponseMessageAsync<Address>("address", "create", requestContent, HttpMethod.Post);
 
         return content;
     }

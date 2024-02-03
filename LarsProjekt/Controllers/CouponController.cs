@@ -9,12 +9,10 @@ using LarsProjekt.Application;
 namespace LarsProjekt.Controllers;
 
 public class CouponController : Controller
-{
-    private readonly ICouponRepository _couponRepository;
+{    
     private readonly ICouponService _couponService;
-    public CouponController(ICouponRepository couponRepository, ICouponService couponService)
+    public CouponController(ICouponService couponService)
     {
-        _couponRepository = couponRepository;
         _couponService = couponService;
     }
     public async Task<IActionResult> Index()
@@ -30,7 +28,7 @@ public class CouponController : Controller
     }
 
     [HttpGet]
-    public IActionResult CreateEdit(long id)
+    public async Task<IActionResult> CreateEdit(long id)
     {
         if (id == 0)
         {
@@ -38,27 +36,27 @@ public class CouponController : Controller
         }
         else
         {
-            var coupon = _couponRepository.GetById(id);
+            var coupon = await _couponService.GetById(id);
             var model = coupon.ToModel();
             return View(model);
         }
     }
 
     [HttpPost]
-    public IActionResult CreateEdit(CouponModel model)
+    public async Task<IActionResult> CreateEdit(CouponModel model)
     {
         if(ModelState.IsValid)
         {
             if (model.Id == 0)
             {
                 var coupon = model.ToDomain();
-                _couponRepository.Add(coupon);
+                await _couponService.Create(coupon);
                 return RedirectToAction(nameof(Index));
             }
             else
             {
                 var coupon = model.ToDomain();
-                _couponRepository.Update(coupon);
+                await _couponService.Update(coupon);
                 return RedirectToAction(nameof(Index), new { Id = coupon.Id });
             }
         }
@@ -66,19 +64,9 @@ public class CouponController : Controller
     }
 
     [HttpDelete]
-    public IActionResult Delete(long id)
+    public async Task<IActionResult> Delete(long id)
     {
-        try
-        {
-            var model = _couponRepository.GetById(id);
-            _couponRepository.Delete(model);
+            await _couponService.Delete(id);
             return Ok(new { success = "true" });
-        }
-        catch
-        {
-            throw new BadHttpRequestException("Oops, please try again!", 400);
-        }
-    }
-
-   
+    }   
 }

@@ -1,5 +1,4 @@
 ﻿using LarsProjekt.Application;
-using LarsProjekt.Database;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
@@ -9,8 +8,7 @@ using System.Text.Json;
 
 namespace LarsProjekt.Controllers;
 public class OrderController : Controller
-{
-    private readonly ISqlUnitOfWork _sqlUnitOfWork;
+{    
     private readonly ILogger<OrderController> _logger;
     private readonly ICouponCountService _couponCountService;
     private readonly IUserService _userService;
@@ -19,16 +17,14 @@ public class OrderController : Controller
     private readonly IAddressService _addressService;
     private readonly IProductService _productService;
     public OrderController
-        (ISqlUnitOfWork sqlUnitOfWork,
-        ILogger<OrderController> logger,
+        (ILogger<OrderController> logger,
         ICouponCountService couponCountService,
         IAddressService addressService,
         IUserService userService,
         IOrderDetailService orderDetailService,
         IOrderService orderService,
         IProductService productService)
-    {
-        _sqlUnitOfWork = sqlUnitOfWork;
+    {        
         _logger = logger;
         _couponCountService = couponCountService;
         _orderDetailService = orderDetailService;
@@ -187,8 +183,7 @@ public class OrderController : Controller
             order.UserId = user.Id;
             order.AddressId = user.AddressId;
             order.Total = cart.Total;
-            _sqlUnitOfWork.OrderRepository.Add(order);
-            _sqlUnitOfWork.SaveChanges();
+            await _orderService.Create(order);
 
             //add orderDetail                                   
             foreach (var item in cart.Items)
@@ -201,8 +196,7 @@ public class OrderController : Controller
                 orderDetail.Discount = item.Discount;
                 orderDetail.DiscountedPrice = item.DiscountedPrice;
 
-                _sqlUnitOfWork.OrderDetailRepository.Add(orderDetail);
-                _sqlUnitOfWork.SaveChanges();
+                await _orderDetailService.Create(orderDetail);
             }
             
             foreach(var offer in cart.Offers)

@@ -1,4 +1,4 @@
-﻿using LarsProjekt.Database.Repositories;
+﻿using LarsProjekt.Application;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -9,11 +9,11 @@ using System.Security.Claims;
 namespace LarsProjekt.Controllers;
 public class LoginController : Controller
 {    
-    private IUserRepository _userRepository;
+    private IUserService _userService;
     private readonly ILogger<LoginController> _logger;
-    public LoginController(IUserRepository userRepository, ILogger<LoginController> logger)
+    public LoginController(IUserService userService, ILogger<LoginController> logger)
     {
-        _userRepository = userRepository;
+        _userService = userService;
         _logger = logger;
     }
 
@@ -32,7 +32,7 @@ public class LoginController : Controller
         {
             try
             {
-                var userFromDb = _userRepository.GetByName(model.UserName);
+                var userFromDb = await _userService.GetByName(model.UserName);
                 if (model.Password == userFromDb.Password)
                 {
                     try

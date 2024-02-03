@@ -4,7 +4,9 @@ public record UserDto(
     long Id ,
     string Username,
     string Email,
-    string Password
+    string Password,
+    AddressDto? Address,
+    long AddressId
     );
 
 

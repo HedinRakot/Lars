@@ -44,4 +44,18 @@ internal class OrderDetailService : IOrderDetailService
         var content = await _client.GetHttpResponseMessageAsync<OrderDetail>("orderdetails", $"delete?id={id}", HttpMethod.Delete);
         return content.ToString();
     }
+    public async Task<OrderDetail> Update(OrderDetail orderDetail)
+    {
+        var requestContent = JsonSerializer.Serialize(orderDetail);
+        var content = await _client.PostHttpResponseMessageAsync<OrderDetail>("address", "update", requestContent, HttpMethod.Put);
+
+        return content;
+    }
+    public async Task<OrderDetail> Create(OrderDetail orderDetail)
+    {
+        var requestContent = JsonSerializer.Serialize(orderDetail);
+        var content = await _client.PostHttpResponseMessageAsync<OrderDetail>("address", "update", requestContent, HttpMethod.Post);
+
+        return content;
+    }
 }

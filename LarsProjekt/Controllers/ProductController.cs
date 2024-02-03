@@ -33,7 +33,7 @@ public class ProductController : Controller
     [HttpDelete]
     public async Task<IActionResult> Delete(long id)
     {
-        _productService.Delete(id);
+        await _productService.Delete(id);
         return Ok(new { success = "true" });
 
     }

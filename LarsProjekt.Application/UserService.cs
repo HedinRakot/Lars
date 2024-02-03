@@ -8,17 +8,25 @@ namespace LarsProjekt.Application;
 internal class UserService : IUserService
 {
     private readonly IApiClient _client;
+    private readonly IAddressService _addressService;
 
-    public UserService(IApiClient client)
+    public UserService(IApiClient client, IAddressService addressService)
     {
         _client = client;
+        _addressService = addressService;
     }
 
     public async Task<User> GetByName(string name)
     {
-        var content = await _client.GetHttpResponseMessageAsync<User>("users", $"getbyname?name={name}", HttpMethod.Get);
+        if (string.IsNullOrEmpty(name))
+        {
+            return null;
+        }
+        var content = await _client.GetHttpResponseMessageAsync<UserDto>("users", $"getbyname?name={name}", HttpMethod.Get);
+        var domainContent = content.ToDomain();
+        domainContent.Address = await _addressService.GetById(content.AddressId);
 
-        return content;
+        return domainContent;
     }
     public async Task<List<User>> Get()
     {
@@ -35,31 +43,27 @@ internal class UserService : IUserService
 
     public async Task<User> GetById(long id)
     {
-        var content = await _client.GetHttpResponseMessageAsync<User>("users", $"getbyid?id={id}", HttpMethod.Get);
+        var content = await _client.GetHttpResponseMessageAsync<UserDto>("users", $"getbyid?id={id}", HttpMethod.Get);
 
-        return content;
+        return content.ToDomain();
     }
     public async Task<User> Update(User user)
     {
-        var content = await _client.GetHttpResponseMessageAsync<User>("users", "update", HttpMethod.Put);
-
-        //var requestContent = JsonSerializer.Serialize(user.ToDto());
-        //httpRequestMessage.Content = new StringContent(requestContent, System.Text.Encoding.UTF8, "application/json");
+        var requestContent = JsonSerializer.Serialize(user.ToDto());
+        var content = await _client.PostHttpResponseMessageAsync<User>("users", "update", requestContent, HttpMethod.Put);
 
         return content;
     }
     public async Task<User> Create(User user)
     {
-        var content = await _client.GetHttpResponseMessageAsync<User>("users", "create", HttpMethod.Post);
-
-        //var requestContent = JsonSerializer.Serialize(user.ToDto());
-        //httpRequestMessage.Content = new StringContent(requestContent, System.Text.Encoding.UTF8, "application/json");
+        var requestContent = JsonSerializer.Serialize(user.ToDto());
+        var content = await _client.PostHttpResponseMessageAsync<User>("users", "create", requestContent, HttpMethod.Post);
 
         return content;
     }
     public async Task<string> Delete(long id)
     {
-        var content = await _client.GetHttpResponseMessageAsync<User>("users", $"delete?id={id}", HttpMethod.Delete);
+        var content = await _client.GetHttpResponseMessageAsync<UserDto>("users", $"delete?id={id}", HttpMethod.Delete);
         return content.ToString();
     }
 }
