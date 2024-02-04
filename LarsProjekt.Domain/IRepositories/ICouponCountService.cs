@@ -1,4 +1,4 @@
-﻿namespace LarsProjekt.Domain;
+﻿namespace LarsProjekt.Domain.IRepositories;
 
 public interface ICouponCountService
 {

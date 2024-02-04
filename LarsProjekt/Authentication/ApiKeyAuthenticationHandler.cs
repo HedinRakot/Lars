@@ -29,7 +29,7 @@ internal class ApiKeyAuthenticationHandler : AuthenticationHandler<Authenticatio
         {            
             var apiKey = section.GetValue<string>("Key");
             var name = section.GetValue<string>("Name");
-            list.Add(new AppUserDto(name, apiKey));
+            list.Add(new AppUserDto { Name = name, Key = apiKey }) ;
 
             if (key == apiKey)
             {

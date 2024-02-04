@@ -1,6 +1,5 @@
 using LarsProjekt.Application;
 using LarsProjekt.Authentication;
-using LarsProjekt.Database;
 using LarsProjekt.ErrorHandling;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Logging.Console;
@@ -9,8 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddDatabase(builder.Configuration);
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -47,6 +44,7 @@ builder.Logging.AddSimpleConsole(i => i.ColorBehavior = LoggerColorBehavior.Enab
 builder.Services.AddScoped<ApiKeyAuthorizationFilter>();
 
 builder.Services.Configure<ApiUserOptions>(builder.Configuration.GetSection(ApiUserOptions.Section));
+builder.Services.Configure<ApiUrlOptions>(builder.Configuration.GetSection(ApiUrlOptions.Section));
 
 var app = builder.Build();
 

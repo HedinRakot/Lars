@@ -42,7 +42,7 @@ internal class ProductService : IProductService
     public async Task<Product> Create(Product product)
     { 
         var requestContent = JsonSerializer.Serialize(product.ToDto());
-        var content = await _client.PostHttpResponseMessageAsync<Product>("products", "update", requestContent, HttpMethod.Post);       
+        var content = await _client.PostHttpResponseMessageAsync<Product>("products", "create", requestContent, HttpMethod.Post);       
 
         return content;
     }

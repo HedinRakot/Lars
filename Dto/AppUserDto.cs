@@ -1,6 +1,7 @@
 ﻿namespace LarsProjekt.Dto;
 
-public record AppUserDto(
-    string Name,
-    string Key
-    );
+public class AppUserDto
+{
+    public string Name { get; set; }
+    public string Key { get; set; }
+}

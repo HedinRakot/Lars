@@ -1,5 +1,6 @@
 ﻿using LarsProjekt.Application;
 using LarsProjekt.Domain;
+using LarsProjekt.Domain.IRepositories;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using LarsProjekt.Models.ViewModels;
