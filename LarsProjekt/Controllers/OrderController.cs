@@ -1,17 +1,18 @@
-﻿using LarsProjekt.Application;
+﻿using LarsProjekt.Application.IService;
 using LarsProjekt.Domain;
-using LarsProjekt.Domain.IRepositories;
+
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using LarsProjekt.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Text.Json;
 
 namespace LarsProjekt.Controllers;
 public class OrderController : Controller
-{    
+{
     private readonly ILogger<OrderController> _logger;
-    private readonly ICouponCountService _couponCountService;
+
     private readonly IUserService _userService;
     private readonly IOrderService _orderService;
     private readonly IOrderDetailService _orderDetailService;
@@ -19,15 +20,15 @@ public class OrderController : Controller
     private readonly IProductService _productService;
     public OrderController
         (ILogger<OrderController> logger,
-        ICouponCountService couponCountService,
+
         IAddressService addressService,
         IUserService userService,
         IOrderDetailService orderDetailService,
         IOrderService orderService,
         IProductService productService)
-    {        
+    {
         _logger = logger;
-        _couponCountService = couponCountService;
+
         _orderDetailService = orderDetailService;
         _addressService = addressService;
         _orderService = orderService;
@@ -38,8 +39,7 @@ public class OrderController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var user = await _userService.GetByName(HttpContext.User.Identity.Name);
-        var address = await _addressService.GetById(user.AddressId);
+        var user = await _userService.GetByNameWithAddress(HttpContext.User.Identity.Name);        
         var orders = await _orderService.Get();
         var list = new List<OrderModel>();
         foreach (var order in orders)
@@ -47,7 +47,6 @@ public class OrderController : Controller
             if (user.Id == order.UserId)
             {
                 list.Add(order.ToModel());
-                order.Address = address;
             }
         }
         return View(list);
@@ -57,15 +56,14 @@ public class OrderController : Controller
     public async Task<IActionResult> Checkout()
     {
         var cart = GetCartModel();
-        var user = await _userService.GetByName(HttpContext.User.Identity.Name);
-        var address = await _addressService.GetById(user.AddressId);
+        var user = await _userService.GetByNameWithAddress(HttpContext.User.Identity.Name);
 
-        cart.Total = CalcDiscountedTotal();       
+        //cart.Total = CalcDiscountedTotal();
 
-        ShoppingCartVM shoppingCartVM = new ShoppingCartVM()
+        ShoppingCartVM shoppingCartVM = new()
         {
             Cart = cart,
-            Address = address.ToModel(),
+            Address = user.Address.ToModel(),
         };
 
         return View(shoppingCartVM);
@@ -145,7 +143,7 @@ public class OrderController : Controller
 
     [HttpGet]
     public async Task<IActionResult> Details(long id)
-    {                
+    {
         var detail = await _orderDetailService.GetListWithOrderId(id);
         var list = new List<OrderDetailModel>();
         foreach (var item in detail)
@@ -170,45 +168,69 @@ public class OrderController : Controller
 
 
     [HttpPost]
-    public async Task<IActionResult> CreateOrder(OrderModel model)
-    {
+    public async Task<IActionResult> CreateOrder()
+    {             
+        List<OrderDetail> list = new();
+        CartModel model = GetCartModel();
+        User user = await _userService.GetByName(HttpContext.User.Identity.Name);
 
-        if (ModelState.IsValid)
+        Order order = new()
         {
-            var user = await _userService.GetByName(HttpContext.User.Identity.Name);
-            var cart = GetCartModel();
-            var cookie = $"shoppingCart{HttpContext.User.Identity.Name}";
-            
-            // add order
-            var order = model.ToDomain();
-            order.UserId = user.Id;
-            order.AddressId = user.AddressId;
-            order.Total = cart.Total;
-            await _orderService.Create(order);
+            Total = model.Total,
+            Date = DateTime.Now,
+            Details = list,
+            AddressId = user.AddressId,
+            UserId = user.Id
+        };
 
-            //add orderDetail                                   
-            foreach (var item in cart.Items)
+        foreach (var item in model.Items)
+        {
+            list.Add(new OrderDetail
             {
-                var orderDetail = new OrderDetail();                
-                orderDetail.Quantity = item.Amount;
-                orderDetail.UnitPrice = item.PriceOffer;
-                orderDetail.ProductId = item.ProductId;
-                orderDetail.OrderId = order.Id;
-                orderDetail.Discount = item.Discount;
-                orderDetail.DiscountedPrice = item.DiscountedPrice;
-
-                await _orderDetailService.Create(orderDetail);
-            }
-            
-            foreach(var offer in cart.Offers)
-            {
-                _couponCountService.UpdateCouponCount(offer.Coupon.Code);
-            }
-
-            // clear cart
-            Response.Cookies.Delete(cookie);
+                Quantity = item.Amount,
+                UnitPrice = item.PriceOffer,
+                ProductId = item.ProductId,
+                OrderId = order.Id,
+                Discount = item.Discount,
+                DiscountedPrice = item.DiscountedPrice
+            });
         }
+        await _orderService.Create(order);
+
+        Response.Cookies.Delete($"shoppingCart{HttpContext.User.Identity.Name}");
         return RedirectToAction(nameof(Index));
+
+        //if (ModelState.IsValid)
+        //{
+        //    var user = await _userService.GetByNameWithAddress(HttpContext.User.Identity.Name);
+        //    var cart = GetCartModel();
+        //    var cookie = $"shoppingCart{HttpContext.User.Identity.Name}";
+        //    var list = new List<OrderDetail>();
+
+        //    Order order = new()
+        //    {
+        //        Total = cart.Total,
+        //        Date = DateTime.Now,
+        //        Details = list
+        //    };
+
+        //    foreach (var item in cart.Items)
+        //    {
+        //        list.Add(new OrderDetail
+        //        {
+        //            Quantity = item.Amount,
+        //            UnitPrice = item.PriceOffer,
+        //            ProductId = item.ProductId,
+        //            OrderId = order.Id,
+        //            Discount = item.Discount,
+        //            DiscountedPrice = item.DiscountedPrice
+        //        });
+        //    }
+        //    await _orderService.Create(order);
+
+        //    Response.Cookies.Delete(cookie);
+        //}
+        //return RedirectToAction(nameof(Index));
     }
 
     private CartModel? GetCartModel()
@@ -228,3 +250,32 @@ public class OrderController : Controller
 }
 
 
+
+
+// add order
+//var order = model.ToDomain();
+//order.UserId = user.Id;
+//order.AddressId = user.AddressId;
+//order.Total = cart.Total;
+//await _orderService.Create(order);
+
+//add orderDetail                                   
+//foreach (var item in cart.Items)
+//{
+//    var orderDetail = new OrderDetail();
+//    orderDetail.Quantity = item.Amount;
+//    orderDetail.UnitPrice = item.PriceOffer;
+//    orderDetail.ProductId = item.ProductId;
+//    orderDetail.OrderId = order.Id;
+//    orderDetail.Discount = item.Discount;
+//    orderDetail.DiscountedPrice = item.DiscountedPrice;
+
+//    await _orderDetailService.Create(orderDetail);
+//}
+
+//foreach (var offer in cart.Offers)
+//{
+//    _couponCountService.UpdateCouponCount(offer.Coupon.Code);
+//}
+
+// clear cart

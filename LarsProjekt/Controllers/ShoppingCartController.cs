@@ -1,4 +1,4 @@
-﻿using LarsProjekt.Application;
+﻿using LarsProjekt.Application.IService;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
@@ -20,11 +20,11 @@ public class ShoppingCartController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        var cart = GetCartModel();
-        cart.Total = CalcDiscountedTotal();
+        var cart = GetCartModel();        
 
         if (cart.Offers.Count != 0)
         {
+            cart.Total = CalcDiscountedTotal();
             cart.Discount = CalcDiscount() + CalcMoneyDiscount();
 
             foreach (var item in cart.Offers)
@@ -45,24 +45,27 @@ public class ShoppingCartController : Controller
             {
                 cartItem.DiscountedPrice = CalcDiscountedItemPrice(cartItem.PriceOffer, cartItem.Amount);
                 cartItem.Discount = CalcItemDiscount(cartItem.PriceOffer);
-            }
+            }            
+        }
+        else
+        {
+            cart.Total = GetTotal();
+        }
 
-            Response.Cookies.Append
+        ShoppingCartVM shoppingCartVM = new()
+        {
+            Cart = cart
+        };
+
+        Response.Cookies.Append
                 ($"shoppingCart{HttpContext.User.Identity.Name}",
                 JsonSerializer.Serialize(cart),
                 new CookieOptions
                 {
                     Expires = DateTime.UtcNow.AddDays(1)
                 });
-        }
-
-        ShoppingCartVM shoppingCartVM = new ShoppingCartVM()
-        {
-            Cart = cart
-        };
 
         return View(shoppingCartVM);
-
     }
 
 
@@ -81,7 +84,7 @@ public class ShoppingCartController : Controller
         }
 
         var shoppingCartItem = cart.Items.FirstOrDefault(x => x.ProductId == id);
-        var cartItem = new ShoppingCartItemModel();
+        ShoppingCartItemModel cartItem = new();
         if (shoppingCartItem == null)
         {
             cartItem.Amount = 1;
@@ -109,7 +112,7 @@ public class ShoppingCartController : Controller
     [HttpGet]
     public IActionResult AmountMinus(int id)
     {
-        var cart = new CartModel();
+        CartModel cart = new();
         var user = HttpContext.User.Identity.Name;
         var cookie = $"shoppingCart{user}";
         var cookieValue = Request.Cookies[cookie];
@@ -181,9 +184,7 @@ public class ShoppingCartController : Controller
     public IActionResult EmptyCart()
     {
         var user = HttpContext.User.Identity.Name;
-
         Response.Cookies.Delete($"shoppingCart{user}");
-
         return RedirectToAction(nameof(Index));
     }
 
@@ -197,10 +198,10 @@ public class ShoppingCartController : Controller
         var cart = GetCartModel();
         var offer = cart.Offers.FirstOrDefault(x => x.Coupon.Code == couponCode);
         
-        if(coupon != null)
+        if(coupon.Id != 0)
         {
             coupon.Expired = Expired(coupon);
-            await _couponService.Update(coupon);
+            
 
             if (coupon.Expired == false) 
             {
@@ -221,7 +222,7 @@ public class ShoppingCartController : Controller
                         if (coupon.Type == "Percent")
                         {
                             cart.Discount = (x / 100) * cart.Total;
-                            cart.Total = cart.Total - cart.Discount;
+                            cart.Total -= cart.Discount;
                         }
                         else
                         {
@@ -264,6 +265,7 @@ public class ShoppingCartController : Controller
             }
             else
             {
+                await _couponService.Update(coupon);
                 cart.Total = CalcDiscountedTotal();
                 string message = "This code has expired.";
                 return Json(new { success = "false", message, total = cart.Total });
@@ -393,6 +395,7 @@ public class ShoppingCartController : Controller
             }            
         }
         var value = list.Sum(x => Convert.ToDecimal(x));
+
         return (value / 100) * total;
     }
 

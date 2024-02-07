@@ -1,6 +1,6 @@
 ﻿using LarsProjekt.Domain;
 
-namespace LarsProjekt.Application;
+namespace LarsProjekt.Application.IService;
 
 public interface IProductService
 {
@@ -8,5 +8,5 @@ public interface IProductService
     Task<Product> GetById(long id);
     Task<Product> Update(Product product);
     Task<Product> Create(Product product);
-    Task<string> Delete(long id);
+    Task Delete(long id);
 }

@@ -1,5 +1,6 @@
 ﻿using LarsProjekt.Domain.Exceptions;
 using Microsoft.Extensions.Options;
+using System.Net;
 using System.Text.Json;
 
 namespace LarsProjekt.Application;
@@ -13,19 +14,12 @@ public class ApiClient : IApiClient
         _userOptions = userOptions.Value;
         _urlOptions = urlOptions.Value;
     }
-    public async Task<T> GetHttpResponseMessageAsync<T>(string obj, string uriMethod, HttpMethod httpMethod)        
+    public async Task<T> HttpResponseMessageAsyncGet<T>(string obj, string uriMethod, HttpMethod httpMethod)        
     {
         try
         {
-            var apiUrl = _urlOptions.ApplicationUrl;
-            var users = _userOptions.Users;
-            var key = users.FirstOrDefault().Key;
-
-            var uri = $"{apiUrl}/{obj}/{uriMethod}";
-            var httpRequestMessage = new HttpRequestMessage(httpMethod, uri);
-            httpRequestMessage.Headers.Add("x-api-key", key);
-            var httpClient = new HttpClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            HttpRequestMessage httpRequestMessage = GetRequestMessage(obj, uriMethod, httpMethod);
+            HttpResponseMessage httpResponseMessage = await new HttpClient().SendAsync(httpRequestMessage);
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
@@ -40,24 +34,16 @@ public class ApiClient : IApiClient
         catch (Exception ex)
         {
             throw new DomainException($"An unexpected error occurred during the API call: {ex}");
-        }
-        
+        }        
     }
 
-    public async Task<T> PostHttpResponseMessageAsync<T>(string obj, string uriMethod, string content, HttpMethod httpMethod)
+    public async Task<T> HttpResponseMessageAsyncPost<T>(string obj, string uriMethod, string content, HttpMethod httpMethod)
     {
         try
         {
-            var apiUrl = _urlOptions.ApplicationUrl;
-            var users = _userOptions.Users;
-            var key = users.FirstOrDefault().Key;
-
-            var uri = $"{apiUrl}/{obj}/{uriMethod}";
-            var httpRequestMessage = new HttpRequestMessage(httpMethod, uri);
-            httpRequestMessage.Headers.Add("x-api-key", key);
+            HttpRequestMessage httpRequestMessage = GetRequestMessage(obj, uriMethod, httpMethod);
             httpRequestMessage.Content = new StringContent(content, System.Text.Encoding.UTF8, "application/json");
-            var httpClient = new HttpClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            HttpResponseMessage httpResponseMessage = await new HttpClient().SendAsync(httpRequestMessage);
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
@@ -73,5 +59,33 @@ public class ApiClient : IApiClient
         {
             throw new DomainException($"An unexpected error occurred during the API call: {ex}");
         }
+    }
+    public async Task HttpResponseMessageAsyncDelete(string obj, string uriMethod, HttpMethod httpMethod)
+    {
+        try
+        {
+            HttpRequestMessage httpRequestMessage = GetRequestMessage(obj, uriMethod, httpMethod);
+            HttpResponseMessage httpResponseMessage = await new HttpClient().SendAsync(httpRequestMessage);
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                throw new DomainException($"An error occurred during the API call: {httpResponseMessage.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DomainException($"An unexpected error occurred during the API call: {ex}");
+        }
+    }
+
+    private HttpRequestMessage GetRequestMessage(string obj, string uriMethod, HttpMethod httpMethod)
+    {
+        var apiUrl = _urlOptions.ApplicationUrl;
+        var users = _userOptions.Users;
+        var key = users.FirstOrDefault().Key;
+        var uri = $"{apiUrl}/{obj}/{uriMethod}";
+        var httpRequestMessage = new HttpRequestMessage(httpMethod, uri);
+        httpRequestMessage.Headers.Add("x-api-key", key);
+        return httpRequestMessage;
     }
 }

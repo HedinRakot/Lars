@@ -1,9 +1,10 @@
-﻿using LarsProjekt.Domain;
+﻿using LarsProjekt.Application.IService;
+using LarsProjekt.Domain;
 using LarsProjekt.Dto;
 using LarsProjekt.Dto.Mapping;
 using System.Text.Json;
 
-namespace LarsProjekt.Application;
+namespace LarsProjekt.Application.Service;
 
 internal class OrderDetailService : IOrderDetailService
 {
@@ -15,7 +16,7 @@ internal class OrderDetailService : IOrderDetailService
     }
     public async Task<List<OrderDetail>> Get()
     {
-        var content = await _client.GetHttpResponseMessageAsync<List<OrderDetail>>("orderdetails", "getall", HttpMethod.Get);
+        var content = await _client.HttpResponseMessageAsyncGet<List<OrderDetail>>("orderdetails", "getall", HttpMethod.Get);
 
         var list = new List<OrderDetail>();
         foreach (var detail in content)
@@ -27,34 +28,34 @@ internal class OrderDetailService : IOrderDetailService
     }
     public async Task<List<OrderDetail>> GetListWithOrderId(long id)
     {
-        var content = await _client.GetHttpResponseMessageAsync<List<OrderDetail>>("orderdetails", $"getwithorderid?id={id}", HttpMethod.Get);
+        var content = await _client.HttpResponseMessageAsyncGet<List<OrderDetail>>("orderdetails", $"getwithorderid?id={id}", HttpMethod.Get);
 
         return content;
     }
 
     public async Task<OrderDetail> GetById(long id)
     {
-        var content = await _client.GetHttpResponseMessageAsync<OrderDetail>("orderdetails", $"getbyid?id={id}", HttpMethod.Get);
+        var content = await _client.HttpResponseMessageAsyncGet<OrderDetail>("orderdetails", $"getbyid?id={id}", HttpMethod.Get);
 
         return content;
     }
 
-    public async Task<string> Delete(long id)
+    public async Task Delete(long id)
     {
-        var content = await _client.GetHttpResponseMessageAsync<OrderDetail>("orderdetails", $"delete?id={id}", HttpMethod.Delete);
-        return content.ToString();
+        await _client.HttpResponseMessageAsyncDelete("orderdetails", $"delete?id={id}", HttpMethod.Delete);
+
     }
     public async Task<OrderDetail> Update(OrderDetail orderDetail)
     {
         var requestContent = JsonSerializer.Serialize(orderDetail);
-        var content = await _client.PostHttpResponseMessageAsync<OrderDetail>("address", "update", requestContent, HttpMethod.Put);
+        var content = await _client.HttpResponseMessageAsyncPost<OrderDetail>("address", "update", requestContent, HttpMethod.Put);
 
         return content;
     }
     public async Task<OrderDetail> Create(OrderDetail orderDetail)
     {
         var requestContent = JsonSerializer.Serialize(orderDetail);
-        var content = await _client.PostHttpResponseMessageAsync<OrderDetail>("address", "update", requestContent, HttpMethod.Post);
+        var content = await _client.HttpResponseMessageAsyncPost<OrderDetail>("address", "update", requestContent, HttpMethod.Post);
 
         return content;
     }

@@ -9,8 +9,8 @@ public static class UserDtoMappingExtension
         return new UserDto(
             user.Id,
             user.Username,
-            user.Password,
             user.Email,
+            user.Password,            
             user.Address.ToDto(),
             user.AddressId
             );

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using LarsProjekt.Application.IService;
+using LarsProjekt.Application.Service;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LarsProjekt.Application;
 

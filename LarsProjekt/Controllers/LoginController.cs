@@ -1,4 +1,4 @@
-﻿using LarsProjekt.Application;
+﻿using LarsProjekt.Application.IService;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -32,7 +32,7 @@ public class LoginController : Controller
         {
             try
             {
-                var userFromDb = await _userService.GetByName(model.UserName);
+                var userFromDb = await _userService.GetByNameWithAddress(model.UserName);
                 if (model.Password == userFromDb.Password)
                 {
                     try

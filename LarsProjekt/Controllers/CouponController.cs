@@ -1,9 +1,7 @@
-﻿using LarsProjekt.Database.Repositories;
-using LarsProjekt.Domain;
+﻿using LarsProjekt.Application.IService;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Mvc;
-using LarsProjekt.Application;
 
 
 namespace LarsProjekt.Controllers;

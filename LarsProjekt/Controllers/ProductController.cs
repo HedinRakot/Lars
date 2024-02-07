@@ -1,4 +1,4 @@
-﻿using LarsProjekt.Application;
+﻿using LarsProjekt.Application.IService;
 using LarsProjekt.Dto.Mapping;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;

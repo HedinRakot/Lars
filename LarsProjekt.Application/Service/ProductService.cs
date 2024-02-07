@@ -1,9 +1,10 @@
-﻿using LarsProjekt.Domain;
+﻿using LarsProjekt.Application.IService;
+using LarsProjekt.Domain;
 using LarsProjekt.Dto;
 using LarsProjekt.Dto.Mapping;
 using System.Text.Json;
 
-namespace LarsProjekt.Application;
+namespace LarsProjekt.Application.Service;
 
 internal class ProductService : IProductService
 {
@@ -15,7 +16,7 @@ internal class ProductService : IProductService
     }
     public async Task<List<Product>> GetProducts()
     {
-        var content = await _client.GetHttpResponseMessageAsync<List<ProductDto>>("products", "getall", HttpMethod.Get);
+        var content = await _client.HttpResponseMessageAsyncGet<List<ProductDto>>("products", "getall", HttpMethod.Get);
 
         var products = new List<Product>();
         foreach (var product in content)
@@ -28,27 +29,26 @@ internal class ProductService : IProductService
 
     public async Task<Product> GetById(long id)
     {
-        var content = await _client.GetHttpResponseMessageAsync<ProductDto>("products", $"getbyid?id={id}", HttpMethod.Get);
+        var content = await _client.HttpResponseMessageAsyncGet<ProductDto>("products", $"getbyid?id={id}", HttpMethod.Get);
 
-        return content.ToDomain();        
+        return content.ToDomain();
     }
     public async Task<Product> Update(Product product)
     {
         var requestContent = JsonSerializer.Serialize(product.ToDto());
-        var content = await _client.PostHttpResponseMessageAsync<Product>("products", "update", requestContent, HttpMethod.Put);        
+        var content = await _client.HttpResponseMessageAsyncPost<Product>("products", "update", requestContent, HttpMethod.Put);
 
         return content;
     }
     public async Task<Product> Create(Product product)
-    { 
+    {
         var requestContent = JsonSerializer.Serialize(product.ToDto());
-        var content = await _client.PostHttpResponseMessageAsync<Product>("products", "create", requestContent, HttpMethod.Post);       
+        var content = await _client.HttpResponseMessageAsyncPost<Product>("products", "create", requestContent, HttpMethod.Post);
 
         return content;
     }
-    public async Task<string> Delete(long id)
+    public async Task Delete(long id)
     {
-        var content = await _client.GetHttpResponseMessageAsync<ProductDto>("products", $"delete?id={id}", HttpMethod.Delete);
-        return content.ToString();
+        await _client.HttpResponseMessageAsyncDelete("products", $"delete?id={id}", HttpMethod.Delete);
     }
 }

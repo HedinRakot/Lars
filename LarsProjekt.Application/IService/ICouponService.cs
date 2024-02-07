@@ -1,6 +1,6 @@
 ﻿using LarsProjekt.Domain;
 
-namespace LarsProjekt.Application
+namespace LarsProjekt.Application.IService
 {
     public interface ICouponService
     {
@@ -9,6 +9,6 @@ namespace LarsProjekt.Application
         Task<Coupon> GetById(long id);
         Task<Coupon> Update(Coupon coupon);
         Task<Coupon> Create(Coupon coupon);
-        Task<string> Delete(long id);
+        Task Delete(long id);
     }
 }
