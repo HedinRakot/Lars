@@ -12,7 +12,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<ICouponService, CouponService>()
             .AddScoped<IApiClient, ApiClient>()
             .AddScoped<IUserService, UserService>()
-            .AddScoped<IOrderDetailService, OrderDetailService>()
             .AddScoped<IOrderService, OrderService>()
             .AddScoped<IAddressService, AddressService>();
     }

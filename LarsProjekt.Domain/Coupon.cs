@@ -10,6 +10,6 @@ public class Coupon
     public bool Expired { get; set; }
     public int Count { get; set; }
     public int AppliedCount { get; set; }
-    public byte[] Version { get; private set; }
+    public string? Version { get; set; }
 
 }

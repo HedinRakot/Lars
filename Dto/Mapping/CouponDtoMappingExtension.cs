@@ -1,4 +1,5 @@
 ﻿using LarsProjekt.Domain;
+using System.Text;
 
 namespace LarsProjekt.Dto.Mapping;
 
@@ -29,7 +30,8 @@ public static class CouponDtoMappingExtension
             AppliedCount = dto.AppliedCount,
             Expired = dto.Expired,
             ExpiryDate = dto.ExpiryDate,
-            Type = dto.Type
+            Type = dto.Type,
+            Version = dto.Version
         };
     }
 }

@@ -9,6 +9,6 @@ public record CouponDto(
     bool Expired,
      int Count,
     int AppliedCount,
-     byte[] Version
+     string? Version // byte[] to string mapping
     );
 

@@ -26,7 +26,7 @@ namespace LarsProjekt.Models
         [Required]
         public int AppliedCount { get; set; }
         [ValidateNever]
-        public byte[] Version { get; private set; }
+        public string? Version { get; set; }
 
     }
 }

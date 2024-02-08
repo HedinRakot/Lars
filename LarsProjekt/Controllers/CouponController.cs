@@ -21,7 +21,6 @@ public class CouponController : Controller
         {
             models.Add(coupon.ToModel());
         }
-
         return View(models);
     }
 

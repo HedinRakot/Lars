@@ -23,8 +23,18 @@ internal class OrderService : IOrderService
         {
             orders.Add(order.ToDomain());
         }
-
         return orders;
+    }
+    public async Task<List<OrderDetail>> GetDetailListWithOrderId(long id)
+    {
+        var content = await _client.HttpResponseMessageAsyncGet<List<OrderDetailDto>>("orderdetails", $"getwithorderid?id={id}", HttpMethod.Get);
+
+        var details = new List<OrderDetail>();
+        foreach (var detail in content)
+        {
+            details.Add(detail.ToDomain());
+        }
+        return details;
     }
 
     public async Task<Order> GetById(long id)
@@ -40,10 +50,10 @@ internal class OrderService : IOrderService
 
         return content;
     }
-    public async Task<Order> Create(Order order)
+    public async Task<PlaceOrderDto> Create(PlaceOrderDto order)
     {
-        var requestContent = JsonSerializer.Serialize(order.ToDto());
-        var content = await _client.HttpResponseMessageAsyncPost<Order>("orders", "create", requestContent, HttpMethod.Post);
+        var requestContent = JsonSerializer.Serialize(order);
+        var content = await _client.HttpResponseMessageAsyncPost<PlaceOrderDto>("orders", "create", requestContent, HttpMethod.Post);
 
         return content;
     }

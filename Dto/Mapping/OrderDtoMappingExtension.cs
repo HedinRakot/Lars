@@ -6,13 +6,19 @@ public static class OrderDtoMappingExtension
 {
     public static OrderDto ToDto(this Order order)
     {
+        var list = new List<OrderDetailDto>();
+        foreach (var item in order.Details)
+        {
+            list.Add(item.ToDto());
+        }
+
         return new OrderDto(
             order.Id,
             order.Total,
             order.Date,
             order.AddressId,
             order.UserId,
-            order.Details
+            list
             );
     }
     public static Order ToDomain(this OrderDto dto)

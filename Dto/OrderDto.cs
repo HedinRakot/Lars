@@ -8,7 +8,7 @@ public record OrderDto(
     DateTimeOffset Date,
     long UserId,
     long AddressId,
-    List<OrderDetail> Details
+    List<OrderDetailDto> Details
     );
 
 

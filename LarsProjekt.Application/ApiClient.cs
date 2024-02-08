@@ -1,6 +1,5 @@
 ﻿using LarsProjekt.Domain.Exceptions;
 using Microsoft.Extensions.Options;
-using System.Net;
 using System.Text.Json;
 
 namespace LarsProjekt.Application;
@@ -14,7 +13,7 @@ public class ApiClient : IApiClient
         _userOptions = userOptions.Value;
         _urlOptions = urlOptions.Value;
     }
-    public async Task<T> HttpResponseMessageAsyncGet<T>(string obj, string uriMethod, HttpMethod httpMethod)        
+    public async Task<T> HttpResponseMessageAsyncGet<T>(string obj, string uriMethod, HttpMethod httpMethod)
     {
         try
         {
@@ -23,18 +22,15 @@ public class ApiClient : IApiClient
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
-                var content = await httpResponseMessage.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var response = await Deserialize<T>(httpResponseMessage);
+                return response;
             }
             throw new DomainException($"An error occurred during the API call: {httpResponseMessage.StatusCode}");
         }
         catch (Exception ex)
         {
             throw new DomainException($"An unexpected error occurred during the API call: {ex}");
-        }        
+        }
     }
 
     public async Task<T> HttpResponseMessageAsyncPost<T>(string obj, string uriMethod, string content, HttpMethod httpMethod)
@@ -45,15 +41,16 @@ public class ApiClient : IApiClient
             httpRequestMessage.Content = new StringContent(content, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage httpResponseMessage = await new HttpClient().SendAsync(httpRequestMessage);
 
-            if (httpResponseMessage.IsSuccessStatusCode)
-            {
-                var responseContent = await httpResponseMessage.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<T>(responseContent, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+            if (httpResponseMessage.IsSuccessStatusCode) 
+            { 
+                var response = await Deserialize<T>(httpResponseMessage);
+                return response;
             }
-            throw new DomainException($"An error occurred during the API call: {httpResponseMessage.StatusCode}");
+            else
+            {
+                var resContent = await httpResponseMessage.Content.ReadAsStringAsync();
+                throw new DomainException($"An error occurred during the API call: {httpResponseMessage.StatusCode}");
+            }
         }
         catch (Exception ex)
         {
@@ -87,5 +84,14 @@ public class ApiClient : IApiClient
         var httpRequestMessage = new HttpRequestMessage(httpMethod, uri);
         httpRequestMessage.Headers.Add("x-api-key", key);
         return httpRequestMessage;
+    }
+
+    private static async Task<T?> Deserialize<T>(HttpResponseMessage msg)
+    {
+        var responseContent = await msg.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<T?>(responseContent, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
     }
 }

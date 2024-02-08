@@ -6,6 +6,6 @@ public class ApiUserOptions
 {
     public const string Section = "Authentication";
 
-    public List<AppUserDto> Users {  get; set; }
+    public List<AppUserDto> Users { get; set; }
     
 }
