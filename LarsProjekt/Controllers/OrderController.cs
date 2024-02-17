@@ -108,17 +108,18 @@ public class OrderController : Controller
                 Quantity = item.Amount,
                 UnitPrice = item.PriceOffer,
                 ProductId = item.ProductId,
-                OrderId = order.Id,
                 Discount = item.Discount,
                 DiscountedPrice = item.DiscountedPrice
             });
         }
         placeOrderDto.Order = order.ToDto();
        
-        //await _orderService.Create(order);
-        foreach (var coupon in model.Offers)
+        if (model.Offers.Count > 0)
         {
-            placeOrderDto.Coupons.Add(coupon.Coupon.ToDto());
+            foreach (var coupon in model.Offers)
+            {
+                placeOrderDto.Coupons.Add(coupon.Coupon.ToDto());
+            }            
         }
         await _orderService.Create(placeOrderDto);
 

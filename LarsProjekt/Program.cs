@@ -61,3 +61,9 @@ app.MapControllerRoute(
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 await app.RunAsync();
+
+namespace LarsProjekt
+{    public class Program
+    {
+    }
+}
