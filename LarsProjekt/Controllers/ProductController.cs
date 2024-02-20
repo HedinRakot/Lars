@@ -21,7 +21,7 @@ public class ProductController : Controller
             models.Add(product.ToModel());
         }
 
-        return View(models);
+        return Ok(models);
     }
 
     public async Task<IActionResult> Details(long id)

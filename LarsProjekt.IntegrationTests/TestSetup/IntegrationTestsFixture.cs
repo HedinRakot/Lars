@@ -1,5 +1,4 @@
-﻿using LarsProjekt.Application;
-using LarsProjekt.Application.IService;
+﻿using LarsProjekt.Application.IService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -8,13 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using System.Reflection;
 
-
 namespace LarsProjekt.IntegrationTests.TestSetup;
-//keine datenbank alles löschen, keine echte api aufrufen, api mocken
 public class IntegrationTestsFixture : WebApplicationFactory<Program>
 {
     public IProductService TestProductService = Substitute.For<IProductService>();
-    public IApiClient TestClient = Substitute.For<IApiClient>();
+    public IOrderService TestOrderService = Substitute.For<IOrderService>();
+    public IUserService TestUserService = Substitute.For<IUserService>();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -28,9 +26,9 @@ public class IntegrationTestsFixture : WebApplicationFactory<Program>
             })
             .ConfigureTestServices(services =>
             {
-                //TODO mock api //----------------------------------------------------- Client
-                services.AddSingleton(TestClient);
                 services.AddSingleton(TestProductService);
+                services.AddSingleton(TestOrderService);
+                services.AddSingleton(TestUserService);
             });
 
         base.ConfigureWebHost(builder);

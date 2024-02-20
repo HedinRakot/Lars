@@ -43,7 +43,7 @@ public class OrderController : Controller
                 list.Add(order.ToModel());
             }
         }
-        return View(list);
+        return Ok(list);
     }
 
     [HttpGet]
@@ -81,7 +81,7 @@ public class OrderController : Controller
                 Product = product.ToModel()
             });
         }
-        return View(list);
+        return Ok(list);
     }
 
     [HttpPost]

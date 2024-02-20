@@ -33,17 +33,17 @@ internal class ProductService : IProductService
 
         return content.ToDomain();
     }
-    public async Task<Product> Update(Product product)
+    public async Task<ProductDto> Update(Product product)
     {
         var requestContent = JsonSerializer.Serialize(product.ToDto());
-        var content = await _client.HttpResponseMessageAsyncPost<Product>("products", "update", requestContent, HttpMethod.Put);
+        var content = await _client.HttpResponseMessageAsyncPost<ProductDto>("products", "update", requestContent, HttpMethod.Put);
 
         return content;
     }
-    public async Task<Product> Create(Product product)
+    public async Task<ProductDto> Create(Product product)
     {
         var requestContent = JsonSerializer.Serialize(product.ToDto());
-        var content = await _client.HttpResponseMessageAsyncPost<Product>("products", "create", requestContent, HttpMethod.Post);
+        var content = await _client.HttpResponseMessageAsyncPost<ProductDto>("products", "create", requestContent, HttpMethod.Post);
 
         return content;
     }

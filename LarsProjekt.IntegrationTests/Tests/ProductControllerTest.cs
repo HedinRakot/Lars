@@ -1,14 +1,20 @@
 ﻿using FluentAssertions;
 using LarsProjekt.Domain;
 using LarsProjekt.IntegrationTests.TestSetup;
+using LarsProjekt.Models;
 using NSubstitute;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace LarsProjekt.IntegrationTests.Tests;
 
+// Controller wird im Request aufgerufen: Uri = (Conrtollername)+(Methode) Product + Index.
+// Da View returned wird, kommt Html und kein Json zurück.
+// Es gibt keine DB, Objekte werden mit Fixture erstellt.
+
 public class ProductControllerTest : IClassFixture<IntegrationTestsFixture>
 {
-    private const string RequestUri = "products";
+    private const string RequestUri = "Product";
     private readonly HttpClient _httpClient;
     private readonly IntegrationTestsFixture _fixture;
 
@@ -35,11 +41,11 @@ public class ProductControllerTest : IClassFixture<IntegrationTestsFixture>
             });
 
         //act
-        var response = await _httpClient.GetAsync(RequestUri + "/getall");
+        var response = await _httpClient.GetAsync(RequestUri + "/Index");
 
         //assert
-        response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<List<Product>>();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<List<ProductModel>>(); // hier kommt html statt json
 
         result.Count.Should().BeGreaterThan(0);
         result.FirstOrDefault().Name.Should().NotBeNull();
