@@ -1,8 +1,10 @@
 using LarsProjekt.Application;
 using LarsProjekt.Authentication;
 using LarsProjekt.ErrorHandling;
+using LarsProjekt.Messages;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Logging.Console;
+using NServiceBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +38,22 @@ builder.Logging.AddSimpleConsole(i => i.ColorBehavior = LoggerColorBehavior.Enab
 
 builder.Services.Configure<ApiUserOptions>(builder.Configuration.GetSection(ApiUserOptions.Section));
 builder.Services.Configure<ApiUrlOptions>(builder.Configuration.GetSection(ApiUrlOptions.Section));
+
+//NServiceBus
+var endpointConfiguration = new EndpointConfiguration("LarsProjekt");
+
+// Choose JSON to serialize and deserialize messages
+endpointConfiguration.UseSerialization<NServiceBus.SystemJsonSerializer>();
+
+var transport = endpointConfiguration.UseTransport<LearningTransport>();
+
+var routing = transport.Routing();
+routing.RouteToEndpoint(typeof(TestCommand), "MyTemsAPI");
+
+var endpointInstance = await NServiceBus.Endpoint.Start(endpointConfiguration)
+    .ConfigureAwait(false);
+
+builder.Services.AddSingleton<IMessageSession>(endpointInstance);
 
 var app = builder.Build();
 

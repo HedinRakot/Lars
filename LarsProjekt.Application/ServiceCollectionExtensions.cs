@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IApiClient, ApiClient>()
             .AddScoped<IUserService, UserService>()
             .AddScoped<IOrderService, OrderService>()
-            .AddScoped<IAddressService, AddressService>();
+            .AddScoped<IAddressService, AddressService>()
+            .AddSingleton<IMessageService, MessageService>();
     }
 }

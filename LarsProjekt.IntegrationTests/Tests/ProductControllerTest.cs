@@ -45,10 +45,8 @@ public class ProductControllerTest : IClassFixture<IntegrationTestsFixture>
 
         //assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<List<ProductModel>>(); // hier kommt html statt json
-
-        result.Count.Should().BeGreaterThan(0);
-        result.FirstOrDefault().Name.Should().NotBeNull();
-        result.FirstOrDefault().Description.Should().BeNull();
+        var result = await response.Content.ReadAsStringAsync();
+        result.Should().Contain(">Test</");
+        result.Should().Contain("222");
     }
 }

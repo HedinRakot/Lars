@@ -23,7 +23,7 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
     [Fact]
     public async Task Order_Index_Returns_Result()
     {
-        _fixture.TestUserService.GetByName("Lars").Returns(
+        _fixture.TestUserService.GetByNameWithAddress(Arg.Any<string>()).Returns(
             new User
             {
                 Id = 4,
@@ -49,7 +49,7 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
                             OrderId=1,
                             ProductId=1,
                             Quantity=3,
-                            UnitPrice=66
+                            UnitPrice=55555
                         },
                         new()
                         {
@@ -68,19 +68,29 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var result = await response.Content.ReadFromJsonAsync<List<Order>>();
+        var result = await response.Content.ReadAsStringAsync();
 
         result.Should().NotBeNull();
-        result.Count.Should().Be(1);
-        result.FirstOrDefault().Details.Count.Should().Be(2);
-        result.FirstOrDefault().Total.Should().Be(1066);
+        result.Should().Contain("1.066,00");
     }
     [Fact]
     public async Task Order_Details_Returns_Result()
     {
+        _fixture.TestProductService.GetById(1).Returns(new Product
+        {
+            Id = 1,
+            Name = "Test",
+            Category = "Test"
+        },
+        new Product
+        {
+            Id = 2,
+            Name = "Test2",
+            Category = "Test2"
+        });
         _fixture.TestOrderService.GetDetailListWithOrderId(1).Returns(
-            new List<OrderDetail>()
-            {
+        new List<OrderDetail>()
+        {
                 new()
                 {
                     Id=1,
@@ -89,7 +99,8 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
                     OrderId=1,
                     ProductId=1,
                     Quantity=3,
-                    UnitPrice=66                    
+                    UnitPrice=66,
+
                 },
                 new()
                 {
@@ -101,14 +112,12 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
                     Quantity=9,
                     UnitPrice=1000
                 }
-            });
-
-        var response = await _httpClient.GetAsync(RequestUri + "/Details" + 1);
+        });
+        
+        var response = await _httpClient.GetAsync(RequestUri + "/Details/" + 1);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<List<OrderDetailModel>>();
+        var result = await response.Content.ReadAsStringAsync();
         result.Should().NotBeNull();
-        result.Count.Should().Be(2);
-        result.FirstOrDefault(x => x.Id == 2).Quantity.Should().Be(9);
-        result.FirstOrDefault().Product.Should().BeNull();
+        result.Should().Contain("1.000,00");
     }
 }
