@@ -1,6 +1,6 @@
 ﻿namespace LarsProjekt.Messages;
 
-public class TestCommand : IEvent
+public class TestCommand : ICommand
 {
     public int Count { get; set; }
 }

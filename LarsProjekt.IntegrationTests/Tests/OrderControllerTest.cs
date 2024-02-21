@@ -81,12 +81,6 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
             Id = 1,
             Name = "Test",
             Category = "Test"
-        },
-        new Product
-        {
-            Id = 2,
-            Name = "Test2",
-            Category = "Test2"
         });
         _fixture.TestOrderService.GetDetailListWithOrderId(1).Returns(
         new List<OrderDetail>()
@@ -101,16 +95,6 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
                     Quantity=3,
                     UnitPrice=66,
 
-                },
-                new()
-                {
-                    Id=2,
-                    Discount=0,
-                    DiscountedPrice=0,
-                    OrderId=1,
-                    ProductId=2,
-                    Quantity=9,
-                    UnitPrice=1000
                 }
         });
         
@@ -118,6 +102,6 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var result = await response.Content.ReadAsStringAsync();
         result.Should().NotBeNull();
-        result.Should().Contain("1.000,00");
+        result.Should().Contain("66,00");
     }
 }

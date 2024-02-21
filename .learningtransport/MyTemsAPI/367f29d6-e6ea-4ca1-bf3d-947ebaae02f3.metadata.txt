@@ -1,0 +1,15 @@
+{
+  "NServiceBus.MessageId": "9f154de2-bb5e-447a-a48c-b11d00be62ff",
+  "NServiceBus.MessageIntent": "Send",
+  "NServiceBus.ConversationId": "0ce899b1-c7de-44cc-9cfe-b11d00be62ff",
+  "NServiceBus.CorrelationId": "9f154de2-bb5e-447a-a48c-b11d00be62ff",
+  "NServiceBus.ReplyToAddress": "LarsProjekt",
+  "NServiceBus.OriginatingMachine": "LARS_M15_ALIEN",
+  "NServiceBus.OriginatingEndpoint": "LarsProjekt",
+  "$.diagnostics.originating.hostid": "f34cb0431225e9300283488cda42d335",
+  "NServiceBus.ContentType": "application\/json",
+  "NServiceBus.EnclosedMessageTypes": "LarsProjekt.Messages.TestCommand, LarsProjekt.Messages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+  "NServiceBus.Version": "8.1.6",
+  "NServiceBus.TimeSent": "2024-02-21 11:33:10:609165 Z",
+  "traceparent": "00-86e61a24dc7bdd55f768d8c841617866-e72cff2e61feb6ce-00"
+}

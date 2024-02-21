@@ -23,41 +23,14 @@ public class DatabaseSetup : IDisposable
         var initialCatalog = connectionStringBuilder.InitialCatalog;
         connectionStringBuilder.Remove("Initial Catalog");
 
-        using (var sqlConnection = new SqlConnection(connectionStringBuilder.ConnectionString))
-        {
-            sqlConnection.Open();
-
-            var command = $"SELECT * FROM sys.databases WHERE NAME ='{initialCatalog}'";
-
-            using var sqlCommand = new SqlCommand(command, sqlConnection);
-            using var sqlDataReader = sqlCommand.ExecuteReader();
-
-            if (sqlDataReader.HasRows)
-            {
-                var dropCommand = $"USE master; ALTER DATABASE {initialCatalog} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE {initialCatalog}";
-                using var dropSqlCommand = new SqlCommand(dropCommand, sqlConnection);
-                dropSqlCommand.ExecuteNonQuery();
-            }
-        }
         var dbContextOptions = new DbContextOptionsBuilder<TestDatabaseDbContext>()
             .UseSqlServer(_myTemsAPIConnectionString)
             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
             .Options;
 
         using var dbContext = new TestDatabaseDbContext(dbContextOptions);
-        dbContext.Database.EnsureDeleted();
-        dbContext.Database.EnsureCreated();
 
-        new ServiceCollection()
-            .AddFluentMigratorCore()
-            .ConfigureRunner(runner => runner
-            .AddSqlServer()
-            .WithGlobalConnectionString(_myTemsAPIConnectionString)
-            .ScanIn(typeof(Initial).Assembly).For.Migrations()
-            )
-            .BuildServiceProvider(false)
-            .GetRequiredService<IMigrationRunner>()
-            .MigrateUp();
+        GetCollection();
     }
 
     public void Dispose()
@@ -74,7 +47,7 @@ public class DatabaseSetup : IDisposable
         //dropSqlCommand.ExecuteNonQuery();
     }
 
-    private void GetCollection()
+    private Task GetCollection()
     {
          new ServiceCollection()
             .AddFluentMigratorCore()
@@ -86,6 +59,7 @@ public class DatabaseSetup : IDisposable
             .BuildServiceProvider(false)
             .GetRequiredService<IMigrationRunner>()
             .MigrateUp();
+        return Task.CompletedTask;
     
     }
 }

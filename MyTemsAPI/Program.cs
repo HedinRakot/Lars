@@ -1,6 +1,9 @@
+using LarsProjekt.Messages;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Server.Kestrel;
 using MyTemsAPI.Authentication;
 using MyTemsAPI.Database;
+using NServiceBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +27,19 @@ builder.Services.AddAuthorization(o =>
 });
 
 builder.Services.Configure<ApiAuthOptions>(builder.Configuration.GetSection(ApiAuthOptions.Section));
+
+//NServiceBus
+var endpointConfiguration = new NServiceBus.EndpointConfiguration("MyTemsAPI");
+
+// Choose JSON to serialize and deserialize messages
+endpointConfiguration.UseSerialization<NServiceBus.SystemJsonSerializer>();
+
+var transport = endpointConfiguration.UseTransport<LearningTransport>();
+
+var endpointInstance = await NServiceBus.Endpoint.Start(endpointConfiguration)
+    .ConfigureAwait(false);
+
+builder.Services.AddSingleton<IMessageSession>(endpointInstance);
 
 var app = builder.Build();
 
