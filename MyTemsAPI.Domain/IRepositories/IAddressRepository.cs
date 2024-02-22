@@ -4,10 +4,10 @@ namespace MyTemsAPI.Domain.IRepositories
 {
     public interface IAddressRepository
     {
-        void Add(Address address);
-        void Delete(Address address);
-        List<Address> GetAll();
-        Address GetById(long id);
-        void Update(Address address);
+        Task Add(Address address);
+        Task Delete(Address address);
+        Task<List<Address>> GetAll();
+        Task<Address> GetById(long id);
+        Task Update(Address address);
     }
 }

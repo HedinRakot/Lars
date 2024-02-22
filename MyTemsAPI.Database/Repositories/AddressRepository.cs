@@ -1,6 +1,7 @@
 ﻿using MyTemsAPI.Database;
 using MyTemsAPI.Domain.IRepositories;
 using MyTemsAPI.Domain;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace MyTemsAPI.Repositories;
@@ -13,29 +14,23 @@ public class AddressRepository : IAddressRepository
         _context = context;
     }
 
-    public List<Address> GetAll()
-    {
-        return _context.Address.ToList();
-    }
+    public async Task<List<Address>> GetAll() => await _context.Address.ToListAsync();
 
-    public Address GetById(long id)
-    {
-        return _context.Address.FirstOrDefault(x => x.Id == id);
-    }
+    public async Task<Address> GetById(long id) => await _context.Address.FirstOrDefaultAsync(x=>x.Id==id);    
 
-    public void Add(Address address)
+    public async Task Add(Address address)
     {
         _context.Address.Add(address);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
-    public void Update(Address address)
+    public async Task Update(Address address)
     {
         _context.Address.Update(address);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
-    public void Delete(Address address)
+    public async Task Delete(Address address)
     {
         _context.Address.Remove(address);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 }

@@ -1,9 +1,7 @@
-using LarsProjekt.Messages;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Server.Kestrel;
 using MyTemsAPI.Authentication;
+using MyTemsAPI.Controllers;
 using MyTemsAPI.Database;
-using NServiceBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +52,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapAddressEndpoints();
 
 app.Run();
 

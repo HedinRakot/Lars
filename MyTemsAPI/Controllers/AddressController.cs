@@ -7,64 +7,64 @@ using MyTemsAPI.Dto.Mapping;
 using MyTemsAPI.Models.Mapping;
 
 namespace MyTemsAPI.Controllers
-{
-    [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
-    [Route("address")]
-    [ApiController]
-    public class AddressController : ControllerBase
-    {
-        private readonly IAddressRepository _addressRepository;
-
-        public AddressController(IAddressRepository addressRepository)
+{       
+    public static class AddressEndpoints
+    {        
+        public static void MapAddressEndpoints(this IEndpointRouteBuilder builder)
         {
-            _addressRepository = addressRepository;
+            //var group = builder.MapGroup("address");
+            builder.MapGet("address", GetAll);
+            builder.MapGet("address/getbyid/{id}", GetById);
+            builder.MapPost("address/create", Create);
+            builder.MapPut("address/update", Put);
+            builder.MapDelete("address/delete/{id}", Delete);
         }
-
-        [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
+        public static async Task<IResult> GetAll(IAddressRepository addressRepository)
         {
-            return Ok(_addressRepository.GetAll());
+            var addresses = await addressRepository.GetAll();
+            return Results.Ok(addresses);
         }
-
-        [HttpGet("GetById")]
-        public IActionResult GetById(long id)
+        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
+        public static async Task<IResult> GetById(long id, IAddressRepository addressRepository)
         {
-            return Ok(_addressRepository.GetById(id));
+            var address = await addressRepository.GetById(id);
+            return Results.Ok(address);
         }
-
-        [HttpPost("Create")]
-        public IActionResult Create([FromBody] AddressDto dto)
+        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
+        public static async Task<IResult> Create(IAddressRepository addressRepository, [FromBody] AddressDto dto)
         {
-            if (ModelState.IsValid)
+            var address = dto.ToDomain();
+            await addressRepository.Add(address);
+            return Results.Ok(address);
+        }
+        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
+        public static async Task<IResult> Put(IAddressRepository addressRepository, [FromBody] AddressDto dto)
+        {
+            try
             {
-                _addressRepository.Add(dto.ToDomain());
-                return Ok(dto.ToDomain());
+                var address = dto.ToDomain();
+                await addressRepository.Update(address);
+                return Results.Ok(address);
             }
-            return BadRequest();
-        }
-
-        [HttpPut("Update")]
-        public IActionResult Put([FromBody] AddressDto dto)
-        {
-            if (ModelState.IsValid)
+            catch
             {
-                _addressRepository.Update(dto.ToDomain());
-                return Ok(dto.ToDomain());
+                return Results.NotFound();
             }
-            return BadRequest();
         }
-
-        [HttpDelete("Delete")]
-        public IActionResult Delete(long id)
+        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
+        public static async Task<IResult> Delete(long id, IAddressRepository addressRepository)
         {
-            var address = _addressRepository.GetById(id);
-            if (address == null)
+            try
             {
-                return NotFound();
+                var address = await addressRepository.GetById(id);
+                await addressRepository.Delete(address);
+                return Results.Ok(address);
             }
-            _addressRepository.Delete(address);
-            return Ok("Address deleted");
-            
+            catch
+            {
+                return Results.NotFound();
+            }                        
         }
     }
 }
