@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LarsProjekt.Messages\LarsProjekt.Messages.csproj" />
+    <ProjectReference Include="..\MyTemsAPI.Application\MyTemsAPI.Application.csproj" />
     <ProjectReference Include="..\MyTemsAPI.Database\MyTemsAPI.Database.csproj" />
   </ItemGroup>
 

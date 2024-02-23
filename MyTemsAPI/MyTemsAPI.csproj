@@ -15,6 +15,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\LarsProjekt.Messages\LarsProjekt.Messages.csproj" />
+		<ProjectReference Include="..\MyTemsAPI.Application\MyTemsAPI.Application.csproj" />
 		<ProjectReference Include="..\MyTemsAPI.Database\MyTemsAPI.Database.csproj" />
 		<ProjectReference Include="..\MyTemsAPI.Dto\MyTemsAPI.Dto.csproj" />
 		<ProjectReference Include="..\MyTemsAPI.NServiceBus.Input\MyTemsAPI.NServiceBus.Input.csproj" />

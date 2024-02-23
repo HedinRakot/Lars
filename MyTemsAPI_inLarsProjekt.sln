@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyTemsAPI.Dto", "MyTemsAPI.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyTemsAPI.IntegrationTests", "MyTemsAPI.Test\MyTemsAPI.IntegrationTests.csproj", "{15449537-972E-4F2F-9335-1FCEB78A9D6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTemsAPI.NServiceBus.Input", "MyTemsAPI.NServiceBus.Input\MyTemsAPI.NServiceBus.Input.csproj", "{34334328-8820-4B9D-8642-7AF8357DBAA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyTemsAPI.NServiceBus.Input", "MyTemsAPI.NServiceBus.Input\MyTemsAPI.NServiceBus.Input.csproj", "{34334328-8820-4B9D-8642-7AF8357DBAA1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LarsProjekt.Messages", "LarsProjekt.Messages\LarsProjekt.Messages.csproj", "{5A4249A6-2ECE-4382-BC4E-B0D403380611}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyTemsAPI.Application", "MyTemsAPI.Application\MyTemsAPI.Application.csproj", "{FA59DA3D-70FA-4CD5-881C-AA64A5C112C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{5A4249A6-2ECE-4382-BC4E-B0D403380611}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A4249A6-2ECE-4382-BC4E-B0D403380611}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A4249A6-2ECE-4382-BC4E-B0D403380611}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA59DA3D-70FA-4CD5-881C-AA64A5C112C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA59DA3D-70FA-4CD5-881C-AA64A5C112C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA59DA3D-70FA-4CD5-881C-AA64A5C112C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA59DA3D-70FA-4CD5-881C-AA64A5C112C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

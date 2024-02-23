@@ -8,7 +8,6 @@ using MyTemsAPI.Models.Mapping;
 
 namespace MyTemsAPI.Controllers
 {
-    [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
     [Route("users")]
     [ApiController]
     public class UserController : ControllerBase

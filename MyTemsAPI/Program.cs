@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using MyTemsAPI.Authentication;
+using MyTemsAPI.Application;
 using MyTemsAPI.Controllers;
 using MyTemsAPI.Database;
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddApplication();
 builder.Services.AddDatabase(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
@@ -49,6 +51,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<ApiKeyAuthMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

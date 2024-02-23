@@ -19,26 +19,22 @@ namespace MyTemsAPI.Controllers
             builder.MapPut("address/update", Put);
             builder.MapDelete("address/delete/{id}", Delete);
         }
-        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
         public static async Task<IResult> GetAll(IAddressRepository addressRepository)
         {
             var addresses = await addressRepository.GetAll();
             return Results.Ok(addresses);
         }
-        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
         public static async Task<IResult> GetById(long id, IAddressRepository addressRepository)
         {
             var address = await addressRepository.GetById(id);
             return Results.Ok(address);
         }
-        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
         public static async Task<IResult> Create(IAddressRepository addressRepository, [FromBody] AddressDto dto)
         {
             var address = dto.ToDomain();
             await addressRepository.Add(address);
             return Results.Ok(address);
         }
-        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
         public static async Task<IResult> Put(IAddressRepository addressRepository, [FromBody] AddressDto dto)
         {
             try
@@ -52,7 +48,6 @@ namespace MyTemsAPI.Controllers
                 return Results.NotFound();
             }
         }
-        [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
         public static async Task<IResult> Delete(long id, IAddressRepository addressRepository)
         {
             try

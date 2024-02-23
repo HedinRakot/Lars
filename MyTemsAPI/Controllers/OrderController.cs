@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using MyTemsAPI.Authentication;
+﻿using Microsoft.AspNetCore.Mvc;
 using MyTemsAPI.Domain;
 using MyTemsAPI.Domain.IRepositories;
 using MyTemsAPI.Dto;
@@ -9,7 +7,6 @@ using MyTemsAPI.Models.Mapping;
 
 namespace MyTemsAPI.Controllers;
 
-[Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
 [Route("orders")]
 [ApiController]
 public class OrderController : ControllerBase

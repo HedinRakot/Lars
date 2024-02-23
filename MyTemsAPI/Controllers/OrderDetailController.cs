@@ -5,7 +5,6 @@ using MyTemsAPI.Domain.IRepositories;
 
 namespace MyTemsAPI.Controllers
 {
-    [Authorize(AuthenticationSchemes = ApiKeyAuthenticationScheme.DefaultScheme)]
     [Route("orderdetails")]
     [ApiController]
     public class OrderDetailController : ControllerBase
