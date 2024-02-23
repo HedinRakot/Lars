@@ -8,18 +8,18 @@ namespace MyTemsAPI.NServiceBus.Input;
 
 public class TestEventHandler : IHandleMessages<OrderStartedEvent>
 {
-    private readonly ISqlUnitOfWork _unitOfWork;
-    private readonly ICouponCountService _couponCountService;
+    //private readonly ISqlUnitOfWork _unitOfWork;
+    //private readonly ICouponCountService _couponCountService;
 
-    public TestEventHandler(ICouponCountService couponCountService, ISqlUnitOfWork unitOfWork)
-    {
-        _couponCountService = couponCountService;
-        _unitOfWork = unitOfWork;
-    }
+    //public TestEventHandler(ICouponCountService couponCountService, ISqlUnitOfWork unitOfWork)
+    //{
+    //    _couponCountService = couponCountService;
+    //    _unitOfWork = unitOfWork;
+    //}
 
     public Task Handle(OrderStartedEvent order, IMessageHandlerContext context)
     {
-        var o = order.ToString();
+        var o = JsonSerializer.Serialize(order.Order);
         var oe = JsonSerializer.Deserialize<OrderEvent>(o);
 
         Order domainOrder = new()
@@ -30,13 +30,13 @@ public class TestEventHandler : IHandleMessages<OrderStartedEvent>
             UserId = oe.UserId,
             Details = oe.Details
         };
-        _unitOfWork.OrderRepository.Add(domainOrder);
-        _unitOfWork.SaveChanges();
+        //_unitOfWork.OrderRepository.Add(domainOrder);
+        //_unitOfWork.SaveChanges();
         
-        foreach (var coupon in oe.Coupons)
-        {
-            _couponCountService.UpdateCouponCount(coupon.Code);
-        }
+        //foreach (var coupon in oe.Coupons)
+        //{
+        //    _couponCountService.UpdateCouponCount(coupon.Code);
+        //}
 
         return Task.CompletedTask;
     }
