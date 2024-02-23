@@ -86,47 +86,29 @@ public class OrderController : Controller
 
     [HttpPost]
     public async Task<IActionResult> CreateOrder()
-    {             
-        PlaceOrderDto placeOrderDto = new();
-        List<OrderDetail> list = new();
-        CartModel model = GetCartModel();
+    {
         User user = await _userService.GetByName(HttpContext.User.Identity.Name);
+        Cart? cart = GetCart();
 
-        Order order = new()
-        {
-            Total = model.Total,
-            Date = DateTime.Now,
-            Details = list,
-            AddressId = user.AddressId,
-            UserId = user.Id
-        };
-
-        foreach (var item in model.Items)
-        {
-            list.Add(new OrderDetail
-            {
-                Quantity = item.Amount,
-                UnitPrice = item.PriceOffer,
-                ProductId = item.ProductId,
-                Discount = item.Discount,
-                DiscountedPrice = item.DiscountedPrice
-            });
-        }
-        placeOrderDto.Order = order.ToDto();
-       
-        if (model.Offers.Count > 0)
-        {
-            foreach (var coupon in model.Offers)
-            {
-                placeOrderDto.Coupons.Add(coupon.Coupon.ToDto());
-            }            
-        }
-        await _orderService.Create(placeOrderDto);
+        await _orderService.CreateOrder(user, cart);
 
         Response.Cookies.Delete($"shoppingCart{HttpContext.User.Identity.Name}");
         return RedirectToAction(nameof(Index));
     }
 
+    private Cart? GetCart()
+    {
+        var cart = new Cart();
+        var user = HttpContext.User.Identity.Name;
+        var cookie = $"shoppingCart{user}";
+        var cookieValue = Request.Cookies[cookie];
+
+        if (!string.IsNullOrWhiteSpace(cookieValue))
+        {
+            cart = JsonSerializer.Deserialize<Cart>(cookieValue);
+        }
+        return cart;
+    }
     private CartModel? GetCartModel()
     {
         var cart = new CartModel();
@@ -209,3 +191,40 @@ public class OrderController : Controller
         return total ?? 0;
     }
 }
+
+
+//PlaceOrderDto placeOrderDto = new();
+//List<OrderDetail> list = new();
+//CartModel model = GetCartModel();
+//User user = await _userService.GetByName(HttpContext.User.Identity.Name);
+
+//Order order = new()
+//{
+//    Total = model.Total,
+//    Date = DateTime.Now,
+//    Details = list,
+//    AddressId = user.AddressId,
+//    UserId = user.Id
+//};
+
+//foreach (var item in model.Items)
+//{
+//    list.Add(new OrderDetail
+//    {
+//        Quantity = item.Amount,
+//        UnitPrice = item.PriceOffer,
+//        ProductId = item.ProductId,
+//        Discount = item.Discount,
+//        DiscountedPrice = item.DiscountedPrice
+//    });
+//}
+//placeOrderDto.Order = order.ToDto();
+
+//if (model.Offers.Count > 0)
+//{
+//    foreach (var coupon in model.Offers)
+//    {
+//        placeOrderDto.Coupons.Add(coupon.Coupon.ToDto());
+//    }
+//}
+//await _orderService.Create(placeOrderDto);

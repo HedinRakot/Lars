@@ -52,6 +52,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.MapAddressEndpoints();
 
 app.Run();

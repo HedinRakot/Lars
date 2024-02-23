@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyTemsAPI.Authentication;
-using MyTemsAPI.Database;
 using MyTemsAPI.Domain;
 using MyTemsAPI.Domain.IRepositories;
 using MyTemsAPI.Dto;
@@ -16,14 +15,10 @@ namespace MyTemsAPI.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly ISqlUnitOfWork _unitOfWork;
-    //private readonly IOrderRepository _orderRepository;
-    //private readonly IOrderDetailRepository _orderDetailRepository;
     private readonly ICouponCountService _couponCountService;
 
-    public OrderController(/*IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository, */ICouponCountService couponCountService, ISqlUnitOfWork unitOfWork)
+    public OrderController(ICouponCountService couponCountService, ISqlUnitOfWork unitOfWork)
     {
-        //_orderRepository = orderRepository;
-        //_orderDetailRepository = orderDetailRepository;
         _couponCountService = couponCountService;
         _unitOfWork = unitOfWork;
     }
@@ -44,10 +39,6 @@ public class OrderController : ControllerBase
     public IActionResult Create(PlaceOrderDto dto)
     {
         _unitOfWork.OrderRepository.Add(dto.Order.ToDomain());
-        //foreach( var detail in dto.Order.Details )
-        //{
-        //    _unitOfWork.OrderDetailRepository.Add(detail.ToDomain());
-        //}
         _unitOfWork.SaveChanges();
 
         if ( dto.Coupons != null )

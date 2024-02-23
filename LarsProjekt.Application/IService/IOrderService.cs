@@ -11,4 +11,5 @@ public interface IOrderService
     Task<List<OrderDetail>> GetDetailListWithOrderId(long id);
     Task<List<Order>> Get();
     Task<Order> Update(Order order);
+    Task CreateOrder(User user, Cart cart);
 }

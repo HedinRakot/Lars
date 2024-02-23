@@ -1,0 +1,1 @@
+{"Order":{"Id":0,"Total":210.00000,"CreatedDate":"2024-02-23T09:16:15.9529495+00:00","UserId":1,"AddressId":1,"Details":[{"Id":0,"OrderId":0,"ProductId":3,"Quantity":1,"UnitPrice":210.00000,"DiscountedPrice":0,"Discount":0}],"Coupons":[]}}

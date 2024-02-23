@@ -48,7 +48,7 @@ endpointConfiguration.UseSerialization<NServiceBus.SystemJsonSerializer>();
 var transport = endpointConfiguration.UseTransport<LearningTransport>();
 
 var routing = transport.Routing();
-routing.RouteToEndpoint(typeof(TestCommand), "MyTemsAPI");
+routing.RouteToEndpoint(typeof(OrderStartedEvent), "MyTemsAPI");
 
 var endpointInstance = await NServiceBus.Endpoint.Start(endpointConfiguration)
     .ConfigureAwait(false);

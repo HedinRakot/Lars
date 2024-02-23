@@ -2,12 +2,12 @@
 {
     public interface IUserRepository
     {
-        void Add(User user);
-        void Delete(User user);
-        List<User> GetAll();
-        User GetById(long id);
-        User GetByNameWithAddress(string name);
-        User GetByName(string name);
-        void Update(User user);
+        Task Add(User user);
+        Task Delete(User user);
+        Task<List<User>> GetAll();
+        Task<User> GetById(long id);
+        Task<User> GetByNameWithAddress(string name);
+        Task<User> GetByName(string name);
+        Task Update(User user);
     }
 }

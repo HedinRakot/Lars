@@ -1,6 +1,7 @@
 ﻿using MyTemsAPI.Database;
 using MyTemsAPI.Domain.IRepositories;
 using MyTemsAPI.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyTemsAPI.Repositories;
 
@@ -12,39 +13,32 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public List<User> GetAll()
+    public async Task<List<User>> GetAll() => await _context.Users.ToListAsync();
+    public async Task<User> GetById(long id) => await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+    public async Task<User> GetByName(string name)
     {
-        return _context.Users.ToList();
-    }
-
-    public User GetById(long id)
-    {
-        return _context.Users.FirstOrDefault(x => x.Id == id);
-    }
-    public User GetByName(string name)
-    {
-        User user = _context.Users.FirstOrDefault(x => x.Username == name);        
+        User user = await _context.Users.FirstOrDefaultAsync(x => x.Username == name);        
         return user;
     }
-    public User GetByNameWithAddress(string name)
+    public async Task<User> GetByNameWithAddress(string name)
     {
-        User user = _context.Users.FirstOrDefault(x => x.Username == name);
-        user.Address = _context.Address.FirstOrDefault(x => x.Id == user.AddressId);
+        User user = await _context.Users.FirstOrDefaultAsync(x => x.Username == name);
+        user.Address = await _context.Address.FirstOrDefaultAsync(x => x.Id == user.AddressId);
         return user;
     }
-    public void Add(User user)
+    public async Task Add(User user)
     {
         _context.Users.Add(user);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
-    public void Update(User user)
+    public async Task Update(User user)
     {
         _context.Users.Update(user);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
-    public void Delete(User user)
+    public async Task Delete(User user)
     {
         _context.Users.Remove(user);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 }

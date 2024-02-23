@@ -12,3 +12,5 @@ public class AuthorizeControllerModelConvention : IControllerModelConvention
         controller.Filters.Add(new AuthorizeFilter(PolicyName));
     }
 }
+
+//AuthorizationHandler
