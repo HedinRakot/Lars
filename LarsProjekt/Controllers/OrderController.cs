@@ -1,7 +1,5 @@
 ﻿using LarsProjekt.Application.IService;
 using LarsProjekt.Domain;
-using LarsProjekt.Dto;
-using LarsProjekt.Dto.Mapping;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using LarsProjekt.Models.ViewModels;
@@ -88,9 +86,7 @@ public class OrderController : Controller
     public async Task<IActionResult> CreateOrder()
     {
         User user = await _userService.GetByName(HttpContext.User.Identity.Name);
-        Cart? cart = GetCart();
-
-        await _orderService.CreateOrder(user, cart);
+        await _orderService.CreateOrder(user, GetCart());
 
         Response.Cookies.Delete($"shoppingCart{HttpContext.User.Identity.Name}");
         return RedirectToAction(nameof(Index));

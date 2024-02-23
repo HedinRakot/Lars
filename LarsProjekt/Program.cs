@@ -50,8 +50,8 @@ var transport = endpointConfiguration.UseTransport<LearningTransport>();
 var routing = transport.Routing();
 routing.RouteToEndpoint(typeof(OrderStartedEvent), "MyTemsAPI");
 
-var endpointInstance = await NServiceBus.Endpoint.Start(endpointConfiguration)
-    .ConfigureAwait(false);
+var endpointContainer = EndpointWithExternallyManagedContainer.Create(endpointConfiguration, builder.Services);
+var endpointInstance = await endpointContainer.Start(builder.Services.BuildServiceProvider());
 
 builder.Services.AddSingleton<IMessageSession>(endpointInstance);
 

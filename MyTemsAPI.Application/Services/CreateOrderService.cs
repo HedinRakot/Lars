@@ -1,4 +1,5 @@
-﻿using MyTemsAPI.Application.IServices;
+﻿using LarsProjekt.Messages.Dtos;
+using MyTemsAPI.Application.IServices;
 using MyTemsAPI.Domain;
 using MyTemsAPI.Domain.IRepositories;
 
@@ -15,18 +16,20 @@ internal class CreateOrderService : ICreateOrderService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task CreateOrder(OrderEvent order)
+    public async Task CreateOrder(OrderEventDto order)
     {
+        var x = order.ToDomain();
+
         Order domainOrder = new()
         {
-            Total = order.Total,
-            Date = order.CreatedDate,
-            AddressId = order.AddressId,
-            UserId = order.UserId,
-            Details = order.Details
+            Total = x.Total,
+            Date = x.Date,
+            AddressId = x.AddressId,
+            UserId = x.UserId,
+            Details = x.Details
         };
         _unitOfWork.OrderRepository.Add(domainOrder);
-        await _unitOfWork.SaveChangesAsync();
+        _unitOfWork.SaveChanges();
 
         foreach (var coupon in order.Coupons)
         {

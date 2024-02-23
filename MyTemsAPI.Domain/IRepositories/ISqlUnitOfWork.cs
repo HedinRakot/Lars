@@ -8,5 +8,4 @@ public interface ISqlUnitOfWork
     IOrderRepository OrderRepository { get; }
 
     void SaveChanges();
-    Task SaveChangesAsync();
 }

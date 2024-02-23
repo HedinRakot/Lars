@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LarsProjekt.Domain\LarsProjekt.Domain.csproj" />
+    <ProjectReference Include="..\LarsProjekt.Messages\LarsProjekt.Messages.csproj" />
   </ItemGroup>
 
 </Project>

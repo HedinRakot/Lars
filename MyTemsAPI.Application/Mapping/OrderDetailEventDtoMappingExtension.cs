@@ -1,7 +1,7 @@
-﻿using LarsProjekt.Domain;
+﻿using MyTemsAPI.Domain;
 using LarsProjekt.Messages.Dtos;
 
-namespace LarsProjekt.Messages.Mapping;
+namespace MyTemsAPI.Application;
 
 public static class OrderDetailEventDtoMappingExtension
 {
