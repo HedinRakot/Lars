@@ -61,9 +61,4 @@ internal class OrderService : IOrderService
     {
         await _client.HttpResponseMessageAsyncDelete("orders", $"delete?id={id}", HttpMethod.Delete);
     }
-
-    Task IOrderService.CreateOrder(User user, Cart cart)
-    {
-        throw new NotImplementedException();
-    }
 }

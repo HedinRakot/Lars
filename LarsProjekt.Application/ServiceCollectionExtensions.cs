@@ -14,7 +14,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IUserService, UserService>()
             .AddScoped<IOrderService, OrderService>()
             .AddScoped<IAddressService, AddressService>()
-            .AddSingleton<IMessageService, MessageService>()
             .AddScoped<ICreateOrderService, CreateOrderService>();
     }
 }
