@@ -46,7 +46,7 @@ internal class CreateOrderService : ICreateOrderService
         orderEvent.Details = detailList;
         orderEvent.Coupons = couponList;
 
-        await _messageContext.Publish(new OrderStartedEvent()
+        await _messageContext.Publish(new OrderEvent()
         {
             Order = orderEvent
         });

@@ -1,8 +1,9 @@
+using LarsProjekt;
 using LarsProjekt.Application;
 using LarsProjekt.Authentication;
 using LarsProjekt.ErrorHandling;
-using LarsProjekt.Messages;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging.Console;
 using NServiceBus;
 
@@ -41,14 +42,42 @@ builder.Services.Configure<ApiUrlOptions>(builder.Configuration.GetSection(ApiUr
 
 //NServiceBus
 var endpointConfiguration = new EndpointConfiguration("LarsProjekt");
+endpointConfiguration.SendFailedMessagesTo("error");
+endpointConfiguration.AuditProcessedMessagesTo("audit");
+endpointConfiguration.EnableInstallers();
 
 // Choose JSON to serialize and deserialize messages
 endpointConfiguration.UseSerialization<NServiceBus.SystemJsonSerializer>();
 
-var transport = endpointConfiguration.UseTransport<LearningTransport>();
+var nserviceBusConnectionString = builder.Configuration.GetConnectionString("NServiceBus");
 
-var routing = transport.Routing();
-routing.RouteToEndpoint(typeof(OrderStartedEvent), "MyTemsAPI");
+var transportConfig = new NServiceBus.SqlServerTransport(nserviceBusConnectionString)
+{
+    DefaultSchema = "dbo",
+    TransportTransactionMode = TransportTransactionMode.SendsAtomicWithReceive,
+    Subscriptions =
+    {
+        CacheInvalidationPeriod = TimeSpan.FromMinutes(1),
+        SubscriptionTableName = new NServiceBus.Transport.SqlServer.SubscriptionTableName(
+            table: "Subscriptions",
+            schema: "dbo")
+    }
+};
+
+transportConfig.SchemaAndCatalog.UseSchemaForQueue("error", "dbo");
+transportConfig.SchemaAndCatalog.UseSchemaForQueue("audit", "dbo");
+
+var transport = endpointConfiguration.UseTransport<SqlServerTransport>(transportConfig);
+//transport.RouteToEndpoint(typeof(TestCommand), "MyTemsAPI");    -- Jedes Command & den Empfänger konfigurieren
+
+//persistence
+var persistence = endpointConfiguration.UsePersistence<SqlPersistence>();
+var dialect = persistence.SqlDialect<SqlDialect.MsSqlServer>();
+dialect.Schema("dbo");
+persistence.ConnectionBuilder(() => new SqlConnection(nserviceBusConnectionString));
+persistence.TablePrefix("");
+
+await SqlServerHelper.CreateSchema(nserviceBusConnectionString, "dbo");
 
 var endpointContainer = EndpointWithExternallyManagedContainer.Create(endpointConfiguration, builder.Services);
 var endpointInstance = await endpointContainer.Start(builder.Services.BuildServiceProvider());

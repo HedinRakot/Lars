@@ -14,18 +14,21 @@ public class OrderController : Controller
     private readonly IOrderService _orderService;
     private readonly IAddressService _addressService;
     private readonly IProductService _productService;
+    private readonly ICreateOrderService _createOrderService;
     public OrderController
         (ILogger<OrderController> logger,
         IAddressService addressService,
         IUserService userService,
         IOrderService orderService,
-        IProductService productService)
+        IProductService productService,
+        ICreateOrderService createOrderService)
     {
         _logger = logger;
         _addressService = addressService;
         _orderService = orderService;
         _userService = userService;
         _productService = productService;
+        _createOrderService = createOrderService;
     }
 
     [HttpGet]
@@ -59,6 +62,12 @@ public class OrderController : Controller
     }
 
     [HttpGet]
+    public IActionResult Payment()
+    {
+        return View();
+    }
+
+    [HttpGet]
     public async Task<IActionResult> Details(long id)
     {
         var detail = await _orderService.GetDetailListWithOrderId(id);
@@ -86,7 +95,7 @@ public class OrderController : Controller
     public async Task<IActionResult> CreateOrder()
     {
         User user = await _userService.GetByName(HttpContext.User.Identity.Name);
-        await _orderService.CreateOrder(user, GetCart());
+        await _createOrderService.CreateOrder(user, GetCart());
 
         Response.Cookies.Delete($"shoppingCart{HttpContext.User.Identity.Name}");
         return RedirectToAction(nameof(Index));
