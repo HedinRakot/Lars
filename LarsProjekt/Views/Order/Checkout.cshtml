@@ -114,7 +114,7 @@
                         </form>
                     </div>
                     <div class="col-12 col-lg-5 offset-lg-1">
-                        <form asp-action="CreateOrder" asp-controller="Order" method="post">
+                        @* <form asp-action="CreateOrder" asp-controller="Order" method="post"> *@
                             <div asp-validation-summary="ModelOnly"></div>
 
                             <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -140,7 +140,12 @@
                                     </strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between bg-light">
-                                    <button type="submit" class="btn btn-primary form-control">Place Order</button>
+                                <span class="text-dark">Payment methods</span>
+                                    @* <button type="submit" class="btn btn-primary form-control">Place Order</button> *@
+                                <a asp-controller="Order" asp-action="Payment" class="btn btn-outline-primary btn-sm">Paypal</a>
+                                <a asp-controller="Order" asp-action="Payment" class="btn btn-outline-primary btn-sm">Card</a>
+                                <a asp-controller="Order" asp-action="Payment" class="btn btn-outline-primary btn-sm">SEPA</a>
+
                                 </li>
                             </ul>
                             <div class="row my-1">
@@ -162,7 +167,7 @@
                                 </div>
                             </div>
 
-                        </form>
+                       @*  </form> *@
 
                     </div>
                 </div>
