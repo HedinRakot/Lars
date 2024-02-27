@@ -142,9 +142,9 @@
                                 <li class="list-group-item d-flex justify-content-between bg-light">
                                 <span class="text-dark">Payment methods</span>
                                     @* <button type="submit" class="btn btn-primary form-control">Place Order</button> *@
-                                <a asp-controller="Order" asp-action="Payment" class="btn btn-outline-primary btn-sm">Paypal</a>
-                                <a asp-controller="Order" asp-action="Payment" class="btn btn-outline-primary btn-sm">Card</a>
-                                <a asp-controller="Order" asp-action="Payment" class="btn btn-outline-primary btn-sm">SEPA</a>
+                                <a asp-controller="Order" asp-action="PaypalPayment" class="btn btn-outline-primary btn-sm">Continue with Paypal</a>
+                                <br />
+                                <a asp-controller="Order" asp-action="InvoicePayment" class="btn btn-outline-primary btn-sm">Order via Invoice</a>
 
                                 </li>
                             </ul>

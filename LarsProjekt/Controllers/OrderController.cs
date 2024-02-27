@@ -62,7 +62,19 @@ public class OrderController : Controller
     }
 
     [HttpGet]
-    public IActionResult Payment()
+    public IActionResult PaypalPayment()
+    {
+        return View();
+    }
+
+    [HttpGet]
+    public IActionResult InvoicePayment()
+    {
+        return View();
+    }
+
+    [HttpGet]
+    public IActionResult OrderConfirmed()
     {
         return View();
     }
@@ -91,14 +103,13 @@ public class OrderController : Controller
         return View(list);
     }
 
-    [HttpPost]
     public async Task<IActionResult> CreateOrder()
     {
         User user = await _userService.GetByName(HttpContext.User.Identity.Name);
         await _createOrderService.CreateOrder(user, GetCart());
 
         Response.Cookies.Delete($"shoppingCart{HttpContext.User.Identity.Name}");
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(OrderConfirmed));
     }
 
     private Cart? GetCart()
