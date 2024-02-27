@@ -1,6 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System.Data.SqlClient;
 
-namespace LarsProjekt;
+namespace LarsProjekt.NServiceBus;
 
 public class SqlServerHelper
 {
