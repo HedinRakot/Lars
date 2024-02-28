@@ -5,6 +5,7 @@ using LarsProjekt.Messages;
 using LarsProjekt.Messages.Dtos;
 using LarsProjekt.Models;
 using NServiceBus;
+using NServiceBus.Testing;
 using NSubstitute;
 using System.Net;
 using System.Net.Http.Json;
@@ -30,7 +31,7 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
             new User
             {
                 Id = 4,
-                Username = "Lars"                
+                Username = "Lars"
             });
         _fixture.TestOrderService.Get().Returns(
             new List<Order>()
@@ -100,7 +101,7 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
 
                 }
         });
-        
+
         var response = await _httpClient.GetAsync(RequestUri + "/Details/" + 1);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var result = await response.Content.ReadAsStringAsync();
@@ -108,19 +109,19 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
         result.Should().Contain("66,00");
     }
 
-    [Fact]
-    public async Task CreateOrder_Publish_Event()
-    {
-        _fixture.TestMessageSession.Publish(new OrderEvent()
-        {
-            Order = new OrderEventDto()
-            {
-                Id = 1,
-                Total = 999,
-                Coupons = new(),
-                Details = new()
-            }
-        }).Returns(Task.CompletedTask);
-
-    }
+    //[Fact]
+    //public async Task CreateOrder_Publish_Event()
+    //{
+    //    await _session.Publish(new OrderEvent()
+    //    {
+    //        Order = new OrderEventDto()
+    //        {
+    //            Id = 1,
+    //            Total = 999,
+    //            Coupons = new(),
+    //            Details = new()
+    //        }
+    //    });
+    //    _session.SentMessages.Should().HaveCount(1);
+    //}
 }

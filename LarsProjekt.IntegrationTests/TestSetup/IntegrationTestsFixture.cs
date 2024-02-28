@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NServiceBus;
+using NServiceBus.Testing;
 using NSubstitute;
 using System.Reflection;
 
@@ -15,7 +16,7 @@ public class IntegrationTestsFixture : WebApplicationFactory<Program>
     public IOrderService TestOrderService = Substitute.For<IOrderService>();
     public IUserService TestUserService = Substitute.For<IUserService>();
     public ICreateOrderService TestCreateOrderService = Substitute.For<ICreateOrderService>();
-    public IMessageSession TestMessageSession = Substitute.For<IMessageSession>();
+    //public TestableMessageSession TestMessageSession = Substitute.For<TestableMessageSession>();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -33,7 +34,7 @@ public class IntegrationTestsFixture : WebApplicationFactory<Program>
                 services.AddSingleton(TestOrderService);
                 services.AddSingleton(TestUserService);
                 services.AddSingleton(TestCreateOrderService);
-                services.AddSingleton(TestMessageSession);
+                //services.AddSingleton(TestMessageSession);
             });
 
         base.ConfigureWebHost(builder);
