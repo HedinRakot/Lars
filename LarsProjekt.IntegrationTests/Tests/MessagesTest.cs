@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using LarsProjekt.IntegrationTests.TestSetup;
 using LarsProjekt.Messages;
 using LarsProjekt.Messages.Dtos;
 using NServiceBus;
@@ -6,18 +7,20 @@ using NServiceBus.Testing;
 
 namespace LarsProjekt.IntegrationTests.Tests;
 
-public class MessagesTest
+public class MessagesTest : IClassFixture<IntegrationTestsFixture>
 {
-    private readonly TestableMessageSession _session;
-    public MessagesTest(TestableMessageSession session)
+    private readonly IntegrationTestsFixture _fixture;
+
+    public MessagesTest(IntegrationTestsFixture fixture)
     {
-        _session = session;
+        _fixture = fixture;
     }
+
 
     [Fact]
     public async Task CreateOrder_Publish_Event_Should_Send_Message_Correctly()
     {
-        await _session.Publish(new OrderEvent()
+        await _fixture.MyMessageTestSession.Publish(new OrderEvent()
         {
             Order = new OrderEventDto()
             {
@@ -29,6 +32,6 @@ public class MessagesTest
         }, new PublishOptions { }
         );
 
-        _session.SentMessages.Should().HaveCount(1);
+        _fixture.MyMessageTestSession.PublishedMessages.Should().HaveCount(1);
     }
 }

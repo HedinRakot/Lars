@@ -1,14 +1,8 @@
 ﻿using FluentAssertions;
 using LarsProjekt.Domain;
 using LarsProjekt.IntegrationTests.TestSetup;
-using LarsProjekt.Messages;
-using LarsProjekt.Messages.Dtos;
-using LarsProjekt.Models;
-using NServiceBus;
-using NServiceBus.Testing;
 using NSubstitute;
 using System.Net;
-using System.Net.Http.Json;
 
 namespace LarsProjekt.IntegrationTests.Tests;
 
@@ -108,20 +102,4 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
         result.Should().NotBeNull();
         result.Should().Contain("66,00");
     }
-
-    //[Fact]
-    //public async Task CreateOrder_Publish_Event()
-    //{
-    //    await _session.Publish(new OrderEvent()
-    //    {
-    //        Order = new OrderEventDto()
-    //        {
-    //            Id = 1,
-    //            Total = 999,
-    //            Coupons = new(),
-    //            Details = new()
-    //        }
-    //    });
-    //    _session.SentMessages.Should().HaveCount(1);
-    //}
 }
