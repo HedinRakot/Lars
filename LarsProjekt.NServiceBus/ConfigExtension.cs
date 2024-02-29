@@ -7,11 +7,10 @@ namespace LarsProjekt.NServiceBus;
 
 public static class ConfigExtension
 {
+    
     public static async Task AddNServiceBus(ConfigurationManager configuration, IServiceCollection services, string endpointName, string connectionString)
     {
-        EndpointConfiguration endpointConfiguration;
-        string? nserviceBusConnectionString;
-        ConfigureEndpoint(configuration, endpointName, connectionString, out endpointConfiguration, out nserviceBusConnectionString);
+        ConfigureEndpoint(configuration, endpointName, connectionString, out EndpointConfiguration endpointConfiguration, out string? nserviceBusConnectionString);
         ConfigureTransport(endpointConfiguration, nserviceBusConnectionString);
         await ConfigureSqlPersistence(endpointConfiguration, nserviceBusConnectionString);
 

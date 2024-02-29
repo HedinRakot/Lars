@@ -3,6 +3,7 @@ using LarsProjekt.Authentication;
 using LarsProjekt.ErrorHandling;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Logging.Console;
+using NServiceBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +64,11 @@ app.MapControllerRoute(
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 await app.RunAsync();
+
+IEndpointInstance? endpointInstance = app.Services.GetService<IEndpointInstance>();
+
+await endpointInstance.Stop()
+                      .ConfigureAwait(false);
 
 namespace LarsProjekt
 {
