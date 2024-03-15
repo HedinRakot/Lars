@@ -7,7 +7,7 @@ namespace LarsProjekt.NServiceBus;
 
 public static class ConfigExtension
 {
-    
+    //public static async Task<IEndpointInstance> AddNServiceBus - return endpointInstance an use it in Program.cs
     public static async Task AddNServiceBus(ConfigurationManager configuration, IServiceCollection services, string endpointName, string connectionString)
     {
         ConfigureEndpoint(configuration, endpointName, connectionString, out EndpointConfiguration endpointConfiguration, out string? nserviceBusConnectionString);
@@ -65,6 +65,7 @@ public static class ConfigExtension
 
             services.AddSingleton<IMessageSession>(endpointInstance);
         }
+
     }
 }
 

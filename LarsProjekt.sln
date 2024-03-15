@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LarsProjekt.IntegrationTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LarsProjekt.Messages", "LarsProjekt.Messages\LarsProjekt.Messages.csproj", "{A9031D0B-BB02-4B45-B89A-52047AAFBBCC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LarsProjekt.NServiceBus", "LarsProjekt.NServiceBus\LarsProjekt.NServiceBus.csproj", "{BCF1051E-9787-425F-AC5C-D098FCE70D1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LarsProjekt.NServiceBus", "LarsProjekt.NServiceBus\LarsProjekt.NServiceBus.csproj", "{BCF1051E-9787-425F-AC5C-D098FCE70D1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LarsProjekt.CouponCache", "LarsProjekt.CouponCache\LarsProjekt.CouponCache.csproj", "{CEE4D219-0E06-421A-8BD8-0EBC9319B1F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +58,10 @@ Global
 		{BCF1051E-9787-425F-AC5C-D098FCE70D1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCF1051E-9787-425F-AC5C-D098FCE70D1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCF1051E-9787-425F-AC5C-D098FCE70D1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEE4D219-0E06-421A-8BD8-0EBC9319B1F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEE4D219-0E06-421A-8BD8-0EBC9319B1F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEE4D219-0E06-421A-8BD8-0EBC9319B1F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEE4D219-0E06-421A-8BD8-0EBC9319B1F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

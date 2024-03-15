@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LarsProjekt.Application\LarsProjekt.Application.csproj" />
+    <ProjectReference Include="..\LarsProjekt.CouponCache\LarsProjekt.CouponCache.csproj" />
     <ProjectReference Include="..\LarsProjekt.NServiceBus\LarsProjekt.NServiceBus.csproj" />
   </ItemGroup>
 

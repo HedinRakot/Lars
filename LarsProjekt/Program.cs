@@ -1,4 +1,5 @@
 using LarsProjekt.Application;
+using LarsProjekt.CouponCache;
 using LarsProjekt.Authentication;
 using LarsProjekt.ErrorHandling;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -30,6 +31,7 @@ builder.Services.AddAuthorization(o =>
 builder.Services.AddSession();
 
 builder.Services.AddApplication();
+builder.Services.AddCouponCache();
 
 builder.Services.AddMvc();
 
