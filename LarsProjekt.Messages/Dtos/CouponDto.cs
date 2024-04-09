@@ -1,6 +1,6 @@
 ﻿namespace LarsProjekt.Messages.Dtos;
 
-public class CouponEventDto
+public class CouponDto
 {
     public long Id { get; set; }
     public string Code { get; set; }

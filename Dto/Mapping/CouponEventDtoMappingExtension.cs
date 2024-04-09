@@ -1,13 +1,12 @@
 ﻿using LarsProjekt.Domain;
-using LarsProjekt.Messages.Dtos;
 
-namespace LarsProjekt.Dto;
+namespace LarsProjekt.Dto.Mapping;
 
 public static class CouponEventDtoMappingExtension
 {
-    public static CouponEventDto ToEventDto(this Coupon coupon)
+    public static Messages.Dtos.CouponDto ToMessageDto(this Coupon coupon)
     {
-        return new CouponEventDto
+        return new Messages.Dtos.CouponDto
         {
             Id = coupon.Id,
             Code = coupon.Code,
