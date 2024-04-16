@@ -3,74 +3,86 @@ using LarsProjekt.CouponCache;
 using LarsProjekt.Authentication;
 using LarsProjekt.ErrorHandling;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Extensions.Logging.Console;
 using NServiceBus;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+try
+{
+    LarsProjekt.Logging.SerilogConfigExtension.AddSerilogWithTracing(builder, "MyTemsDb");
 
-builder.Services.AddControllersWithViews();
+    builder.Services.AddControllersWithViews();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+    builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.Cookie.Name = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.LoginPath = "/Login/SignIn/";
+            options.AccessDeniedPath = "/Login/Forbidden/";
+        });
+
+    builder.Services.AddAuthorization(o =>
     {
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SameSite = SameSiteMode.Lax;
-        options.Cookie.Name = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.LoginPath = "/Login/SignIn/";
-        options.AccessDeniedPath = "/Login/Forbidden/";
+        o.AddPolicy(AuthorizeControllerModelConvention.PolicyName, policy =>
+        {
+            policy.RequireAuthenticatedUser();
+        });
     });
 
-builder.Services.AddAuthorization(o =>
-{
-    o.AddPolicy(AuthorizeControllerModelConvention.PolicyName, policy =>
+    builder.Services.AddSession();
+
+    builder.Services.AddApplication();
+    builder.Services.AddCouponCache();
+
+    builder.Services.AddMvc();
+
+    builder.Services.Configure<ApiUserOptions>(builder.Configuration.GetSection(ApiUserOptions.Section));
+    builder.Services.Configure<ApiUrlOptions>(builder.Configuration.GetSection(ApiUrlOptions.Section));
+
+    await LarsProjekt.NServiceBus.ConfigExtension.AddNServiceBus(builder.Configuration, builder.Services, "LarsProjekt", "NServiceBus");
+
+    var app = builder.Build();
+
+    if (!app.Environment.IsDevelopment())
     {
-        policy.RequireAuthenticatedUser();
-    });
-});
+        app.UseExceptionHandler("/Home/Error");
+        app.UseHsts();
+    }
 
-builder.Services.AddSession();
+    LarsProjekt.Logging.SerilogConfigExtension.AddSerilogRequestLoggingWithTracingListener(app);
 
-builder.Services.AddApplication();
-builder.Services.AddCouponCache();
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
 
-builder.Services.AddMvc();
+    app.UseSession();
 
-builder.Logging.AddSimpleConsole(i => i.ColorBehavior = LoggerColorBehavior.Enabled);
+    app.UseRouting();
+    app.UseAuthentication();
+    app.UseAuthorization();
 
-builder.Services.Configure<ApiUserOptions>(builder.Configuration.GetSection(ApiUserOptions.Section));
-builder.Services.Configure<ApiUrlOptions>(builder.Configuration.GetSection(ApiUrlOptions.Section));
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
 
-await LarsProjekt.NServiceBus.ConfigExtension.AddNServiceBus(builder.Configuration, builder.Services, "LarsProjekt", "NServiceBus");
+    app.UseMiddleware<ErrorHandlingMiddleware>();
 
-var app = builder.Build();
+    await app.RunAsync();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    IEndpointInstance? endpointInstance = app.Services.GetService<IEndpointInstance>();
+
+    await endpointInstance.Stop()
+                          .ConfigureAwait(false);
 }
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseSession();
-
-app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.UseMiddleware<ErrorHandlingMiddleware>();
-
-await app.RunAsync();
-
-IEndpointInstance? endpointInstance = app.Services.GetService<IEndpointInstance>();
-
-await endpointInstance.Stop()
-                      .ConfigureAwait(false);
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Unhandled exception");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
 
 namespace LarsProjekt
 {
