@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option csharp_namespace = "UserApi.Grpc.Protos";
+
+package customer;
+
+service Customers {
+	rpc GetList (GetListRequest) returns (GetListReply);
+	rpc GetById (GetByIdRequest) returns (GetByIdReply);
+
+}
+
+message GetListRequest {
+	
+}
+
+message GetListReply {
+	int32 id = 1;
+	string firstName = 2;
+	string lastName = 3;
+	string eMail = 4;
+	string password = 5;
+}
+
+message GetByIdRequest {
+	int32 customerId = 1;
+}
+
+message GetByIdReply {
+	int32 id = 1;
+	string firstName = 2;
+	string lastName = 3;
+	string eMail = 4;
+	string password = 5;
+}

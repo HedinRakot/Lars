@@ -20,9 +20,9 @@ public class MessagesTest : IClassFixture<IntegrationTestsFixture>
     [Fact]
     public async Task CreateOrder_Publish_Event_Should_Send_Message_Correctly()
     {
-        await _fixture.MyMessageTestSession.Publish(new OrderEvent()
+        await _fixture.MyMessageTestSession.Publish(new CreateOrderEvent()
         {
-            Order = new OrderEventDto()
+            Order = new OrderDto()
             {
                 Id = 1,
                 Total = 999,

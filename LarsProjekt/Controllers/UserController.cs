@@ -1,4 +1,5 @@
-﻿using LarsProjekt.Application.IService;
+﻿using Grpc.Net.Client;
+using LarsProjekt.Application.IService;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using LarsProjekt.Models.ViewModels;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using UserApi.Grpc.Protos;
 
 namespace LarsProjekt.Controllers;
 public class UserController : Controller
@@ -16,6 +18,27 @@ public class UserController : Controller
     {        
         _userService = userService;
     }
+
+    public async Task<IActionResult> Details(long id)
+    {
+        var input = new GetByIdRequest { CustomerId = (int)id };
+        var channel = GrpcChannel.ForAddress("https://localhost:7102");
+        var client = new Customers.CustomersClient(channel);
+        var reply = await client.GetByIdAsync(input);
+
+        CustomerModel model = new()
+        {
+            Id = reply.Id,
+            FirstName = reply.FirstName,
+            LastName = reply.LastName,
+            Email = reply.EMail,
+            Password = reply.Password
+        };
+
+        return View(model);
+    }
+
+
 
     // TODO CHANGE PASSWORD
     // CHANGE USERNAME

@@ -9,6 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Protos\customer.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.27.0-rc1" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.62.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.62.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -22,6 +32,10 @@
     <ProjectReference Include="..\LarsProjekt.CouponCache\LarsProjekt.CouponCache.csproj" />
     <ProjectReference Include="..\LarsProjekt.Logging\LarsProjekt.Logging.csproj" />
     <ProjectReference Include="..\LarsProjekt.NServiceBus\LarsProjekt.NServiceBus.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\customer.proto" GrpcServices="Client" />
   </ItemGroup>
 
   <ItemGroup>
