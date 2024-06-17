@@ -26,8 +26,7 @@ public class MessagesTest : IClassFixture<IntegrationTestsFixture>
             {
                 Id = 1,
                 Total = 999,
-                Coupons = new(),
-                Details = new()
+                Details = new(),
             }
         }, new PublishOptions { }
         );

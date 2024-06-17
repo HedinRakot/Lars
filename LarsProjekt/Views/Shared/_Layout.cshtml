@@ -40,7 +40,7 @@
                         @if (Context.User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="SignOut">Logout (@Context.User.Identity.Name)</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Logout (@Context.User.Identity.Name)</a>
                             </li>
                         }
                         else

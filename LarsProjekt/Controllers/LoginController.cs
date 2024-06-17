@@ -1,4 +1,6 @@
-﻿using LarsProjekt.Application.IService;
+﻿using Google.Protobuf.WellKnownTypes;
+using IdentityModel.Client;
+using LarsProjekt.Application.IService;
 using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -11,83 +13,121 @@ public class LoginController : Controller
 {    
     private IUserService _userService;
     private readonly ILogger<LoginController> _logger;
-    public LoginController(IUserService userService, ILogger<LoginController> logger)
+    private readonly IHttpClientFactory _httpClientFactory;
+    public LoginController(IUserService userService, ILogger<LoginController> logger, IHttpClientFactory httpClientFactory)
     {
         _userService = userService;
         _logger = logger;
+        _httpClientFactory = httpClientFactory;
     }
 
-    [HttpGet]
-    public IActionResult SignIn()
+    //
+    public IActionResult Logout()
     {
-        return View(new LoginModel());
+        return SignOut("Cookies", "oidc");
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> SignIn(LoginModel model)
-    {        
 
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                var userFromDb = await _userService.GetByNameWithAddress(model.UserName);
-                if (model.Password == userFromDb.Password)
-                {
-                    try
-                    {
-                        await SignIn(userFromDb);
-                        return RedirectToAction(nameof(UserController.CreateEdit), nameof(Domain.User));
+    //[HttpGet]
+    //public IActionResult SignIn()
+    //{
+    //    return View(new LoginModel());
+    //}
 
-                    }
-                    catch (NullReferenceException x)
-                    {
-                        _logger.LogError(x.Message);
-                        AddError();
-                    }
-                }
-                else { AddError(); }               
+    //[HttpGet]
+    //public async Task<TokenResponse> SignIn(string code)
+    //{
 
-            }
-            catch (NullReferenceException x)
-            {
-                _logger.LogError(x.Message);
-                AddError();
-            }
-        }
+    //    // call Auth Server to exchange the code by the token
+    //    var httpClient = _httpClientFactory.CreateClient();
+    //    var discoveryDoc = await httpClient.GetDiscoveryDocumentAsync(
+    //        "https://localhost:7099/");
 
-        return View("~/Views/Login/SignIn.cshtml", model);
-    }
+    //    // constructs the token request
+    //    var authCodeRequest = new AuthorizationCodeTokenRequest()
+    //    {
+    //        Address = discoveryDoc.TokenEndpoint,
+    //        Code = code,
+    //        ClientId = "aspnetcoreweb", // indicates a code exchange
+    //        ClientSecret = "secret",  // registered in Auth Server
+    //        CodeVerifier = null,      // no pkce
+    //        RedirectUri = "https://localhost:7099/gettokenfromcode" // same url
+    //    };
 
-    private void AddError()
-    {
-        ModelState.AddModelError("Model", "Incorrect username or password");
-    }
+    //    // request the token in exchange for the code
+    //    var duendeResponse = await httpClient.RequestAuthorizationCodeTokenAsync(authCodeRequest);
+    //    if (duendeResponse.IsError)
+    //        throw new BadHttpRequestException(duendeResponse.Error);
 
-    protected async Task SignIn(User user)
-    {
-        var claims = new[] {
-            new Claim(ClaimTypes.Name, user.Username),
-        };
+    //    // return the entire response, which includes the access and id tokens
+    //    return duendeResponse;
+    //}
 
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+    //[HttpPost]
+    //[ValidateAntiForgeryToken]
+    //public async Task<IActionResult> SignIn(LoginModel model)
+    //{        
 
-        var authProperties = new AuthenticationProperties()
-        {
-            IsPersistent = true,
-            AllowRefresh = true,
-            ExpiresUtc = DateTimeOffset.Now.AddDays(1)
-        };
+    //    if (ModelState.IsValid)
+    //    {
+    //        try
+    //        {
+    //            var userFromDb = await _userService.GetByNameWithAddress(model.UserName);
+    //            if (model.Password == userFromDb.Password)
+    //            {
+    //                try
+    //                {
+    //                    await SignIn(userFromDb);
+    //                    return RedirectToAction(nameof(UserController.CreateEdit), nameof(Domain.User));
 
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
-    }
+    //                }
+    //                catch (NullReferenceException x)
+    //                {
+    //                    _logger.LogError(x.Message);
+    //                    AddError();
+    //                }
+    //            }
+    //            else { AddError(); }               
 
-    [HttpGet]
-    public async Task<IActionResult> SignOut()
-    {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        return RedirectToAction(nameof(SignIn));
-    }
+    //        }
+    //        catch (NullReferenceException x)
+    //        {
+    //            _logger.LogError(x.Message);
+    //            AddError();
+    //        }
+    //    }
+
+    //    return View("~/Views/Login/SignIn.cshtml", model);
+    //}
+
+    //private void AddError()
+    //{
+    //    ModelState.AddModelError("Model", "Incorrect username or password");
+    //}
+
+    //protected async Task SignIn(User user)
+    //{
+    //    var claims = new[] {
+    //        new Claim(ClaimTypes.Name, user.Username),
+    //    };
+
+    //    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+    //    var authProperties = new AuthenticationProperties()
+    //    {
+    //        IsPersistent = true,
+    //        AllowRefresh = true,
+    //        ExpiresUtc = DateTimeOffset.Now.AddDays(1)
+    //    };
+
+    //    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
+    //}
+
+    //[HttpGet]
+    //public async Task<IActionResult> SignOut()
+    //{
+    //    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    //    return RedirectToAction(nameof(SignIn));
+    //}
 }
 

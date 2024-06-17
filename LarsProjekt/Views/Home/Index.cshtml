@@ -2,9 +2,30 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center mt-5">
+@* <div class="text-center mt-5">
     <h1 class="display-4">We’ll be back soon!</h1>
     <p>Sorry for the inconvenience. We’re performing some maintenance at the moment. We’ll be back up shortly!</p>
     <p>-The MyTems Team-</p>
     
-</div>
+</div> *@
+@using Microsoft.AspNetCore.Authentication
+
+<h2>Claims</h2>
+
+<dl>
+    @foreach (var claim in User.Claims)
+    {
+        <dt>@claim.Type</dt>
+        <dd>@claim.Value</dd>
+    }
+</dl>
+
+<h2>Properties</h2>
+
+<dl>
+    @foreach (var prop in (await Context.AuthenticateAsync()).Properties.Items)
+    {
+        <dt>@prop.Key</dt>
+        <dd>@prop.Value</dd>
+    }
+</dl>
