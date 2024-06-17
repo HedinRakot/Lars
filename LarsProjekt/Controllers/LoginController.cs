@@ -1,7 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using IdentityModel.Client;
 using LarsProjekt.Application.IService;
-using LarsProjekt.Domain;
 using LarsProjekt.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
