@@ -11,9 +11,10 @@
     <input asp-for="Id" hidden />
     <div class="card-body p-4">
         <div class="card border-primary mb-3" style="max-width: 100%;">
-            <div class="card-header">@Model.Username</div>
+            <div class="card-header">@Model.Email</div>
             <div class="card-body">
-                <p class="card-text">@Model.Email
+                <p class="card-text">@Model.FirstName</p>
+                <p class="card-text">@Model.LastName</p>
                 <hr />
                 
             </div>

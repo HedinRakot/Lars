@@ -9,7 +9,11 @@ public class UserModel
 
     [Required]
     [StringLength(20, ErrorMessage = "Name length should be between 3 and 20 symbols", MinimumLength = 3)]
-    public string Username { get; set; }
+    public string FirstName { get; set; }
+
+    [Required]
+    [StringLength(20, ErrorMessage = "Name length should be between 3 and 20 symbols", MinimumLength = 3)]
+    public string LastName { get; set; }
 
     [Required]
     [RegularExpression("^([\\w\\.\\-]+)@([\\w\\-]+)((\\.(\\w){2,})+)$",

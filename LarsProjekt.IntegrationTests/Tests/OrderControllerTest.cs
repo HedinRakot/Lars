@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using LarsProjekt.Domain;
+using LarsProjekt.Domain.MyTemsApi;
 using LarsProjekt.IntegrationTests.TestSetup;
 using NSubstitute;
 using System.Net;
@@ -25,7 +26,7 @@ public class OrderControllerTest : IClassFixture<IntegrationTestsFixture>
             new User
             {
                 Id = 4,
-                Username = "Lars"
+                Email = "Lars@test.com"
             });
         _fixture.TestOrderService.Get().Returns(
             new List<Order>()

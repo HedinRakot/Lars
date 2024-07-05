@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using LarsProjekt.Domain;
+using LarsProjekt.Domain.MyTemsApi;
 using LarsProjekt.IntegrationTests.TestSetup;
 using LarsProjekt.Models;
 using NSubstitute;

@@ -1,5 +1,5 @@
-﻿using LarsProjekt.Application.IService;
-using LarsProjekt.CouponCache;
+﻿using LarsProjekt.CouponCache;
+using LarsProjekt.Domain.Interfaces;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using Microsoft.AspNetCore.Mvc;

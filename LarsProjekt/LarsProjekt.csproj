@@ -33,7 +33,11 @@
     <ProjectReference Include="..\LarsProjekt.Application\LarsProjekt.Application.csproj" />
     <ProjectReference Include="..\LarsProjekt.CouponCache\LarsProjekt.CouponCache.csproj" />
     <ProjectReference Include="..\LarsProjekt.Logging\LarsProjekt.Logging.csproj" />
+    <ProjectReference Include="..\LarsProjekt.MyTemsApiAdapter\LarsProjekt.MyTemsApiAdapter.csproj" />
     <ProjectReference Include="..\LarsProjekt.NServiceBus\LarsProjekt.NServiceBus.csproj" />
+    <ProjectReference Include="..\LarsProjekt.OrderApiAdapter\LarsProjekt.OrderApiAdapter.csproj" />
+    <ProjectReference Include="..\LarsProjekt.StoreApiAdapter\LarsProjekt.StoreApiAdapter.csproj" />
+    <ProjectReference Include="..\UserApiAdapter\LarsProjekt.UserApiAdapter.csproj" />
   </ItemGroup>
 
   <ItemGroup>

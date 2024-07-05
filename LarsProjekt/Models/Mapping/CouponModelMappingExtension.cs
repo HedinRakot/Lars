@@ -1,6 +1,5 @@
-﻿using LarsProjekt.Domain;
-using LarsProjekt.Dto;
-using System.Security.Cryptography.Xml;
+﻿using LarsProjekt.Domain.MyTemsApi;
+using LarsProjekt.Dto.MyTemsApi;
 
 namespace LarsProjekt.Models.Mapping
 {
@@ -34,7 +33,7 @@ namespace LarsProjekt.Models.Mapping
                 Count = model.Count,
                 AppliedCount = model.AppliedCount,
                 Version = model.Version
-                
+
             };
         }
 

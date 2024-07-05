@@ -1,5 +1,5 @@
 ﻿using Grpc.Net.Client;
-using LarsProjekt.Application.IService;
+using LarsProjekt.Domain.Interfaces;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using LarsProjekt.Models.ViewModels;
@@ -77,36 +77,42 @@ public class UserController : Controller
         var signedInUser = await _userService.GetByNameWithAddress(HttpContext.User.Identity.Name);
 
         var user = model.UserModel.ToDomain();
-        user.Address = model.AddressModel.ToDomain();
+        //user.Address = model.AddressModel.ToDomain();
 
-        if (ModelState.IsValid)
+        if (signedInUser == null)
         {
-            if (signedInUser == null)
-            {                                      
-                await _userService.Create(user);                           
-
-                var claims = new[] {
-                new Claim(ClaimTypes.Name, user.Username),
-                };
-
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                var authProperties = new AuthenticationProperties()
-                {
-                    IsPersistent = true,
-                    AllowRefresh = true,
-                    ExpiresUtc = DateTimeOffset.Now.AddDays(1)
-                };
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
-
-                return RedirectToAction(nameof(CreateEdit));
-            }
-            
-        } else
-        {
-            ModelState.AddModelError("Model", "Please check your information");
+            await _userService.Create(user);
+            return RedirectToAction(nameof(CreateEdit));
         }
+
+        //if (ModelState.IsValid)
+        //{
+        //    if (signedInUser == null)
+        //    {                                      
+        //        await _userService.Create(user);                           
+
+        //        //var claims = new[] {
+        //        //new Claim(ClaimTypes.Name, user.Email),
+        //        //};
+
+        //        //var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        //        //var authProperties = new AuthenticationProperties()
+        //        //{
+        //        //    IsPersistent = true,
+        //        //    AllowRefresh = true,
+        //        //    ExpiresUtc = DateTimeOffset.Now.AddDays(1)
+        //        //};
+
+        //        //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
+
+        //        return RedirectToAction(nameof(CreateEdit));
+        //    }
+            
+        //} else
+        //{
+        //    ModelState.AddModelError("Model", "Please check your information");
+        //}
 
         if (model.UserModel.Id == signedInUser.Id)
         {            

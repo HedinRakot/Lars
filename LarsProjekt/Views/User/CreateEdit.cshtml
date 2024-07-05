@@ -23,7 +23,7 @@
                 <div asp-validation-summary="ModelOnly"></div>
                 <div class="container rounded p-2">
                     <div class="row">
-                        <div class="col-12 col-lg-6 pb-4">
+                        @* <div class="col-12 col-lg-6 pb-4">
                             <div class="row">
                                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                                     <span class="text-info">Your personal information:</span>
@@ -35,7 +35,7 @@
                                 </div>
                                 <div class="col-9">
                                     <input asp-for="AddressModel.FirstName" class="form-control" />
-                                    <span asp-validation-for="AddressModel.FirstName" class="text-danger"></span>
+                                   @*  <span asp-validation-for="AddressModel.FirstName" class="text-danger"></span>
 
                                 </div>
                             </div>
@@ -45,7 +45,7 @@
                                 </div>
                                 <div class="col-9">
                                     <input asp-for="AddressModel.LastName" class="form-control" />
-                                    <span asp-validation-for="AddressModel.LastName" class="text-danger"></span>
+                                    @* <span asp-validation-for="AddressModel.LastName" class="text-danger"></span>
 
                                 </div>
                             </div>
@@ -55,7 +55,7 @@
                                 </div>
                                 <div class="col-9">
                                     <input asp-for="AddressModel.Street" class="form-control" />
-                                    <span asp-validation-for="AddressModel.Street" class="text-danger"></span>
+                                    @* <span asp-validation-for="AddressModel.Street" class="text-danger"></span>
 
                                 </div>
                             </div>
@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="col-9">
                                     <input asp-for="AddressModel.HouseNumber" class="form-control" />
-                                    <span asp-validation-for="AddressModel.HouseNumber" class="text-danger"></span>
+                                    @* <span asp-validation-for="AddressModel.HouseNumber" class="text-danger"></span>
 
                                 </div>
                             </div>
@@ -75,7 +75,7 @@
                                 </div>
                                 <div class="col-9">
                                     <input asp-for="AddressModel.City" class="form-control" />
-                                    <span asp-validation-for="AddressModel.City" class="text-danger"></span>
+                                    @* <span asp-validation-for="AddressModel.City" class="text-danger"></span>
 
                                 </div>
                             </div>
@@ -85,7 +85,7 @@
                                 </div>
                                 <div class="col-9">
                                     <input asp-for="AddressModel.State" class="form-control" />
-                                    <span asp-validation-for="AddressModel.State" class="text-danger"></span>
+                                    @* <span asp-validation-for="AddressModel.State" class="text-danger"></span>
 
                                 </div>
                             </div>
@@ -95,7 +95,7 @@
                                 </div>
                                 <div class="col-9">
                                     <input asp-for="AddressModel.PostalCode" class="form-control" />
-                                    <span asp-validation-for="AddressModel.PostalCode" class="text-danger"></span>
+                                    @* <span asp-validation-for="AddressModel.PostalCode" class="text-danger"></span>
 
                                 </div>
                             </div>
@@ -113,11 +113,11 @@
                                 </div>
                                 <div class="col-9">
                                     <input asp-for="AddressModel.Phone" class="form-control" />
-                                    <span asp-validation-for="AddressModel.Phone" class="text-danger"></span>
+                                    @* <span asp-validation-for="AddressModel.Phone" class="text-danger"></span>
 
                                 </div>
-                            </div>
                         </div>
+                        </div>*@
                         <div class="col-12 col-lg-5 offset-lg-1">
                             <div class="border p-3">
                                 <input asp-for="UserModel.Id" hidden />
@@ -125,25 +125,37 @@
                                 @if (Model.UserModel.Id != 0)
                                 {
                                     <div class="form-floating py-2 col-12">
-                                        <input disabled asp-for="UserModel.Username" class="form-control border-0 shadow" />
-                                        <label asp-for="UserModel.Username" class="ms-2"></label>
-                                        <span asp-validation-for="UserModel.Username" class="text-danger"></span>
+                                        <input asp-for="UserModel.FirstName" class="form-control border-0 shadow" />
+                                        <label asp-for="UserModel.FirstName" class="ms-2"></label>
+                                        <span asp-validation-for="UserModel.FirstName" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-floating py-2 col-12">
+                                        <input asp-for="UserModel.LastName" class="form-control border-0 shadow" />
+                                        <label asp-for="UserModel.LastName" class="ms-2"></label>
+                                        <span asp-validation-for="UserModel.LastName" class="text-danger"></span>
                                     </div>
                                     <div class="form-floating py-2 col-12">
-                                        <input disabled asp-for="UserModel.Email" class="form-control border-0 shadow" />
+                                        <input asp-for="UserModel.Email" class="form-control border-0 shadow" />
                                         <label asp-for="UserModel.Email" class="ms-2"></label>
                                         <span asp-validation-for="UserModel.Email" class="text-danger"></span>
                                     </div>
                                     <div class="form-floating py-2 col-12">
-                                        <input disabled asp-for="UserModel.Password" class="form-control border-0 shadow" hidden />
+                                        <input asp-for="UserModel.Password" class="form-control border-0 shadow" hidden />
                                         <a asp-controller="User" asp-action="ChangePassword" class="btn btn-outline-primary border form-control">Change Password</a>
                                     </div>
                                 } else
                                 {
                                     <div class="form-floating py-2 col-12">
-                                        <input asp-for="UserModel.Username" class="form-control border-0 shadow" />
-                                        <label asp-for="UserModel.Username" class="ms-2"></label>
-                                        <span asp-validation-for="UserModel.Username" class="text-danger"></span>
+                                        <input asp-for="UserModel.FirstName" class="form-control border-0 shadow" />
+                                        <label asp-for="UserModel.FirstName" class="ms-2"></label>
+                                        <span asp-validation-for="UserModel.FirstName" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-floating py-2 col-12">
+                                        <input asp-for="UserModel.LastName" class="form-control border-0 shadow" />
+                                        <label asp-for="UserModel.LastName" class="ms-2"></label>
+                                        <span asp-validation-for="UserModel.LastName" class="text-danger"></span>
                                     </div>
                                     <div class="form-floating py-2 col-12">
                                         <input asp-for="UserModel.Email" class="form-control border-0 shadow" />

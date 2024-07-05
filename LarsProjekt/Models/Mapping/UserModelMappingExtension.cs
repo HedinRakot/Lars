@@ -1,4 +1,4 @@
-﻿using LarsProjekt.Domain;
+﻿using LarsProjekt.Domain.MyTemsApi;
 
 namespace LarsProjekt.Models.Mapping;
 
@@ -9,7 +9,8 @@ public static class UserModelMappingExtension
         return new UserModel
         {
             Id = user.Id,
-            Username = user.Username,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
             Email = user.Email,
             Password = user.Password
         };
@@ -20,7 +21,8 @@ public static class UserModelMappingExtension
         return new User
         {
             Id = model.Id,
-            Username = model.Username,
+            FirstName = model.FirstName,
+            LastName = model.LastName,
             Email = model.Email,
             Password = model.Password
         };

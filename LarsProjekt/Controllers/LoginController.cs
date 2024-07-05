@@ -1,65 +1,30 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using IdentityModel.Client;
-using LarsProjekt.Application.IService;
-using LarsProjekt.Models;
+﻿using LarsProjekt.Domain.Interfaces;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace LarsProjekt.Controllers;
 public class LoginController : Controller
 {    
     private IUserService _userService;
     private readonly ILogger<LoginController> _logger;
-    private readonly IHttpClientFactory _httpClientFactory;
-    public LoginController(IUserService userService, ILogger<LoginController> logger, IHttpClientFactory httpClientFactory)
+    public LoginController(IUserService userService, ILogger<LoginController> logger)
     {
         _userService = userService;
         _logger = logger;
-        _httpClientFactory = httpClientFactory;
     }
 
-    //
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout()
     {
-        return SignOut("Cookies", "oidc");
+        return SignOut(new AuthenticationProperties
+        {
+            RedirectUri = "/Home/Index"
+        }, "Cookies" , "oidc");
     }
-
 
     //[HttpGet]
     //public IActionResult SignIn()
     //{
     //    return View(new LoginModel());
-    //}
-
-    //[HttpGet]
-    //public async Task<TokenResponse> SignIn(string code)
-    //{
-
-    //    // call Auth Server to exchange the code by the token
-    //    var httpClient = _httpClientFactory.CreateClient();
-    //    var discoveryDoc = await httpClient.GetDiscoveryDocumentAsync(
-    //        "https://localhost:7099/");
-
-    //    // constructs the token request
-    //    var authCodeRequest = new AuthorizationCodeTokenRequest()
-    //    {
-    //        Address = discoveryDoc.TokenEndpoint,
-    //        Code = code,
-    //        ClientId = "aspnetcoreweb", // indicates a code exchange
-    //        ClientSecret = "secret",  // registered in Auth Server
-    //        CodeVerifier = null,      // no pkce
-    //        RedirectUri = "https://localhost:7099/gettokenfromcode" // same url
-    //    };
-
-    //    // request the token in exchange for the code
-    //    var duendeResponse = await httpClient.RequestAuthorizationCodeTokenAsync(authCodeRequest);
-    //    if (duendeResponse.IsError)
-    //        throw new BadHttpRequestException(duendeResponse.Error);
-
-    //    // return the entire response, which includes the access and id tokens
-    //    return duendeResponse;
     //}
 
     //[HttpPost]
@@ -119,7 +84,7 @@ public class LoginController : Controller
     //        ExpiresUtc = DateTimeOffset.Now.AddDays(1)
     //    };
 
-    //    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
+    //   await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
     //}
 
     //[HttpGet]

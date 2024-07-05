@@ -1,4 +1,5 @@
-﻿using LarsProjekt.Domain;
+﻿using LarsProjekt.Domain.MyTemsApi;
+using LarsProjekt.Dto.MyTemsApi;
 
 namespace LarsProjekt.Dto.Mapping;
 
@@ -8,10 +9,11 @@ public static class UserDtoMappingExtension
     {
         return new UserDto(
             user.Id,
-            user.Username,
+            user.FirstName,
+            user.LastName,
             user.Email,
             user.Password,            
-            user.Address.ToDto(),
+            user.Address?.ToDto(),
             user.AddressId
             );
     }
@@ -21,7 +23,8 @@ public static class UserDtoMappingExtension
         return new User
         {
             Id = dto.Id,
-            Username = dto.Username,
+            FirstName = dto.FirstName,
+            LastName = dto.LastName,
             Email = dto.Email,
             Password = dto.Password,
             AddressId = dto.AddressId

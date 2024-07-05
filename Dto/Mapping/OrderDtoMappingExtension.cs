@@ -1,4 +1,5 @@
-﻿using LarsProjekt.Domain;
+﻿using LarsProjekt.Domain.MyTemsApi;
+using LarsProjekt.Dto.MyTemsApi;
 
 namespace LarsProjekt.Dto.Mapping;
 

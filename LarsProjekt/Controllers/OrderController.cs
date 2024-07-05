@@ -1,5 +1,6 @@
-﻿using LarsProjekt.Application.IService;
-using LarsProjekt.Domain;
+﻿using LarsProjekt.Domain;
+using LarsProjekt.Domain.Interfaces;
+using LarsProjekt.Domain.MyTemsApi;
 using LarsProjekt.Models;
 using LarsProjekt.Models.Mapping;
 using LarsProjekt.Models.ViewModels;

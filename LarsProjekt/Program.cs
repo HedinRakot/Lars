@@ -1,9 +1,13 @@
-using LarsProjekt.Application;
 using LarsProjekt.CouponCache;
 using LarsProjekt.ErrorHandling;
 using NServiceBus;
 using Serilog;
 using Microsoft.AspNetCore.Authentication;
+using LarsProjekt.UserApiAdapter;
+using LarsProjekt.StoreApiAdapter;
+using LarsProjekt.OrderApiAdapter;
+using LarsProjekt.MyTemsApiAdapter;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 try
@@ -33,23 +37,38 @@ try
         options.Scope.Add("aspnetmvcscope");
         options.Scope.Add("mytemsapiscope");
         options.Scope.Add("offline_access");
-        options.ClaimActions.MapJsonKey("email_verified", "email_verified");
         options.GetClaimsFromUserInfoEndpoint = true;
-
-        options.MapInboundClaims = false; // Don't rename claim types
-
+        //options.ClaimActions.MapUniqueJsonKey("name", "name");
+        //options.TokenValidationParameters = new TokenValidationParameters
+        //{
+        //    NameClaimType = "name"
+        //    //, RoleClaimType = "role"
+        //};
+        options.MapInboundClaims = false;
         options.SaveTokens = true;
     });
 
     builder.Services.AddSession();
 
-    builder.Services.AddApplication();
     builder.Services.AddCouponCache();
 
     builder.Services.AddMvc();
 
+    builder.Services.AddStoreApi();
+    builder.Services.Configure<StoreApiUserOptions>(builder.Configuration.GetSection(StoreApiUserOptions.Section));
+    builder.Services.Configure<StoreApiUrlOptions>(builder.Configuration.GetSection(StoreApiUrlOptions.Section));
+
+    builder.Services.AddOrderApi();
+    builder.Services.Configure<OrderApiUserOptions>(builder.Configuration.GetSection(OrderApiUserOptions.Section));
+    builder.Services.Configure<OrderApiUrlOptions>(builder.Configuration.GetSection(OrderApiUrlOptions.Section));
+
+    builder.Services.AddMyTemsApi();
+    builder.Services.Configure<MyTemsApiUserOptions>(builder.Configuration.GetSection(MyTemsApiUserOptions.Section));
+    builder.Services.Configure<MyTemsApiUrlOptions>(builder.Configuration.GetSection(MyTemsApiUrlOptions.Section));
+
+    builder.Services.AddUserApi();
     builder.Services.Configure<ApiUserOptions>(builder.Configuration.GetSection(ApiUserOptions.Section));
-    builder.Services.Configure<ApiUrlOptions>(builder.Configuration.GetSection(ApiUrlOptions.Section));
+    builder.Services.Configure<UserApiUrlOptions>(builder.Configuration.GetSection(UserApiUrlOptions.Section));
 
     await LarsProjekt.NServiceBus.ConfigExtension.AddNServiceBus(builder.Configuration, builder.Services, "LarsProjekt", "NServiceBus");
 

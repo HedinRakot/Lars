@@ -1,4 +1,5 @@
-﻿using LarsProjekt.Domain;
+﻿using LarsProjekt.Domain.StoreApi;
+using LarsProjekt.Dto.StoreApi;
 using System.Text;
 
 namespace LarsProjekt.Dto.Mapping;
@@ -16,7 +17,7 @@ public static class CouponDtoMappingExtension
             coupon.Expired,
             coupon.Count,
             coupon.AppliedCount,
-            coupon.Version
+            Encoding.UTF8.GetString(coupon.Version)
             );
     }
     public static Coupon ToDomain(this CouponDto dto)
@@ -31,7 +32,7 @@ public static class CouponDtoMappingExtension
             Expired = dto.Expired,
             ExpiryDate = dto.ExpiryDate,
             Type = dto.Type,
-            Version = dto.Version
+            Version = dto.Version != null ? Encoding.UTF8.GetBytes(dto.Version) : null
         };
     }
 }
